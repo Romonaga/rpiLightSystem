@@ -22,7 +22,7 @@ LightSystem::LightSystem()
     _blue = 255;
     _rno = 0x45; // random9 seed
     _cno = 0;       // used to set colours, range 0-0x1FF
-    _wait = 100;
+    _wait = 200;
     _mqq = nullptr;
     _logger = DNRLogger::instance();
     _logger->setDebugOut(_settings->getDbgLog());
@@ -55,18 +55,16 @@ void LightSystem::processMsgReceived(QString msg)
 
     QJsonObject jsonObject;
     QString state;
-    int brightness = 30;
 
     QJsonDocument doc = QJsonDocument::fromJson(msg.toUtf8());
 
-    // check validity of the document
     if(!doc.isNull())
     {
         if(doc.isObject())
         {
             jsonObject = doc.object();
             state = jsonObject.value("state").toString();
-            brightness = jsonObject.value("brightness").toString().toInt();
+            _settings->setBrightness(jsonObject.value("brightness").toString().toInt());
             QJsonArray jsonArray = jsonObject["shows"].toArray();
 
             foreach (const QJsonValue & value, jsonArray)
@@ -86,7 +84,7 @@ void LightSystem::processMsgReceived(QString msg)
         return;
     }
 
-    _ledWrapper.setBrightness(brightness);
+    _ledWrapper.setBrightness(_settings->getBrightness());
 
     if(state == "ON")
         start();
@@ -125,10 +123,9 @@ void LightSystem::run()
             switch(_runShows[0])
             {
                 case 1:
-
                     break;
 
-                    case 2:
+                case 2:
 
                     //Chaser(_wait);
                     break;
@@ -236,9 +233,10 @@ bool LightSystem::startSystem()
        renderResults = _ledWrapper.initStrip(_settings->getStripWidth(), _settings->getStripHeight(), (LedStripType)_settings->getStripType(), _settings->getDma(), _settings->getGpio());
        if(renderResults != WS2811_SUCCESS)
        {
-           fprintf(stderr, "LightSystem start() Failed Code(%d) Msg(%s) Host(%s) DMA(%d) GPIO(%d), SType(%d)\r\n", renderResults,
-                   _ledWrapper.ws2811_get_return_t_str(renderResults), _settings->getHostName().toStdString().c_str(),
-                   _settings->getDma(), _settings->getGpio(), _settings->getStripType());
+           info.str("");
+           info << "LightSystem start() Failed Code(" << renderResults << ") Msg(" <<
+                   _ledWrapper.ws2811_get_return_t_str(renderResults) << ")";
+           _logger->logWarning(info.str());
            return -12;
        }
 
@@ -254,7 +252,7 @@ bool LightSystem::startSystem()
     }
     else
     {
-        fprintf(stderr, "Problem Loadng Config File.");
+        _logger->logWarning("Problem Loadng Config File.");
     }
     return _started;
 }
@@ -645,7 +643,7 @@ void LightSystem::flame()
   //  Green flame:
   //int r = 74, g = 150, b = 12;
   //  Flicker, based on our initial RGB values
-    for(int counter = 0; counter < 5; counter++)
+  for(int counter = 0; counter < 255; counter++)
   {
       if(_running == false)
           return;// int r = 255, g = 50, b = 35;

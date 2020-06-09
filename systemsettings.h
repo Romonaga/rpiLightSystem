@@ -44,6 +44,8 @@ public:
 
     bool getDbgLog() const;
 
+    void setBrightness(int brightness);
+
 private:
     SystemSettings();
     static SystemSettings* _instance;

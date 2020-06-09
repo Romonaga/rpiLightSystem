@@ -17,6 +17,11 @@ SystemSettings::SystemSettings()
     _mmConfFile =  "/etc/rpilightsystem.conf";
 }
 
+void SystemSettings::setBrightness(int brightness)
+{
+    _brightness = brightness;
+}
+
 bool SystemSettings::getDbgLog() const
 {
     return _dbgLog;
