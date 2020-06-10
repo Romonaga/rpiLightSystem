@@ -58,6 +58,9 @@ void LightSystem::processMsgReceived(QString msg)
 
     QJsonDocument doc = QJsonDocument::fromJson(msg.toUtf8());
 
+    std::stringstream info;
+
+
     if(!doc.isNull())
     {
         if(doc.isObject())
@@ -68,8 +71,13 @@ void LightSystem::processMsgReceived(QString msg)
             QJsonArray jsonArray = jsonObject["shows"].toArray();
 
             foreach (const QJsonValue & value, jsonArray)
+            {
                 _runShows.append(value.toString().toInt());
+                info.str("");
+                info << "LightSystem::processMsgReceived() adding Show(" << getEnumName(value.toString().toInt()) << ")";
+                _logger->logInfo(info.str());
 
+            }
         }
         else
         {
@@ -701,20 +709,22 @@ void LightSystem::Chaser(u_int32_t wait)
     ws2811_return_t renderResults;
 
     _ledWrapper.clearLeds();
-
-    for(u_int32_t counter = 0; counter < _ledWrapper.getNumberLeds(); counter++)
+    for(int counter = 0; counter < 100; counter++)
     {
-        _ledWrapper.setPixelColor(_settings->getStripWidth(), counter, _red, _green , _blue);
-        renderResults = _ledWrapper.show();
-        if(renderResults != WS2811_SUCCESS)
+        for(u_int32_t counter = 0; counter < _ledWrapper.getNumberLeds(); counter++)
         {
-            fprintf(stderr, "Render Failed Code(%d) Msg(%s)", renderResults, _ledWrapper.ws2811_get_return_t_str(renderResults));
-            return;
-        }
-        if(_running == false)
-            return;
-        Ws2811Wrapper::waitMillSec(wait);
+            _ledWrapper.setPixelColor(_settings->getStripWidth(), counter, _red, _green , _blue);
+            renderResults = _ledWrapper.show();
+            if(renderResults != WS2811_SUCCESS)
+            {
+                _logger->logWarning(_ledWrapper.ws2811_get_return_t_str(renderResults));
+                return;
+            }
+            if(_running == false)
+                return;
+            Ws2811Wrapper::waitMillSec(wait);
 
+        }
     }
     _ledWrapper.clearLeds();
 }
@@ -741,6 +751,8 @@ void LightSystem::cylon(ws2811_led_t c, int width, int speed)
             _ledWrapper.setPixelColor(1, i + j, _ledWrapper.Color(0,0,0));
           //leds[i+j] = CRGB::Black;
         }
+        if(_running == false)
+            return;
         Ws2811Wrapper::waitMillSec(speed);
       }
 
@@ -751,6 +763,8 @@ void LightSystem::cylon(ws2811_led_t c, int width, int speed)
         {
         _ledWrapper.setPixelColor(1, i + j, c);
         }
+        if(_running == false)
+            return;
         _ledWrapper.show();
         for(int j=0; j<width; j++)
         {
