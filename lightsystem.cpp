@@ -11,6 +11,9 @@
 #define lowByte(w) ((uint8_t) ((w) & 0xff))
 #define highByte(w) ((uint8_t) ((w) >> 8))
 
+const char* _lightShowNames[] = {LIGHT_SHOWS(LIGHT_SHOWS_STRING)};
+
+
 LightSystem::LightSystem()
 {
     _settings = SystemSettings::getInstance();
@@ -44,10 +47,19 @@ LightSystem::~LightSystem()
 
 const char *LightSystem::getEnumName(int index)
 {
-    const char* enumNames[] = {LIGHT_SHOWS(LIGHT_SHOWS_STRING)};
-    return enumNames[index];
+
+    return _lightShowNames[index];
 }
 
+
+void LightSystem::stopLights()
+{
+    _logger->logInfo("LightSystem::processMsgReceived Stopping Lights");
+   _running = false;
+   wait();
+   _ledWrapper.clearLeds();
+   _logger->logInfo("LightSystem::processMsgReceived Lights Stopped");
+}
 
 void LightSystem::processMsgReceived(QString msg)
 {
@@ -81,14 +93,13 @@ void LightSystem::processMsgReceived(QString msg)
         }
         else
         {
-          //  qDebug() << "Document is not an object" << endl;
+            _logger->logWarning("Document is not an object");
             return;
         }
     }
     else
     {
-       // qDebug() << "Invalid JSON...\n" << in << endl;
-
+        _logger->logWarning("Invalid JSON");
         return;
     }
 
@@ -97,14 +108,7 @@ void LightSystem::processMsgReceived(QString msg)
     if(state == "ON")
         start();
     else
-    {
-         _logger->logInfo("LightSystem::processMsgReceived Stopping Lights");
-        _running = false;
-        wait();
-        _ledWrapper.clearLeds();
-        _logger->logInfo("LightSystem::processMsgReceived Lights Stopped");
-
-    }
+        stopLights();
 
 }
 
@@ -130,45 +134,49 @@ void LightSystem::run()
 
             switch(_runShows[0])
             {
-                case 1:
+                case Blink:
                     break;
 
-                case 2:
-
-                    //Chaser(_wait);
+                case Chaser:
+                    chaser(_wait);
                     break;
 
-                    case 3:
-                        theaterChase(Ws2811Wrapper::Color(_red, _green, _blue, 100), _wait);
+                case TC:
+                    theaterChase(Ws2811Wrapper::Color(_red, _green, _blue, 100), _wait);
+                    break;
+                case TCR:
+                   theaterChaseRainbow(_wait);
+                   break;
 
-                    break;
-                    case 4:
-                       theaterChaseRainbow(_wait);
-                    break;
-                    case 5:
+                case Color3R:
                     colorThirdsReverse(_ledWrapper.Color(255, 0, 0), _ledWrapper.Color(255, 255, 255), _ledWrapper.Color(0, 0, 255), _wait);
                     break;
-                    case 6:
-                        cylon(Ws2811Wrapper::Color(125, 50, 145), 20, 30);
-                    break;
-                    case 7:
-                         colorWipe(Ws2811Wrapper::Color(_red,_green,_blue,0), _wait);
-                    break;
-                    case 8:
-                    HalfnHalf(Ws2811Wrapper::Color(255,0,0, 255), Ws2811Wrapper::Color(0,0,255,255), _wait);
-                    break;
-                    case 9:
-                     rainbow(_wait);
-                    break;
-                    case 10:
-                     rainbowCycle(_wait);
+
+                case Cylon:
+                    cyclon(Ws2811Wrapper::Color(125, 50, 145), 20, 30);
                     break;
 
-                case 11:
-                    NeoRand();
+                case ColorWipe:
+                    colorWipe(Ws2811Wrapper::Color(_red,_green,_blue,0), _wait);
+                    break;
+
+                case HAndH:
+                    halfnHalf(Ws2811Wrapper::Color(255,0,0, 255), Ws2811Wrapper::Color(0,0,255,255), _wait);
+                    break;
+
+                case Rainbow:
+                    rainbow(_wait);
+                    break;
+
+                case RainbowCycle:
+                    rainbowCycle(_wait);
+                    break;
+
+                case NeoRand:
+                    neoRand();
                     break;
                     
-                case 12:
+                case Flame:
                     flame();
                     break;
             }
@@ -179,45 +187,7 @@ void LightSystem::run()
              _runShows.removeFirst();
         }
 
-        /*
-        _logger->logInfo("LightSystem::run() 1");
-        if(_running)
-            colorThirdsReverse(_ledWrapper.Color(255, 0, 0), _ledWrapper.Color(255, 255, 255), _ledWrapper.Color(0, 0, 255), _wait);
 
-        _logger->logInfo("LightSystem::run() 2");
-        if(_running)
-            NeoRand();
-
-        _logger->logInfo("LightSystem::run() 3");
-        if(_running)
-            flame();
-
-        _logger->logInfo("LightSystem::run() 4");
-        if(_running)
-            colorWipe(Ws2811Wrapper::Color(_red,_green,_blue,0), _wait);
-
-        //    if(_isRunning)
-        //      Chaser(_wait);
-        //        if(_isRunning)
-        //         HalfnHalf(Ws2811Wrapper::Color(255,0,0, 255), Ws2811Wrapper::Color(0,0,255,255), _wait);
-
-        _logger->logInfo("LightSystem::run() 5");
-        if(_running)
-            theaterChaseRainbow(_wait);
-
-        _logger->logInfo("LightSystem::run() 6");
-        if(_running)
-            theaterChase(Ws2811Wrapper::Color(_red, _green, _blue, 100), _wait);
-
-        _logger->logInfo("LightSystem::run() 7");
-        if(_running)
-            rainbowCycle(_wait);
-
-        _logger->logInfo("LightSystem::run() 8");
-        if(_running)
-            rainbow(_wait);
-
-         */
     }
 }
 
@@ -484,7 +454,7 @@ void LightSystem::colorThirdsReverse(uint32_t startColor, uint32_t middleColor, 
 }
 
 
-void LightSystem::NeoRand()
+void LightSystem::neoRand()
 {
 
   if (_running == false) return;
@@ -704,7 +674,7 @@ void LightSystem::flame()
   _ledWrapper.clearLeds();
 }
 
-void LightSystem::Chaser(u_int32_t wait)
+void LightSystem::chaser(u_int32_t wait)
 {
     ws2811_return_t renderResults;
 
@@ -731,7 +701,7 @@ void LightSystem::Chaser(u_int32_t wait)
 
 
 
-void LightSystem::cylon(ws2811_led_t c, int width, int speed)
+void LightSystem::cyclon(ws2811_led_t c, int width, int speed)
 {
     for(int counter = 0; counter < 25; counter++)
     {
@@ -797,7 +767,7 @@ void LightSystem::colorWipe(ws2811_led_t color, u_int32_t waitms)
     _ledWrapper.clearLeds();
 }
 
-void LightSystem::HalfnHalf(ws2811_led_t halfN, ws2811_led_t nHalf, u_int32_t delayMs)
+void LightSystem::halfnHalf(ws2811_led_t halfN, ws2811_led_t nHalf, u_int32_t delayMs)
 {
     u_int32_t half = _ledWrapper.getNumberLeds() / 2;
     u_int32_t counter = 0;

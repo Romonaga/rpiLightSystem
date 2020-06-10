@@ -53,26 +53,24 @@ public:
 private:
     SystemSettings* _settings;
     void lightsOff();
+    void stopLights();
     unsigned int random9();
     uint32_t Bow(int n);
 
 private: //shows
-    void Chaser(u_int32_t wait);
+    void chaser(u_int32_t wait);
     void theaterChase(ws2811_led_t baseColor, u_int32_t wait);
 
     void theaterChaseRainbow(u_int32_t wait);
     void flame();
-    void NeoRand();
+    void neoRand();
     void colorThirdsReverse(uint32_t startColor, uint32_t middleColor, uint32_t finishColor, int wait);
     void blink(int numBlinks, int wait);
-    void cylon(ws2811_led_t c, int width, int speed);
+    void cyclon(ws2811_led_t c, int width, int speed);
     void colorWipe(ws2811_led_t color, u_int32_t waitms);
-    void HalfnHalf(ws2811_led_t halfN, ws2811_led_t nHalf, u_int32_t delayMs);
+    void halfnHalf(ws2811_led_t halfN, ws2811_led_t nHalf, u_int32_t delayMs);
     void rainbow(u_int32_t wait);
     void rainbowCycle(u_int32_t wait);
-
-
-
 
 
 private:
@@ -89,6 +87,7 @@ private:
     MqttReceiver* _mqq;
     DNRLogger* _logger;
     QVector<int> _runShows;
+
 
 public slots:
     void processMsgReceived(QString msg);
