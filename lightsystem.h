@@ -26,7 +26,10 @@
             X(9, Rainbow, "Rainbow"),                   \
             X(10, RainbowCycle, "Rainbow Cycle"),                   \
             X(11, NeoRand, "NeoRand (Twinkle)"),                   \
-            X(12, Flame, "Flame")                   \
+            X(12, Flame, "Flame"),                   \
+            X(13, ColorThirds, "ColorThirds"),                   \
+            X(14, ColorForths, "ColorForths"),                   \
+            X(15, TriChaser, "Tri-Color Chase")                   \
 
 
 #define LIGHT_SHOWS_ENUM(type, name, str) name = type
@@ -71,7 +74,9 @@ private: //shows
     void halfnHalf(ws2811_led_t halfN, ws2811_led_t nHalf, u_int32_t delayMs);
     void rainbow(u_int32_t wait);
     void rainbowCycle(u_int32_t wait);
-
+    void colorThirds(ws2811_led_t startColor, ws2811_led_t middleColor, ws2811_led_t finishColor, u_int32_t delay);
+    void colorForths(ws2811_led_t colorOne, ws2811_led_t colorTwo, ws2811_led_t colorThree,ws2811_led_t colorFour, u_int32_t delay);
+    void triChaser(ws2811_led_t c1, ws2811_led_t c2, ws2811_led_t c3, u_int32_t delay);
 
 private:
     Ws2811Wrapper _ledWrapper;

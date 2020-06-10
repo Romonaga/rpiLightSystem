@@ -23,7 +23,7 @@ LightSystem::LightSystem()
     _red = 0;
     _green = 0;
     _blue = 255;
-    _rno = 0x45; // random9 seed
+    _rno = rand();
     _cno = 0;       // used to set colours, range 0-0x1FF
     _wait = 10;
     _mqq = nullptr;
@@ -112,6 +112,7 @@ void LightSystem::processMsgReceived(QString msg)
 
 }
 
+
 void LightSystem::run()
 {
     if(_running) return;
@@ -135,50 +136,65 @@ void LightSystem::run()
             switch(_runShows[0])
             {
                 case Blink:
-                    break;
+                break;
 
                 case Chaser:
                     chaser(_wait);
-                    break;
+                break;
 
                 case TC:
                     theaterChase(Ws2811Wrapper::Color(_red, _green, _blue, 100), _wait);
-                    break;
+                break;
+
                 case TCR:
                    theaterChaseRainbow(_wait);
-                   break;
+                break;
 
                 case Color3R:
-                    colorThirdsReverse(_ledWrapper.Color(255, 0, 0), _ledWrapper.Color(255, 255, 255), _ledWrapper.Color(0, 0, 255), _wait);
-                    break;
+                    colorThirdsReverse(Ws2811Wrapper::Color(255, 0, 0), Ws2811Wrapper::Color(255, 255, 255), Ws2811Wrapper::Color(0, 0, 255), _wait);
+                break;
 
                 case Cylon:
                     cyclon(Ws2811Wrapper::Color(125, 50, 145), 20, 30);
-                    break;
+                break;
 
                 case ColorWipe:
                     colorWipe(Ws2811Wrapper::Color(_red,_green,_blue,0), _wait);
-                    break;
+                break;
 
                 case HAndH:
                     halfnHalf(Ws2811Wrapper::Color(255,0,0, 255), Ws2811Wrapper::Color(0,0,255,255), _wait);
-                    break;
+                break;
 
                 case Rainbow:
                     rainbow(_wait);
-                    break;
+                break;
 
                 case RainbowCycle:
                     rainbowCycle(_wait);
-                    break;
+                break;
 
                 case NeoRand:
                     neoRand();
-                    break;
+                break;
                     
                 case Flame:
                     flame();
-                    break;
+                break;
+
+                case ColorThirds:
+                    colorThirds(Ws2811Wrapper::Color(255,120,50), Ws2811Wrapper::Color(50,120,255), Ws2811Wrapper::Color(120,255,50), _wait);
+                break;
+
+                case ColorForths:
+                    colorForths(Ws2811Wrapper::Color(255,120,50), Ws2811Wrapper::Color(50,120,255), Ws2811Wrapper::Color(120,255,50), Ws2811Wrapper::Color(0,255,50), _wait);
+                break;
+
+                case TriChaser:
+                    triChaser(Ws2811Wrapper::Color(255, 0, 0), Ws2811Wrapper::Color(255, 255, 255), Ws2811Wrapper::Color(0, 0, 255), _wait);
+                break;
+
+
             }
 
             info.str("");
@@ -252,7 +268,7 @@ void LightSystem::theaterChase(ws2811_led_t baseColor, u_int32_t wait)
         {
             for (u_int32_t i=0; i < _ledWrapper.getNumberLeds(); i=i+3)
             {
-                _ledWrapper.setPixelColor(1, i+q, baseColor);    //turn every third pixel on
+                _ledWrapper.setPixelColor(_settings->getStripHeight(), i+q, baseColor);    //turn every third pixel on
             }
             _ledWrapper.show();
             if(_running == false)
@@ -261,7 +277,7 @@ void LightSystem::theaterChase(ws2811_led_t baseColor, u_int32_t wait)
 
         for (u_int32_t i=0; i < _ledWrapper.getNumberLeds(); i=i+3)
         {
-            _ledWrapper.setPixelColor(1, i+q, 0);        //turn every third pixel off
+            _ledWrapper.setPixelColor(_settings->getStripHeight(), i+q, 0);        //turn every third pixel off
       }
     }
   }
@@ -282,14 +298,14 @@ void LightSystem::theaterChaseRainbow(u_int32_t wait)
         {
             for (u_int32_t i=0; i < _ledWrapper.getNumberLeds(); i=i+3)
             {
-               _ledWrapper.setPixelColor(1, i+q, Ws2811Wrapper::Wheel( (i+j) % 255));    //turn every third pixel on
+               _ledWrapper.setPixelColor(_settings->getStripHeight(), i+q, Ws2811Wrapper::Wheel( (i+j) % 255));    //turn every third pixel on
             }
             _ledWrapper.show();
 
           Ws2811Wrapper::waitMillSec(wait);
           for (u_int32_t i=0; i < _ledWrapper.getNumberLeds(); i=i+3)
           {
-            _ledWrapper.setPixelColor(1, i+q, 0);        //turn every third pixel off
+            _ledWrapper.setPixelColor(_settings->getStripHeight(), i+q, 0);        //turn every third pixel off
           }
         }
     }
@@ -391,7 +407,7 @@ void LightSystem::lightsOff()
 
   for (u_int32_t i = 0; i < _ledWrapper.getNumberLeds(); i++)
   {
-    _ledWrapper.setPixelColor(1, i, _ledWrapper.Color(0, 0, 0, 0 ) );
+    _ledWrapper.setPixelColor(_settings->getStripHeight(), i, _ledWrapper.Color(0, 0, 0, 0 ) );
   }
   _ledWrapper.show();
 }
@@ -440,7 +456,7 @@ void LightSystem::colorThirdsReverse(uint32_t startColor, uint32_t middleColor, 
       }
 
 
-      _ledWrapper.setPixelColor(1, counter, currentColor);
+      _ledWrapper.setPixelColor(_settings->getStripHeight(), counter, currentColor);
       _ledWrapper.show();
       if (_running == false) return;
 
@@ -457,7 +473,7 @@ void LightSystem::colorThirdsReverse(uint32_t startColor, uint32_t middleColor, 
 void LightSystem::neoRand()
 {
 
-  if (_running == false) return;
+    if (_running == false) return;
 
   u_int32_t tw;
   uint32_t saved = 0;     // saved colour (twinkle)
@@ -470,15 +486,15 @@ void LightSystem::neoRand()
   memset(&fade, 0, sizeof(fade));
   memset(&col, 0, sizeof(col));
 
-    _rno = random9();
-   for(int counter = 0; counter < (255 * 100); counter++)
+  _rno = random9();
+  for(int counter = 0; counter < (255 * 100); counter++)
   {
-        if (_running == false) return;
-   // rno = random9();
+    if (_running == false) return;
     for (u_int32_t i = 0; i < _ledWrapper.getNumberLeds(); i++)
     {
 
-      if (_ledWrapper.getPixelColor(1, i) == _ledWrapper.Color(255,255,255)) _ledWrapper.setPixelColor(1, i, saved); // return colour after sparkle
+      if (_ledWrapper.getPixelColor(1, i) == _ledWrapper.Color(255,255,255))
+          _ledWrapper.setPixelColor(_settings->getStripHeight(), i, saved); // return colour after sparkle
 
 
       int c = i % 7;          // c=c nominal colour 0-red, 1-orange, etc
@@ -612,7 +628,7 @@ void LightSystem::neoRand()
           _blue = 0;
       }
 
-      _ledWrapper.setPixelColor(1, i, _ledWrapper.Color(_red, _green, _blue)); // set colour
+      _ledWrapper.setPixelColor(_settings->getStripHeight(), i, _ledWrapper.Color(_red, _green, _blue)); // set colour
 
     }  //  for(int i=0;i<NUMPIXELS;i++){
 
@@ -624,7 +640,7 @@ void LightSystem::neoRand()
 
     if (tw < _ledWrapper.getNumberLeds() && tw == 0 )
     {
-      _ledWrapper.setPixelColor(1, tw, _ledWrapper.Color(255,255,255));
+      _ledWrapper.setPixelColor(_settings->getStripHeight(), tw, _ledWrapper.Color(255,255,255));
     }
 
 
@@ -661,7 +677,7 @@ void LightSystem::flame()
       if (g1 < 0) g1 = 0;
       if (r1 < 0) r1 = 0;
       if (b1 < 0) b1 = 0;
-      _ledWrapper.setPixelColor(1, i, r1, g1, b1);
+      _ledWrapper.setPixelColor(_settings->getStripHeight(), i, r1, g1, b1);
     }
     _ledWrapper.show();
 
@@ -683,7 +699,7 @@ void LightSystem::chaser(u_int32_t wait)
     {
         for(u_int32_t counter = 0; counter < _ledWrapper.getNumberLeds(); counter++)
         {
-            _ledWrapper.setPixelColor(_settings->getStripWidth(), counter, _red, _green , _blue);
+            _ledWrapper.setPixelColor(_settings->getStripHeight(), counter, _red, _green , _blue);
             renderResults = _ledWrapper.show();
             if(renderResults != WS2811_SUCCESS)
             {
@@ -710,7 +726,7 @@ void LightSystem::cyclon(ws2811_led_t c, int width, int speed)
       {
         for(int j=0; j<width; j++)
         {
-            _ledWrapper.setPixelColor(1, i + j, c);
+            _ledWrapper.setPixelColor(_settings->getStripHeight(), i + j, c);
         }
 
         _ledWrapper.show();
@@ -718,7 +734,7 @@ void LightSystem::cyclon(ws2811_led_t c, int width, int speed)
         // now that we've shown the leds, reset to black for next loop
         for(int j=0; j<5; j++)
         {
-            _ledWrapper.setPixelColor(1, i + j, _ledWrapper.Color(0,0,0));
+            _ledWrapper.setPixelColor(_settings->getStripHeight(), i + j, _ledWrapper.Color(0,0,0));
           //leds[i+j] = CRGB::Black;
         }
         if(_running == false)
@@ -731,14 +747,14 @@ void LightSystem::cyclon(ws2811_led_t c, int width, int speed)
       {
         for(int j=0; j<width; j++)
         {
-        _ledWrapper.setPixelColor(1, i + j, c);
+        _ledWrapper.setPixelColor(_settings->getStripHeight(), i + j, c);
         }
         if(_running == false)
             return;
         _ledWrapper.show();
         for(int j=0; j<width; j++)
         {
-           _ledWrapper.setPixelColor(1, i + j, _ledWrapper.Color(0,0,0));
+           _ledWrapper.setPixelColor(_settings->getStripHeight(), i + j, _ledWrapper.Color(0,0,0));
         }
         if(_running == false)
             return;
@@ -756,7 +772,7 @@ void LightSystem::colorWipe(ws2811_led_t color, u_int32_t waitms)
 
   for(uint32_t i=0; i < _ledWrapper.getNumberLeds(); i++)
   {
-    _ledWrapper.setPixelColor(1, i, color);
+    _ledWrapper.setPixelColor(_settings->getStripHeight(), i, color);
     Ws2811Wrapper::waitMillSec(waitms);
     _ledWrapper.show();
     if(_running == false)
@@ -805,7 +821,7 @@ void LightSystem::rainbow(u_int32_t wait)
 
     for(i=0; i <_ledWrapper.getNumberLeds(); i++)
     {
-      _ledWrapper.setPixelColor(1, i,  Ws2811Wrapper::Wheel((i+j) & 255));
+      _ledWrapper.setPixelColor(_settings->getStripHeight(), i,  Ws2811Wrapper::Wheel((i+j) & 255));
     }
     _ledWrapper.show();
     if(_running == false)
@@ -827,7 +843,7 @@ void LightSystem::rainbowCycle(u_int32_t wait)
 
         // 5 cycles of all colors on wheel
         for(i=0; i < _ledWrapper.getNumberLeds(); i++)
-           _ledWrapper.setPixelColor(1, i, Ws2811Wrapper::Wheel(((i * 256 / _ledWrapper.getNumberLeds()) + j) & 255));
+           _ledWrapper.setPixelColor(_settings->getStripHeight(), i, Ws2811Wrapper::Wheel(((i * 256 / _ledWrapper.getNumberLeds()) + j) & 255));
 
         _ledWrapper.show();
         if(_running == false)
@@ -835,4 +851,118 @@ void LightSystem::rainbowCycle(u_int32_t wait)
         Ws2811Wrapper::waitMillSec(wait);
     }
     _ledWrapper.clearLeds();
+}
+
+void LightSystem::colorThirds(ws2811_led_t startColor, ws2811_led_t middleColor, ws2811_led_t finishColor, u_int32_t delay)
+{
+    ws2811_return_t renderResults = WS2811_SUCCESS;
+    ws2811_led_t colors[] = {startColor, middleColor, finishColor};
+
+    u_int32_t third = _ledWrapper.getNumberLeds() / 3;
+    u_int32_t counter = 0;
+    u_int32_t  currentDivision = third;
+    u_int8_t colorNumber = 1;
+
+    ws2811_led_t currentColor = startColor;
+
+    if (  (renderResults = _ledWrapper.clearLeds() ) == WS2811_SUCCESS)
+    {
+        for(counter = 0; counter < _ledWrapper.getNumberLeds(); counter++)
+        {
+            if(_running == false)
+                return;
+
+            if(counter >= currentDivision)
+            {
+                ++colorNumber;
+                currentDivision = third * colorNumber;
+                currentColor = colors[colorNumber];
+            }
+
+            _ledWrapper.setPixelColor(_settings->getStripHeight(), counter, currentColor);
+            if( (renderResults = _ledWrapper.show()) != WS2811_SUCCESS)
+            {
+                _logger->logWarning("LightSystem::colorThirds Render Failed");
+                return;
+            }
+
+            Ws2811Wrapper::waitMillSec(delay);
+
+        }
+
+    }
+}
+
+void LightSystem::colorForths(ws2811_led_t colorOne, ws2811_led_t colorTwo, ws2811_led_t colorThree,ws2811_led_t colorFour, u_int32_t delay)
+{
+    ws2811_return_t renderResults = WS2811_SUCCESS;
+    ws2811_led_t colors[] = {colorOne, colorTwo, colorThree, colorFour};
+
+    u_int32_t forths = _ledWrapper.getNumberLeds() / 4;
+    u_int32_t counter = 0;
+    u_int32_t  currentDivision = forths;
+    u_int8_t colorNumber = 1;
+
+    ws2811_led_t currentColor = colorOne;
+
+    _ledWrapper.clearLeds();
+
+    for(counter = 0; counter < _ledWrapper.getNumberLeds(); counter++)
+    {
+        if(false == _running)
+            return;
+
+        if(counter >= currentDivision)
+        {
+            ++colorNumber;
+            currentDivision = forths * colorNumber;
+            currentColor = colors[colorNumber];
+        }
+
+        _ledWrapper.setPixelColor(_settings->getStripHeight(), counter, currentColor);
+        if( (renderResults = _ledWrapper.show()) != WS2811_SUCCESS)
+        {
+            _logger->logWarning("LightSystem::colorForths Render Failed");
+            return;
+        }
+        Ws2811Wrapper::waitMillSec(delay);
+
+    }
+
+
+}
+
+void LightSystem::triChaser(ws2811_led_t c1, ws2811_led_t c2, ws2811_led_t c3, u_int32_t delay)
+{
+
+    ws2811_return_t renderResults = WS2811_SUCCESS;
+    ws2811_led_t curcolor = c1;
+
+    _ledWrapper.clearLeds();
+
+    for(uint32_t i=0; i < _ledWrapper.getNumberLeds(); i++)
+    {
+        if(i % 3 == 0)
+            curcolor = c3;
+        else if(i % 2 == 0)
+            curcolor = c2;
+        else
+            curcolor = c1;
+
+        _ledWrapper.setPixelColor(_settings->getStripHeight(), i, curcolor);
+
+        if( (renderResults = _ledWrapper.show()) != WS2811_SUCCESS)
+        {
+            _logger->logWarning("triChaser - Render Failed");
+            break;
+
+        }
+
+        if(_running == false)
+            return;
+
+        Ws2811Wrapper::waitMillSec(delay);
+
+    }
+
 }
