@@ -10,9 +10,21 @@ I will update this document in the future with build instructions.  Not ready fo
 
 This project is simply, a way to control LED lights over the internet.
 
-MySQL Server
-Mosquetto MQTT.
-PHP
-ws2811 Library
+These instructions are for Rasperry Pi Buster.
 
-Web site code.
+
+
+QT5
+
+MySQL Server.
+
+Mosquetto MQTT.
+
+PHP
+
+ws2811 Library, forked from ws2811.
+  you will need scons to build.
+
+Apache
+  Website code forked from Myrana.
+
