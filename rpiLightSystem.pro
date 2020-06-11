@@ -10,8 +10,10 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += main.cpp \
+    ilightshow.cpp \
     lightsystem.cpp \
     mqttreceiver.cpp \
+    showfire.cpp \
     systemsettings.cpp
 
 # The following define makes your compiler emit warnings if you use
@@ -26,8 +28,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
+    ilightshow.h \
     lightsystem.h \
     mqttreceiver.h \
+    showfire.h \
     systemsettings.h
 
 LIBS += -lWs2811Wrapper
@@ -35,3 +39,8 @@ LIBS += -lws2811
 LIBS += -lpaho-mqttpp3 -lpaho-mqtt3a
 LIBS += -lMQTTMessageBus
 LIBS += -lDNRLogger
+
+unix {
+    target.path = /usr/local/bin
+    INSTALLS += target
+}

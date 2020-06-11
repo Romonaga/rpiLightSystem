@@ -5,13 +5,12 @@
 #include <QJsonArray>
 #include <QJsonValue>
 #include <QDebug>
+#include "showfire.h"
 
 
 
 #define lowByte(w) ((uint8_t) ((w) & 0xff))
 #define highByte(w) ((uint8_t) ((w) >> 8))
-
-const char* _lightShowNames[] = {LIGHT_SHOWS(LIGHT_SHOWS_STRING)};
 
 
 LightSystem::LightSystem()
@@ -29,7 +28,7 @@ LightSystem::LightSystem()
     _mqq = nullptr;
     _logger = DNRLogger::instance();
     _logger->setDebugOut(_settings->getDbgLog());
-    _logger->setDebugOut(true);
+
 }
 
 
@@ -41,12 +40,14 @@ LightSystem::~LightSystem()
         _started = false;
         _mqq->stop();
         wait();
-        _ledWrapper.clearLeds();
+
     }
+    _ledWrapper.clearLeds();
 }
 
 const char *LightSystem::getEnumName(int index)
 {
+    const char* _lightShowNames[] = {LIGHT_SHOWS(LIGHT_SHOWS_STRING)};
 
     return _lightShowNames[index];
 }
@@ -63,7 +64,7 @@ void LightSystem::stopLights()
 
 void LightSystem::processMsgReceived(QString msg)
 {
-    fprintf(stderr," LightSystem::processMsgReceived: %s\r\n", msg.toStdString().c_str());
+   // fprintf(stderr," LightSystem::processMsgReceived: %s\r\n", msg.toStdString().c_str());
 
     QJsonObject jsonObject;
     QString state;
@@ -86,20 +87,20 @@ void LightSystem::processMsgReceived(QString msg)
             {
                 _runShows.append(value.toString().toInt());
                 info.str("");
-                info << "LightSystem::processMsgReceived() adding Show(" << getEnumName(value.toString().toInt()) << ")";
+                info << "LightSystem::processMsgReceived adding Show(" << getEnumName(value.toString().toInt()) << ")";
                 _logger->logInfo(info.str());
 
             }
         }
         else
         {
-            _logger->logWarning("Document is not an object");
+            _logger->logWarning("LightSystem::processMsgReceived Document is not an object");
             return;
         }
     }
     else
     {
-        _logger->logWarning("Invalid JSON");
+        _logger->logWarning("LightSystem::processMsgReceived Invalid JSON");
         return;
     }
 
@@ -117,12 +118,17 @@ void LightSystem::run()
 {
     if(_running) return;
 
+    this->setPriority(QThread::TimeCriticalPriority);
     std::stringstream info;
+
 
     _logger->logInfo("LightSystem::run() Started");
     _running = true;
 
-    while(_running)
+    std::mutex mtx;
+    std::unique_lock<std::mutex> lck(mtx);
+
+    while((_conditionVar.wait_for(lck,std::chrono::milliseconds(10)) == std::cv_status::timeout))
     {
         if(false == _running) return;
 
@@ -180,7 +186,7 @@ void LightSystem::run()
                     
                 case Flame:
                     flame();
-                break;
+                    break;
 
                 case ColorThirds:
                     colorThirds(Ws2811Wrapper::Color(255,120,50), Ws2811Wrapper::Color(50,120,255), Ws2811Wrapper::Color(120,255,50), _wait);
@@ -254,6 +260,7 @@ bool LightSystem::startSystem()
 
 void LightSystem::stopSystem()
 {
+     _conditionVar.notify_all();
     _running = false;
     _started = false;
 
@@ -473,7 +480,7 @@ void LightSystem::colorThirdsReverse(uint32_t startColor, uint32_t middleColor, 
 void LightSystem::neoRand()
 {
 
-    if (_running == false) return;
+   if (_running == false) return;
 
   u_int32_t tw;
   uint32_t saved = 0;     // saved colour (twinkle)
@@ -650,6 +657,8 @@ void LightSystem::neoRand()
     Ws2811Wrapper::waitMillSec(_wait);  // Delay (milliseconds).
   }
 
+    _ledWrapper.clearLeds();
+
 }
 
 void LightSystem::flame()
@@ -740,6 +749,7 @@ void LightSystem::cyclon(ws2811_led_t c, int width, int speed)
         if(_running == false)
             return;
         Ws2811Wrapper::waitMillSec(speed);
+        _ledWrapper.clearLeds();
       }
 
       // Now go in the other direction.
@@ -763,23 +773,27 @@ void LightSystem::cyclon(ws2811_led_t c, int width, int speed)
 
       _ledWrapper.clearLeds();
     }
+    _ledWrapper.clearLeds();
 }
 
 
 void LightSystem::colorWipe(ws2811_led_t color, u_int32_t waitms)
 {
   _ledWrapper.clearLeds();
-
-  for(uint32_t i=0; i < _ledWrapper.getNumberLeds(); i++)
+  for(int counter = 0; counter < 25; counter++)
   {
-    _ledWrapper.setPixelColor(_settings->getStripHeight(), i, color);
-    Ws2811Wrapper::waitMillSec(waitms);
-    _ledWrapper.show();
-    if(_running == false)
-        return;
-    Ws2811Wrapper::waitMillSec(waitms);
 
-  }
+      for(uint32_t i=0; i < _ledWrapper.getNumberLeds(); i++)
+      {
+        _ledWrapper.setPixelColor(_settings->getStripHeight(), i, color);
+        Ws2811Wrapper::waitMillSec(waitms);
+        _ledWrapper.show();
+        if(_running == false)
+            return;
+        Ws2811Wrapper::waitMillSec(waitms);
+
+      }
+ }
     _ledWrapper.clearLeds();
 }
 
@@ -788,24 +802,27 @@ void LightSystem::halfnHalf(ws2811_led_t halfN, ws2811_led_t nHalf, u_int32_t de
     u_int32_t half = _ledWrapper.getNumberLeds() / 2;
     u_int32_t counter = 0;
 
-     _ledWrapper.clearLeds();
-    for(counter = 0; counter < half; counter++)
+    for(int count = 0; count < 25; count++)
     {
-        _ledWrapper.setPixelColor(_settings->getStripWidth(), counter, halfN);
-        _ledWrapper.show();
+         _ledWrapper.clearLeds();
+        for(counter = 0; counter < half; counter++)
+        {
+            _ledWrapper.setPixelColor(_settings->getStripHeight(), counter, halfN);
+            _ledWrapper.show();
 
-        Ws2811Wrapper::waitMillSec(delayMs);
+            Ws2811Wrapper::waitMillSec(delayMs);
 
+        }
+        if(_running == false)
+            return;
+        for(; counter < _ledWrapper.getNumberLeds(); counter++)
+        {
+            _ledWrapper.setPixelColor(_settings->getStripHeight(), counter, nHalf);
+            _ledWrapper.show();
+            Ws2811Wrapper::waitMillSec(delayMs);
+        }
     }
-    if(_running == false)
-        return;
-    for(; counter < _ledWrapper.getNumberLeds(); counter++)
-    {
-        _ledWrapper.setPixelColor(_settings->getStripWidth(), counter, nHalf);
-        _ledWrapper.show();
-        Ws2811Wrapper::waitMillSec(delayMs);
-    }
-_ledWrapper.clearLeds();
+    _ledWrapper.clearLeds();
 }
 
 void LightSystem::rainbow(u_int32_t wait)
@@ -863,34 +880,38 @@ void LightSystem::colorThirds(ws2811_led_t startColor, ws2811_led_t middleColor,
     u_int32_t  currentDivision = third;
     u_int8_t colorNumber = 1;
 
-    ws2811_led_t currentColor = startColor;
-
-    if (  (renderResults = _ledWrapper.clearLeds() ) == WS2811_SUCCESS)
+    for(u_int32_t count = 0; count < 25; count++)
     {
-        for(counter = 0; counter < _ledWrapper.getNumberLeds(); counter++)
+        ws2811_led_t currentColor = startColor;
+
+        if (  (renderResults = _ledWrapper.clearLeds() ) == WS2811_SUCCESS)
         {
-            if(_running == false)
-                return;
-
-            if(counter >= currentDivision)
+            for(counter = 0; counter < _ledWrapper.getNumberLeds(); counter++)
             {
-                ++colorNumber;
-                currentDivision = third * colorNumber;
-                currentColor = colors[colorNumber];
-            }
+                if(_running == false)
+                    return;
 
-            _ledWrapper.setPixelColor(_settings->getStripHeight(), counter, currentColor);
-            if( (renderResults = _ledWrapper.show()) != WS2811_SUCCESS)
-            {
-                _logger->logWarning("LightSystem::colorThirds Render Failed");
-                return;
-            }
+                if(counter >= currentDivision)
+                {
+                    ++colorNumber;
+                    currentDivision = third * colorNumber;
+                    currentColor = colors[colorNumber];
+                }
 
-            Ws2811Wrapper::waitMillSec(delay);
+                _ledWrapper.setPixelColor(_settings->getStripHeight(), counter, currentColor);
+                if( (renderResults = _ledWrapper.show()) != WS2811_SUCCESS)
+                {
+                    _logger->logWarning("LightSystem::colorThirds Render Failed");
+                    return;
+                }
+
+                Ws2811Wrapper::waitMillSec(delay);
+
+            }
 
         }
-
     }
+    _ledWrapper.clearLeds();
 }
 
 void LightSystem::colorForths(ws2811_led_t colorOne, ws2811_led_t colorTwo, ws2811_led_t colorThree,ws2811_led_t colorFour, u_int32_t delay)
@@ -905,30 +926,33 @@ void LightSystem::colorForths(ws2811_led_t colorOne, ws2811_led_t colorTwo, ws28
 
     ws2811_led_t currentColor = colorOne;
 
-    _ledWrapper.clearLeds();
-
-    for(counter = 0; counter < _ledWrapper.getNumberLeds(); counter++)
+    for(int count = 0; count < 25; count++)
     {
-        if(false == _running)
-            return;
+        _ledWrapper.clearLeds();
 
-        if(counter >= currentDivision)
+        for(counter = 0; counter < _ledWrapper.getNumberLeds(); counter++)
         {
-            ++colorNumber;
-            currentDivision = forths * colorNumber;
-            currentColor = colors[colorNumber];
-        }
+            if(false == _running)
+                return;
 
-        _ledWrapper.setPixelColor(_settings->getStripHeight(), counter, currentColor);
-        if( (renderResults = _ledWrapper.show()) != WS2811_SUCCESS)
-        {
-            _logger->logWarning("LightSystem::colorForths Render Failed");
-            return;
-        }
-        Ws2811Wrapper::waitMillSec(delay);
+            if(counter >= currentDivision)
+            {
+                ++colorNumber;
+                currentDivision = forths * colorNumber;
+                currentColor = colors[colorNumber];
+            }
 
+            _ledWrapper.setPixelColor(_settings->getStripHeight(), counter, currentColor);
+            if( (renderResults = _ledWrapper.show()) != WS2811_SUCCESS)
+            {
+                _logger->logWarning("LightSystem::colorForths Render Failed");
+                return;
+            }
+            Ws2811Wrapper::waitMillSec(delay);
+
+        }
     }
-
+    _ledWrapper.clearLeds();
 
 }
 
@@ -938,31 +962,34 @@ void LightSystem::triChaser(ws2811_led_t c1, ws2811_led_t c2, ws2811_led_t c3, u
     ws2811_return_t renderResults = WS2811_SUCCESS;
     ws2811_led_t curcolor = c1;
 
-    _ledWrapper.clearLeds();
-
-    for(uint32_t i=0; i < _ledWrapper.getNumberLeds(); i++)
+    for(int counter = 0; counter < 25; counter++)
     {
-        if(i % 3 == 0)
-            curcolor = c3;
-        else if(i % 2 == 0)
-            curcolor = c2;
-        else
-            curcolor = c1;
+        _ledWrapper.clearLeds();
 
-        _ledWrapper.setPixelColor(_settings->getStripHeight(), i, curcolor);
-
-        if( (renderResults = _ledWrapper.show()) != WS2811_SUCCESS)
+        for(uint32_t i=0; i < _ledWrapper.getNumberLeds(); i++)
         {
-            _logger->logWarning("triChaser - Render Failed");
-            break;
+            if(i % 3 == 0)
+                curcolor = c3;
+            else if(i % 2 == 0)
+                curcolor = c2;
+            else
+                curcolor = c1;
+
+            _ledWrapper.setPixelColor(_settings->getStripHeight(), i, curcolor);
+
+            if( (renderResults = _ledWrapper.show()) != WS2811_SUCCESS)
+            {
+                _logger->logWarning("triChaser - Render Failed");
+                break;
+
+            }
+
+            if(_running == false)
+                return;
+
+            Ws2811Wrapper::waitMillSec(delay);
 
         }
-
-        if(_running == false)
-            return;
-
-        Ws2811Wrapper::waitMillSec(delay);
-
     }
-
+    _ledWrapper.clearLeds();
 }

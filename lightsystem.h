@@ -8,38 +8,12 @@
 #include "dnrlogger.h"
 #include <QThread>
 #include <QVector>
+#include  <condition_variable>
 
 //broker = "RomoServer.local";
 //topic = "MotionDetect/#";
 //qos = 1;
 
-#define LIGHT_SHOWS(X)                                                  \
-            X(0, Nope, "Why Are We Here?"),                           \
-            X(1, Blink, "Blink"),                           \
-            X(2, Chaser, "Chaser"),                              \
-            X(3, TC, "Theater Chase"),                                    \
-            X(4, TCR, "Theater Chase Rainbow"),                        \
-            X(5, Color3R, "Color 3 Reverse"),   \
-            X(6, Cylon, "Cylon"),                          \
-            X(7, ColorWipe, "Color Wipe"),                    \
-            X(8, HAndH, "Half n Half"),                    \
-            X(9, Rainbow, "Rainbow"),                   \
-            X(10, RainbowCycle, "Rainbow Cycle"),                   \
-            X(11, NeoRand, "NeoRand (Twinkle)"),                   \
-            X(12, Flame, "Flame"),                   \
-            X(13, ColorThirds, "ColorThirds"),                   \
-            X(14, ColorForths, "ColorForths"),                   \
-            X(15, TriChaser, "Tri-Color Chase")                   \
-
-
-#define LIGHT_SHOWS_ENUM(type, name, str) name = type
-#define LIGHT_SHOWS_STRING(type, name, str) str
-
-typedef enum {
-    LIGHT_SHOWS(LIGHT_SHOWS_ENUM),
-
-    LIGHT_SHOWS_ENUM_COUNT
-} LedLightShows;
 
 
 class LightSystem : public QThread
@@ -92,7 +66,9 @@ private:
     MqttReceiver* _mqq;
     DNRLogger* _logger;
     QVector<int> _runShows;
-
+   // QVector<int> _runShows;
+    std::condition_variable _conditionVar;
+    
 
 public slots:
     void processMsgReceived(QString msg);

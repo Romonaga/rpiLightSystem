@@ -5,7 +5,7 @@
 
 
 MqttReceiver::MqttReceiver(const QString &broker, const QString &topic, int qos, QObject *parent) :
-    _broker(broker), _topic(topic), _qos(qos), QObject(parent)
+    QObject(parent), _broker(broker), _topic(topic), _qos(qos)
 {
     _logger = DNRLogger::instance();
     _data = new MQTTSubscriber(_broker.toStdString(), _topic.toStdString(), _qos, 200, 50);
