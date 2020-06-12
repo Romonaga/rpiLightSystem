@@ -1,21 +1,33 @@
 #include "ilightshow.h"
 
-ILightShow::ILightShow(SystemSettings* settings, Ws2811Wrapper* ledWrapper, QObject *parent ) :
-        QObject(parent), _settings(settings), _ledWrapper(ledWrapper)
+ILightShow::ILightShow(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString& showParms) :
+        _settings(settings), _ledWrapper(ledWrapper), _lightShow(lightShow), _showParms(showParms)
 {
     _running = false;
-    _lightShow = Nope;
+    _logger = DNRLogger::instance();
 }
 
-LedLightShows ILightShow::lightShow() const
+
+void ILightShow::run()
+{
+    _running = true;
+    startShow();
+    _running = false;
+    emit showComplete(this);
+}
+
+void ILightShow::stopShow()
+{
+    _running = false;
+    wait();
+
+}
+
+LedLightShows ILightShow::getLightShow() const
 {
     return _lightShow;
 }
 
-void ILightShow::setLightShow(const LedLightShows &lightShow)
-{
-    _lightShow = lightShow;
-}
 
 
 QString ILightShow::getShowName()

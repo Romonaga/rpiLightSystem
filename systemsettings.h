@@ -57,9 +57,7 @@ private:
     QString _hostName;
     QString _mqttBroker;
 
-
     //System Setings From DB
-
     QString _systemName;
     int _stripType;
     uint16_t _stripHeight;
@@ -68,6 +66,7 @@ private:
     short _gpio;
     int _brightness;
     bool _dbgLog;
+
 };
 
 #endif

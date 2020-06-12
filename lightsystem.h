@@ -2,13 +2,17 @@
 #define LIGHTSYSTEM_H
 
 #include <QObject>
+#include <QThread>
+#include <QVector>
+#include <QMutex>
+
+#include  <condition_variable>
+
 #include "systemsettings.h"
 #include "ws2811wrapper.h"
 #include "mqttreceiver.h"
 #include "dnrlogger.h"
-#include <QThread>
-#include <QVector>
-#include  <condition_variable>
+#include "ilightshow.h"
 
 //broker = "RomoServer.local";
 //topic = "MotionDetect/#";
@@ -16,21 +20,24 @@
 
 
 
-class LightSystem : public QThread
+class LightSystem : QObject
 {
     Q_OBJECT
 
 public:
-    explicit LightSystem();
+    explicit LightSystem(QObject *parent = nullptr);
     ~LightSystem();
-    bool startSystem();
+    bool startSystem(); 
     void stopSystem();
     const char *getEnumName(int index);
+
+    void runShow();
 
 private:
     SystemSettings* _settings;
     void lightsOff();
-    void stopLights();
+    void stopShows();
+    void startShows();
     unsigned int random9();
     uint32_t Bow(int n);
 
@@ -52,29 +59,22 @@ private: //shows
     void colorForths(ws2811_led_t colorOne, ws2811_led_t colorTwo, ws2811_led_t colorThree,ws2811_led_t colorFour, u_int32_t delay);
     void triChaser(ws2811_led_t c1, ws2811_led_t c2, ws2811_led_t c3, u_int32_t delay);
 
+    void queueShow(const LedLightShows& show);
+
 private:
     Ws2811Wrapper _ledWrapper;
     bool _started; //TODO: Replace with proper thead lock
     bool _running;
-    int16_t _red;
-    int16_t _green;
-    int16_t _blue;
-    unsigned int _rno;
-    unsigned int _cno;
-    int _tw;
-    int _wait;
     MqttReceiver* _mqq;
     DNRLogger* _logger;
-    QVector<int> _runShows;
-   // QVector<int> _runShows;
-    std::condition_variable _conditionVar;
+    QVector<ILightShow*> _runningShows;
+    QMutex _runningShowsMutex;
     
 
 public slots:
     void processMsgReceived(QString msg);
+    void showComplete(ILightShow* show);
 
-protected:
-    void run();
 
 };
 

@@ -8,12 +8,25 @@ CONFIG += console
 CONFIG -= app_bundle
 
 TEMPLATE = app
-
 SOURCES += main.cpp \
     ilightshow.cpp \
     lightsystem.cpp \
     mqttreceiver.cpp \
+    showblink.cpp \
+    showchaser.cpp \
+    showcolor3.cpp \
+    showcolor3r.cpp \
+    showcolor4.cpp \
+    showcolorwipe.cpp \
+    showcyclon.cpp \
     showfire.cpp \
+    showhnh.cpp \
+    shownewrand.cpp \
+    showrainbow.cpp \
+    showrainbowcycle.cpp \
+    showtheaterchaser.cpp \
+    showtheaterchaserainbow.cpp \
+    showtrichaser.cpp \
     systemsettings.cpp
 
 # The following define makes your compiler emit warnings if you use
@@ -31,7 +44,21 @@ HEADERS += \
     ilightshow.h \
     lightsystem.h \
     mqttreceiver.h \
+    showblink.h \
+    showchaser.h \
+    showcolor3.h \
+    showcolor3r.h \
+    showcolor4.h \
+    showcolorwipe.h \
+    showcyclon.h \
     showfire.h \
+    showhnh.h \
+    showneorand.h \
+    showrainbow.h \
+    showrainbowcycle.h \
+    showtheaterchaser.h \
+    showtheaterchaserainbow.h \
+    showtrichaser.h \
     systemsettings.h
 
 LIBS += -lWs2811Wrapper

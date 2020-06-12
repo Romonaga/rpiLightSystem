@@ -1,14 +1,12 @@
 #include "showfire.h"
 
-ShowFire::ShowFire(SystemSettings* settings, Ws2811Wrapper* ledWrapper, QObject *parent) : ILightShow(settings,ledWrapper, parent)
+ShowFire::ShowFire(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
+    ILightShow(settings,ledWrapper, lightShow, showParms)
 {
 
 }
 
-bool ShowFire::showParms(const QString &showParms)
-{
-    return true;
-}
+
 
 void ShowFire::startShow()
 {
@@ -47,8 +45,4 @@ void ShowFire::startShow()
       _ledWrapper->clearLeds();
 }
 
-void ShowFire::stopShow()
-{
-    _running = false;
-}
 
