@@ -107,15 +107,16 @@ void LightSystem::processMsgReceived(QString msg)
                 else
                     stopShows();
             }
+            else
+            {
 
-            _settings->setBrightness(jsonObject.value("brightness").toString().toInt());
-            _ledWrapper.setBrightness(_settings->getBrightness());
-            QJsonArray jsonArray = jsonObject["shows"].toArray();
+                _settings->setBrightness(jsonObject.value("brightness").toString().toInt());
+                _ledWrapper.setBrightness(_settings->getBrightness());
+                QJsonArray jsonArray = jsonObject["shows"].toArray();
 
-            foreach (const QJsonValue & value, jsonArray)
-                queueShow(static_cast<LedLightShows>(value.toString().toInt()));
-
-
+                foreach (const QJsonValue & value, jsonArray)
+                    queueShow(static_cast<LedLightShows>(value.toString().toInt()));
+            }
 
         }
         else

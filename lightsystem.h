@@ -71,6 +71,7 @@ private:
     QMutex _runningShowsMutex;
     
 
+
 public slots:
     void processMsgReceived(QString msg);
     void showComplete(ILightShow* show);
