@@ -73,14 +73,14 @@ void LightSystem::stopShows()
 {
     if(false == _running) return;
 
-    _logger->logInfo("LightSystem::stopShows Stopping Lights");
+    _logger->logInfo("LightSystem::stopShows Stopping");
    _running = false;
 
     if(_runningShows.count() > 0)
         _runningShows[0]->stopShow();
 
    _ledWrapper.clearLeds();
-   _logger->logInfo("LightSystem::stopShows Lights Stopped");
+   _logger->logInfo("LightSystem::stopShows Stopped");
 }
 
 void LightSystem::processMsgReceived(QString msg)
@@ -99,7 +99,6 @@ void LightSystem::processMsgReceived(QString msg)
             jsonObject = doc.object();
             if(jsonObject.value("state").isString())
             {
-                _logger->logInfo("State Command Received");
                 state = jsonObject.value("state").toString();
 
                 if(state == "ON")
@@ -140,8 +139,6 @@ void LightSystem::processMsgReceived(QString msg)
 void LightSystem::queueShow(const LedLightShows& show)
 {
     std::stringstream info;
-    info << "LightSystem::queueShow Show(" << getEnumName(show) << ")";
-    _logger->logInfo(info.str());
 
 
     _runningShowsMutex.lock();
@@ -212,6 +209,11 @@ void LightSystem::queueShow(const LedLightShows& show)
         _logger->logWarning("Unknown Show");
 
     }
+
+    info << "LightSystem::queueShow(" << getEnumName(show) << ") Queue(" << _runningShows.count() << ")";
+    _logger->logInfo(info.str());
+
+
     _runningShowsMutex.unlock();
 
     if(kickOff) runShow();
@@ -227,7 +229,7 @@ void LightSystem::runShow()
     {
 
         info.str("");
-        info << "LightSystem::runShow Show(" << _runningShows[0]->getShowName().toStdString().c_str() << ")";
+        info << "LightSystem::runShow(" << _runningShows[0]->getShowName().toStdString().c_str() << ")";
         _logger->logInfo(info.str());
         connect(_runningShows[0], SIGNAL(showComplete(ILightShow*)), this, SLOT(showComplete(ILightShow*)));
         _runningShows[0]->start();
