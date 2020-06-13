@@ -3,7 +3,7 @@
 ShowRainbow::ShowRainbow(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
     ILightShow(settings,ledWrapper, lightShow, showParms)
 {
-    _wait = 200;
+
 
 }
 
@@ -14,7 +14,6 @@ void ShowRainbow::startShow()
 
     u_int32_t i, j;
 
-    _ledWrapper->clearLeds();
 
     for(j=0; j < 256; j++)
     {
@@ -31,7 +30,7 @@ void ShowRainbow::startShow()
       Ws2811Wrapper::waitMillSec(_wait);
 
     }
-    _ledWrapper->clearLeds();
+
 
 }
 

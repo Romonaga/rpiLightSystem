@@ -20,7 +20,7 @@ private:
 
 
 private:
-    uint16_t _wait;
+
     unsigned int _rno;
     unsigned int _cno;
     int _tw;

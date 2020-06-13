@@ -59,7 +59,7 @@ private: //shows
     void colorForths(ws2811_led_t colorOne, ws2811_led_t colorTwo, ws2811_led_t colorThree,ws2811_led_t colorFour, u_int32_t delay);
     void triChaser(ws2811_led_t c1, ws2811_led_t c2, ws2811_led_t c3, u_int32_t delay);
 
-    void queueShow(const LedLightShows& show);
+    void queueShow(const LedLightShows& show, const QString& showParms);
 
 private:
     Ws2811Wrapper _ledWrapper;

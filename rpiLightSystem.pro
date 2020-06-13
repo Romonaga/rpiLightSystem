@@ -21,7 +21,7 @@ SOURCES += main.cpp \
     showcyclon.cpp \
     showfire.cpp \
     showhnh.cpp \
-    shownewrand.cpp \
+    showneorand.cpp \
     showrainbow.cpp \
     showrainbowcycle.cpp \
     showtheaterchaser.cpp \

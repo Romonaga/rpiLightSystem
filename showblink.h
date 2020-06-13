@@ -16,8 +16,6 @@ public:
 
 private:
     uint8_t _numBlinks;
-    uint16_t _wait;
-    uint8_t _brightness;
 
 
 

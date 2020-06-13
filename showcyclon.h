@@ -15,7 +15,6 @@ public:
     void stopShow();
 
 private:
-    ws2811_led_t _color;
     uint8_t _speed;
     uint8_t _width;
 

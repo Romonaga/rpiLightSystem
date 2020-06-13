@@ -3,14 +3,13 @@
 ShowTheaterChaseRainBow::ShowTheaterChaseRainBow(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
     ILightShow(settings,ledWrapper, lightShow, showParms)
 {
-    _wait = 200;
+
 }
 
 
 void ShowTheaterChaseRainBow::startShow()
 {
 
-    _ledWrapper->clearLeds();
 
     for (int j=0; j < 256; j++)
     {
@@ -33,7 +32,7 @@ void ShowTheaterChaseRainBow::startShow()
           }
         }
     }
-    _ledWrapper->clearLeds();
+
 }
 
 

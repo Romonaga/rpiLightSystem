@@ -16,7 +16,6 @@ public:
 
 
 private:
-    uint16_t _wait;
 
 };
 

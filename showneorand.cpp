@@ -6,7 +6,7 @@
 ShowNeoRand::ShowNeoRand(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
     ILightShow(settings,ledWrapper, lightShow, showParms)
 {
-    _wait = 200;
+
     _rno = rand();
     _cno = 0;
 }
@@ -27,10 +27,10 @@ void ShowNeoRand::startShow()
    memset(&fade, 0, sizeof(fade));
    memset(&col, 0, sizeof(col));
 
-   _ledWrapper->clearLeds();
+
 
    _rno = random9();
-   for(int counter = 0; counter < (255 * 100); counter++)
+   for(int counter = 0; counter < (255 * 10); counter++)
    {
      if (_running == false) return;
      for (u_int32_t i = 0; i < _ledWrapper->getNumberLeds(); i++)
@@ -187,7 +187,6 @@ void ShowNeoRand::startShow()
      Ws2811Wrapper::waitMillSec(_wait);  // Delay (milliseconds).
    }
 
-     _ledWrapper->clearLeds();
 
 
 }

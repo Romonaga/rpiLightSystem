@@ -3,10 +3,6 @@
 ShowHnH::ShowHnH(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
     ILightShow(settings,ledWrapper, lightShow, showParms)
 {
-    _wait = 200;
-    _color1 = Ws2811Wrapper::Color(125, 19, 88);
-    _color2 = Ws2811Wrapper::Color(27, 99, 155);
-
 
 }
 
@@ -19,7 +15,7 @@ void ShowHnH::startShow()
 
     for(int count = 0; count < 25; count++)
     {
-        _ledWrapper->clearLeds();
+
         for(counter = 0; counter < half; counter++)
         {
             _ledWrapper->setPixelColor(_settings->getStripHeight(), counter, _color1);
@@ -41,7 +37,6 @@ void ShowHnH::startShow()
         }
     }
 
-    _ledWrapper->clearLeds();
 
 }
 

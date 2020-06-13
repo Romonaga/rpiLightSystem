@@ -17,12 +17,7 @@ public:
 
 
 private:
-    ws2811_led_t _color1;
-    ws2811_led_t _color2;
-    ws2811_led_t _color3;
-    ws2811_led_t _color4;
 
-    uint16_t _wait;
 
 };
 

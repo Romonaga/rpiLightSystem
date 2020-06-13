@@ -3,10 +3,7 @@
 ShowTriChaser::ShowTriChaser(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
     ILightShow(settings,ledWrapper, lightShow, showParms)
 {
-    _wait = 60;
-    _color1 = Ws2811Wrapper::Color(255, 0, 0);
-    _color2 = Ws2811Wrapper::Color(255, 255, 255);
-    _color3 = Ws2811Wrapper::Color(0, 0, 255);
+
 
 }
 
@@ -19,7 +16,6 @@ void ShowTriChaser::startShow()
 
     for(int counter = 0; counter < 25; counter++)
     {
-        _ledWrapper->clearLeds();
 
         for(uint32_t i=0; i < _ledWrapper->getNumberLeds(); i++)
         {
@@ -45,7 +41,9 @@ void ShowTriChaser::startShow()
             Ws2811Wrapper::waitMillSec(_wait);
 
         }
+        _ledWrapper->clearLeds();
     }
-    _ledWrapper->clearLeds();}
+  
+}
 
 

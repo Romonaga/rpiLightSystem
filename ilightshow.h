@@ -3,6 +3,11 @@
 
 #include <QThread>
 #include <QString>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonValue>
+
 #include "ws2811wrapper.h"
 #include "systemsettings.h"
 #include "dnrlogger.h"
@@ -64,6 +69,21 @@ protected:
 
     LedLightShows _lightShow;
     DNRLogger* _logger;
+
+    bool _clearOnStart;
+    bool _clearOnFinish;
+    ws2811_led_t _color1;
+    ws2811_led_t _color2;
+    ws2811_led_t _color3;
+    ws2811_led_t _color4;
+    uint8_t _brightness;
+
+    uint16_t _wait;
+    int _r;
+    int _g;
+    int _b;
+
+
 
 protected:
     void run();

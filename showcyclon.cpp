@@ -5,7 +5,7 @@ ShowCyclon::ShowCyclon(SystemSettings* settings, Ws2811Wrapper* ledWrapper, cons
 {
     _speed = 30;
     _width = 20;
-    _color = Ws2811Wrapper::Color(29, 19, 100);
+
 }
 
 
@@ -13,7 +13,6 @@ ShowCyclon::ShowCyclon(SystemSettings* settings, Ws2811Wrapper* ledWrapper, cons
 void ShowCyclon::startShow()
 {
 
-    _ledWrapper->clearLeds();
 
     for(int counter = 0; counter < 25; counter++)
     {
@@ -22,7 +21,7 @@ void ShowCyclon::startShow()
       {
         for(int j=0; j< _width; j++)
         {
-            _ledWrapper->setPixelColor(_settings->getStripHeight(), i + j, _color);
+            _ledWrapper->setPixelColor(_settings->getStripHeight(), i + j, _color1);
         }
 
         _ledWrapper->show();
@@ -43,7 +42,7 @@ void ShowCyclon::startShow()
       {
         for(int j=0; j< _width; j++)
         {
-        _ledWrapper->setPixelColor(_settings->getStripHeight(), i + j, _color);
+        _ledWrapper->setPixelColor(_settings->getStripHeight(), i + j, _color1);
         }
         if(_running == false)
             return;
@@ -57,7 +56,7 @@ void ShowCyclon::startShow()
         Ws2811Wrapper::waitMillSec(_speed);
       }
     }
-    _ledWrapper->clearLeds();
+
 }
 
 

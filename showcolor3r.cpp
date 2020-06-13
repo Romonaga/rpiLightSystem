@@ -3,10 +3,6 @@
 ShowColor3R::ShowColor3R(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
     ILightShow(settings,ledWrapper, lightShow, showParms)
 {
-    _wait = 50;
-    _color1 = Ws2811Wrapper::Color(255, 0, 0);
-    _color2 = Ws2811Wrapper::Color(255, 255, 255);
-    _color3 = Ws2811Wrapper::Color(0, 0, 255);
 
 }
 
@@ -27,7 +23,6 @@ void ShowColor3R::startShow()
 
       uint32_t currentColor = _color1;
 
-      _ledWrapper->clearLeds();
 
       for (u_int32_t counter = (_ledWrapper->getNumberLeds() - 1); counter > 0; counter--)
       {
@@ -50,7 +45,7 @@ void ShowColor3R::startShow()
 
     }
 
-    _ledWrapper->clearLeds();
+
 }
 
 

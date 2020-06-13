@@ -3,11 +3,6 @@
 ShowColor4::ShowColor4(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
     ILightShow(settings,ledWrapper, lightShow, showParms)
 {
-    _wait = 200;
-    _color1 = Ws2811Wrapper::Color(255, 0, 200);
-    _color2 = Ws2811Wrapper::Color(255, 12, 15);
-    _color3 = Ws2811Wrapper::Color(12, 0, 255);
-    _color4 = Ws2811Wrapper::Color(0, 231, 255);
 
 }
 
@@ -20,14 +15,15 @@ void ShowColor4::startShow()
 
     u_int32_t forths = _ledWrapper->getNumberLeds() / 4;
     u_int32_t counter = 0;
-    u_int32_t  currentDivision = forths;
-    u_int8_t colorNumber = 1;
 
-    ws2811_led_t currentColor = _color1;
 
     for(int count = 0; count < 25; count++)
     {
         _ledWrapper->clearLeds();
+        u_int32_t  currentDivision = forths;
+        u_int8_t colorNumber = 1;
+
+        ws2811_led_t currentColor = _color1;
 
         for(counter = 0; counter < _ledWrapper->getNumberLeds(); counter++)
         {
@@ -51,7 +47,7 @@ void ShowColor4::startShow()
 
         }
     }
-    _ledWrapper->clearLeds();
+  
 
 }
 

@@ -22,10 +22,6 @@
 #include "showcolor4.h"
 #include "showtrichaser.h"
 
-
-
-
-
 LightSystem::LightSystem(QObject *parent) : QObject(parent)
 {
     _settings = SystemSettings::getInstance();
@@ -85,7 +81,7 @@ void LightSystem::stopShows()
 
 void LightSystem::processMsgReceived(QString msg)
 {
-   //fprintf(stderr," LightSystem::processMsgReceived: %s\r\n", msg.toStdString().c_str());
+   fprintf(stderr," LightSystem::processMsgReceived: %s\r\n", msg.toStdString().c_str());
 
     QJsonObject jsonObject;
     QString state;
@@ -108,13 +104,22 @@ void LightSystem::processMsgReceived(QString msg)
             }
             else
             {
-
                 _settings->setBrightness(jsonObject.value("brightness").toString().toInt());
                 _ledWrapper.setBrightness(_settings->getBrightness());
-                QJsonArray jsonArray = jsonObject["shows"].toArray();
 
-                foreach (const QJsonValue & value, jsonArray)
-                    queueShow(static_cast<LedLightShows>(value.toString().toInt()));
+                if(jsonObject.value("shows").isString())
+                {
+                    queueShow(static_cast<LedLightShows>(jsonObject.value("shows").toString().toInt()),msg);
+                }
+                else
+                {
+                    QJsonArray jsonArray = jsonObject["shows"].toArray();
+
+                    foreach (const QJsonValue & value, jsonArray)
+                        queueShow(static_cast<LedLightShows>(value.toString().toInt()), msg);
+                }
+
+
             }
 
         }
@@ -136,7 +141,7 @@ void LightSystem::processMsgReceived(QString msg)
 
 
 
-void LightSystem::queueShow(const LedLightShows& show)
+void LightSystem::queueShow(const LedLightShows& show, const QString& showParms)
 {
     std::stringstream info;
 
@@ -146,63 +151,63 @@ void LightSystem::queueShow(const LedLightShows& show)
     switch(show)
     {
         case Blink:
-            _runningShows.append(new ShowBlink(_settings, &_ledWrapper, show, ""));
+            _runningShows.append(new ShowBlink(_settings, &_ledWrapper, show, showParms));
             break;
 
         case Chaser:
-            _runningShows.append(new ShowChaser(_settings, &_ledWrapper, show, ""));
+            _runningShows.append(new ShowChaser(_settings, &_ledWrapper, show, showParms));
             break;
 
         case TC:
-            _runningShows.append(new ShowTheaterChaser(_settings, &_ledWrapper, show, ""));
+            _runningShows.append(new ShowTheaterChaser(_settings, &_ledWrapper, show, showParms));
             break;
 
         case TCR:
-            _runningShows.append(new ShowTheaterChaseRainBow(_settings, &_ledWrapper, show, ""));
+            _runningShows.append(new ShowTheaterChaseRainBow(_settings, &_ledWrapper, show, showParms));
             break;
 
         case Color3R:
-            _runningShows.append(new ShowColor3R(_settings, &_ledWrapper, show, ""));
+            _runningShows.append(new ShowColor3R(_settings, &_ledWrapper, show, showParms));
             break;
 
         case Cyclon:
-            _runningShows.append(new ShowCyclon(_settings, &_ledWrapper, show, ""));
+            _runningShows.append(new ShowCyclon(_settings, &_ledWrapper, show, showParms));
             break;
 
         case ColorWipe:
-            _runningShows.append(new ShowColorWipe(_settings, &_ledWrapper, show, ""));
+            _runningShows.append(new ShowColorWipe(_settings, &_ledWrapper, show, showParms));
             break;
 
         case HAndH:
-            _runningShows.append(new ShowHnH(_settings, &_ledWrapper, show, ""));
+            _runningShows.append(new ShowHnH(_settings, &_ledWrapper, show, showParms));
             break;
 
         case Rainbow:
-            _runningShows.append(new ShowRainbow(_settings, &_ledWrapper, show, ""));
+            _runningShows.append(new ShowRainbow(_settings, &_ledWrapper, show, showParms));
             break;
 
         case RainbowCycle:
-            _runningShows.append(new ShowRainbowCycle(_settings, &_ledWrapper, show, ""));
+            _runningShows.append(new ShowRainbowCycle(_settings, &_ledWrapper, show, showParms));
             break;
 
         case NeoRand:
-            _runningShows.append(new ShowNeoRand(_settings, &_ledWrapper, show, ""));
+            _runningShows.append(new ShowNeoRand(_settings, &_ledWrapper, show, showParms));
             break;
 
         case Flame:
-            _runningShows.append(new ShowFire(_settings, &_ledWrapper, show, ""));
+            _runningShows.append(new ShowFire(_settings, &_ledWrapper, show, showParms));
             break;
 
         case ColorThirds:
-            _runningShows.append(new ShowColor3(_settings, &_ledWrapper, show, ""));
+            _runningShows.append(new ShowColor3(_settings, &_ledWrapper, show, showParms));
             break;
 
         case ColorForths:
-            _runningShows.append(new ShowColor4(_settings, &_ledWrapper, show, ""));
+            _runningShows.append(new ShowColor4(_settings, &_ledWrapper, show, showParms));
             break;
 
         case TriChaser:
-            _runningShows.append(new ShowTriChaser(_settings, &_ledWrapper, show, ""));
+            _runningShows.append(new ShowTriChaser(_settings, &_ledWrapper, show, showParms));
             break;
 
     default:
