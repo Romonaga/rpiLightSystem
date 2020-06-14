@@ -1,6 +1,15 @@
 # rpiLightSystem
 RPI LED Light System
 
+Features.
+* Customizable Lightshows
+* Many precanned shows.
+* Ability to save playlists.
+* Control as many LightSystems as pi Memory allows.
+* Fully open source.
+* Simple to use, easy to setup.
+* Website for controling the Lightshows.
+
 Where to start.
 
 This is the start to a large project.  Wife wanted accent lighting, I wanted to to be different.  
