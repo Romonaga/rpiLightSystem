@@ -40,8 +40,13 @@ CREATE TABLE `lightShows` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `showName` varchar(100) DEFAULT NULL,
   `enabled` int DEFAULT NULL,
+  `numColors` int DEFAULT NULL,
+  `hasDelay` tinyint DEFAULT NULL,
+  `hasSpeed` tinyint DEFAULT NULL,
+  `isBlink` tinyint DEFAULT NULL,
+  `hasWidth` tinyint DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,11 +85,28 @@ CREATE TABLE `registrationTable` (
   `email` varchar(100) DEFAULT NULL,
   `phonenumber` varchar(25) DEFAULT NULL,
   `twitter` varchar(50) DEFAULT NULL,
-  `authorized` int DEFAULT '0',
+  `authorized` tinyint DEFAULT '0',
+  `isAdmin` tinyint DEFAULT '0',
   PRIMARY KEY (`ID`,`username`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   UNIQUE KEY `ID_UNIQUE` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `userPlaylist`
+--
+
+DROP TABLE IF EXISTS `userPlaylist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `userPlaylist` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `userID` int DEFAULT NULL,
+  `playlistName` varchar(50) DEFAULT NULL,
+  `showParms` json DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -96,4 +118,4 @@ CREATE TABLE `registrationTable` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-10 12:04:29
+-- Dump completed on 2020-06-14  5:32:20
