@@ -79,8 +79,6 @@ Mosquetto MQTT as well as dev libs.
 
 PHP
 
-ws2811 Library, forked from ws2811.
-  you will need scons to build.
 
 Apache
   Website code forked from Myrana.
