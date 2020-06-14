@@ -4,17 +4,19 @@
 #include <getopt.h>
 
 #include <QCoreApplication>
+
 #include "lightsystem.h"
 
 
 
-LightSystem _lightSystem;
+LightSystem* _lightSystem;
 bool _forkProcess = true;
 
 
 #include <initializer_list>
 #include <signal.h>
 #include <unistd.h>
+
 
 void ignoreUnixSignals(std::initializer_list<int> ignoreSignals)
 {
@@ -28,7 +30,8 @@ void catchUnixSignals(std::initializer_list<int> quitSignals) {
     {
         // blocking and not aysnc-signal-safe func are valid
         printf("\nquit the application by signal(%d).\n", sig);
-        _lightSystem.stopSystem();
+        _lightSystem->stopSystem();
+        delete _lightSystem;
         QCoreApplication::quit();
     };
 
@@ -106,7 +109,8 @@ void parseargs(int argc, char **argv)
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+     QCoreApplication a(argc, argv);
+
     parseargs(argc, argv);
     catchUnixSignals({SIGQUIT, SIGINT, SIGTERM, SIGHUP});
     if(_forkProcess)
@@ -123,6 +127,8 @@ int main(int argc, char *argv[])
         fprintf(stderr,"Not Forking\r\n");
     }
 
-    _lightSystem.startSystem();
+    _lightSystem = new LightSystem;
+
+    _lightSystem->startSystem();
     return a.exec();
 }

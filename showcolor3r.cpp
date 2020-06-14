@@ -23,6 +23,7 @@ void ShowColor3R::startShow()
 
       uint32_t currentColor = _color1;
 
+        _ledWrapper->clearLeds();
 
       for (u_int32_t counter = (_ledWrapper->getNumberLeds() - 1); counter > 0; counter--)
       {

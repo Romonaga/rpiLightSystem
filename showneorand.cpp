@@ -184,7 +184,7 @@ void ShowNeoRand::startShow()
      _ledWrapper->show();    // This sends the updated pixel colors to the string.
      if(_running == false)
          return;
-     Ws2811Wrapper::waitMillSec(_wait);  // Delay (milliseconds).
+
    }
 
 
