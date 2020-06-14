@@ -12,14 +12,16 @@ SOURCES += main.cpp \
     ilightshow.cpp \
     lightsystem.cpp \
     mqttreceiver.cpp \
+    playlistmanager.cpp \
     showblink.cpp \
     showchaser.cpp \
+    showcolor.cpp \
     showcolor3.cpp \
     showcolor3r.cpp \
     showcolor4.cpp \
     showcolorwipe.cpp \
     showcyclon.cpp \
-    showfire.cpp \
+    showflame.cpp \
     showhnh.cpp \
     showneorand.cpp \
     showrainbow.cpp \
@@ -44,14 +46,16 @@ HEADERS += \
     ilightshow.h \
     lightsystem.h \
     mqttreceiver.h \
+    playlistmanager.h \
     showblink.h \
     showchaser.h \
+    showcolor.h \
     showcolor3.h \
     showcolor3r.h \
     showcolor4.h \
     showcolorwipe.h \
     showcyclon.h \
-    showfire.h \
+    showflame.h \
     showhnh.h \
     showneorand.h \
     showrainbow.h \

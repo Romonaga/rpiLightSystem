@@ -7,7 +7,7 @@ class ShowColorWipe : public ILightShow
 {
     Q_OBJECT
 public:
-    ShowColorWipe(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
+    ShowColorWipe(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
 
     // ILightShow interface
 public:

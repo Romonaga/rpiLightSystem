@@ -2,11 +2,13 @@
 #include <QDebug>
 
 
-ILightShow::ILightShow(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString& showParms) :
-        _settings(settings), _ledWrapper(ledWrapper), _lightShow(lightShow), _showParms(showParms)
+ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString& showParms) :
+        _ledWrapper(ledWrapper), _lightShow(lightShow), _showParms(showParms)
 {
-    _running = false;
     _logger = DNRLogger::instance();
+    _settings = SystemSettings::getInstance();
+
+    _running = false;
 
     QJsonObject jsonObject;
     QJsonObject jsonColors;
@@ -25,11 +27,12 @@ ILightShow::ILightShow(SystemSettings* settings, Ws2811Wrapper* ledWrapper, cons
            _wait = jsonObject.value("delay").toString().toInt();
            _clearOnStart = jsonObject.value("clearStart").toString().toInt();
            _clearOnFinish = jsonObject.value("clearFinish").toString().toInt();
+           _numLoops = jsonObject.value("numLoops").toString().toInt();
+           _width = jsonObject.value("width").toString().toInt();
 
            if(jsonObject["colors"].isObject())
            {
-               _logger->logInfo("Colors");
-               QJsonObject jsonColors = jsonObject["colors"].toObject();
+               jsonColors = jsonObject["colors"].toObject();
 
                if(jsonColors["color4"].isObject())
                {
@@ -38,8 +41,6 @@ ILightShow::ILightShow(SystemSettings* settings, Ws2811Wrapper* ledWrapper, cons
                    _g = jsonColor.value("g").toInt();
                    _b = jsonColor.value("b").toInt();
                   _color4 = Ws2811Wrapper::Color(_r, _g, _b);
-                   _logger->logInfo("color4");
-
 
                }
 
@@ -50,7 +51,6 @@ ILightShow::ILightShow(SystemSettings* settings, Ws2811Wrapper* ledWrapper, cons
                    _g = jsonColor.value("g").toInt();
                    _b = jsonColor.value("b").toInt();
                   _color3 = Ws2811Wrapper::Color(_r, _g, _b);
-                   _logger->logInfo("color3");
 
                }
 
@@ -61,8 +61,6 @@ ILightShow::ILightShow(SystemSettings* settings, Ws2811Wrapper* ledWrapper, cons
                    _g = jsonColor.value("g").toInt();
                    _b = jsonColor.value("b").toInt();
                   _color2 = Ws2811Wrapper::Color(_r, _g, _b);
-                   _logger->logInfo("color2");
-
 
                }
 
@@ -73,9 +71,6 @@ ILightShow::ILightShow(SystemSettings* settings, Ws2811Wrapper* ledWrapper, cons
                    _g = jsonColor.value("g").toInt();
                    _b = jsonColor.value("b").toInt();
                   _color1 = Ws2811Wrapper::Color(_r, _g, _b);
-                   qDebug() << _r << "-" << _g << "-" << _b << "\r\n";
-                   
-                   _logger->logInfo("color1");
 
 
                }
@@ -131,4 +126,9 @@ QString ILightShow::getShowName()
 {
     const char* lightShowNames[] = {LIGHT_SHOWS(LIGHT_SHOWS_STRING)};
     return lightShowNames[_lightShow];
+}
+
+QString ILightShow::getShowParms() const
+{
+    return _showParms;
 }

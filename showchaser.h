@@ -7,7 +7,7 @@ class ShowChaser : public ILightShow
 {
     Q_OBJECT
 public:
-    ShowChaser(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
+    ShowChaser(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
 
     // ILightShow interface
 public:

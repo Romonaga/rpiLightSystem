@@ -3,8 +3,8 @@
 #define highByte(w) ((uint8_t) ((w) >> 8))
 
 
-ShowNeoRand::ShowNeoRand(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
-    ILightShow(settings,ledWrapper, lightShow, showParms)
+ShowNeoRand::ShowNeoRand(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
+    ILightShow(ledWrapper, lightShow, showParms)
 {
 
     _rno = rand();
@@ -16,7 +16,7 @@ ShowNeoRand::ShowNeoRand(SystemSettings* settings, Ws2811Wrapper* ledWrapper, co
 void ShowNeoRand::startShow()
 {
 
-   u_int32_t tw;
+   int32_t tw;
    uint32_t saved = 0;     // saved colour (twinkle)
    unsigned int index;     // used to set colours, range 0-0x1FF
    u_int32_t cnt = 0;        // counter for pixel to set to new colour
@@ -30,7 +30,7 @@ void ShowNeoRand::startShow()
 
 
    _rno = random9();
-   for(int counter = 0; counter < (255 * 10); counter++)
+   for(int counter = 0; counter < _numLoops; counter++)
    {
      if (_running == false) return;
      for (u_int32_t i = 0; i < _ledWrapper->getNumberLeds(); i++)
@@ -175,7 +175,7 @@ void ShowNeoRand::startShow()
 
      tw = _cno - 0xDF;
 
-     if (tw < _ledWrapper->getNumberLeds() && tw == 0 )
+     if (tw < (int)_ledWrapper->getNumberLeds() && tw == 0 )
      {
        _ledWrapper->setPixelColor(_settings->getStripHeight(), tw, _ledWrapper->Color(255,255,255));
      }

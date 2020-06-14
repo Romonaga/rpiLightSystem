@@ -1,7 +1,7 @@
 #include "showchaser.h"
 
-ShowChaser::ShowChaser(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
-    ILightShow(settings,ledWrapper, lightShow, showParms)
+ShowChaser::ShowChaser(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
+    ILightShow(ledWrapper, lightShow, showParms)
 {
    
 }
@@ -13,8 +13,7 @@ void ShowChaser::startShow()
 
     ws2811_return_t renderResults;
 
-    _ledWrapper->clearLeds();
-    for(int count = 0; count < 10; count++)
+    for(int count = 0; count < _numLoops; count++)
     {
         for(u_int32_t counter = 0; counter < _ledWrapper->getNumberLeds(); counter++)
         {
@@ -32,7 +31,6 @@ void ShowChaser::startShow()
         }
          _ledWrapper->clearLeds();
     }
-    _ledWrapper->clearLeds();
 }
 
 

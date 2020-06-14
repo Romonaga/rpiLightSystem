@@ -7,7 +7,7 @@ class ShowTheaterChaseRainBow : public ILightShow
 {
     Q_OBJECT
 public:
-    ShowTheaterChaseRainBow(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
+    ShowTheaterChaseRainBow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
 
     // ILightShow interface
 public:

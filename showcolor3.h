@@ -7,7 +7,7 @@ class ShowColor3 : public ILightShow
 {
     Q_OBJECT
 public:
-    ShowColor3(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
+    ShowColor3(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
 
     // ILightShow interface
 public:

@@ -1,7 +1,7 @@
 #include "showcolor3.h"
 
-ShowColor3::ShowColor3(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
-    ILightShow(settings,ledWrapper, lightShow, showParms)
+ShowColor3::ShowColor3(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
+    ILightShow(ledWrapper, lightShow, showParms)
 {
 
 
@@ -17,7 +17,7 @@ void ShowColor3::startShow()
     u_int32_t third = _ledWrapper->getNumberLeds() / 3;
 
 
-    for(u_int32_t count = 0; count < 3; count++)
+    for(u_int32_t count = 0; count < _numLoops; count++)
     {
         u_int32_t counter = 0;
         u_int32_t  currentDivision = third;

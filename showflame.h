@@ -3,11 +3,11 @@
 
 #include "ilightshow.h"
 
-class ShowFire : public ILightShow
+class ShowFlame : public ILightShow
 {
     Q_OBJECT
 public:
-    ShowFire(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
+    ShowFlame(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
 
     // ILightShow interface
 public:

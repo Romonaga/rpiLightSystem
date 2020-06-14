@@ -1,7 +1,7 @@
 #include "showcolor4.h"
 
-ShowColor4::ShowColor4(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
-    ILightShow(settings,ledWrapper, lightShow, showParms)
+ShowColor4::ShowColor4(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
+    ILightShow(ledWrapper, lightShow, showParms)
 {
 
 }
@@ -17,7 +17,7 @@ void ShowColor4::startShow()
     u_int32_t counter = 0;
 
 
-    for(int count = 0; count < 25; count++)
+    for(int count = 0; count < _numLoops; count++)
     {
         _ledWrapper->clearLeds();
         u_int32_t  currentDivision = forths;

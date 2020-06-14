@@ -1,7 +1,7 @@
 #include "showrainbow.h"
 
-ShowRainbow::ShowRainbow(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
-    ILightShow(settings,ledWrapper, lightShow, showParms)
+ShowRainbow::ShowRainbow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
+    ILightShow(ledWrapper, lightShow, showParms)
 {
 
 
@@ -15,7 +15,7 @@ void ShowRainbow::startShow()
     u_int32_t i, j;
 
 
-    for(j=0; j < 256; j++)
+    for(j=0; j < _numLoops; j++)
     {
       if(_running == false)
           return;

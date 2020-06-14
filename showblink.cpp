@@ -1,11 +1,9 @@
 #include "showblink.h"
 
-ShowBlink::ShowBlink(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
-    ILightShow(settings,ledWrapper, lightShow, showParms)
+ShowBlink::ShowBlink(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
+    ILightShow(ledWrapper, lightShow, showParms)
 {
-    _numBlinks = 5;
-    _wait = 100;
-    _brightness = 60;
+
 }
 
 
@@ -13,7 +11,7 @@ ShowBlink::ShowBlink(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const 
 void ShowBlink::startShow()
 {
 
-    for (int counter = 0; counter < _numBlinks; counter++)
+    for (int counter = 0; counter < _numLoops; counter++)
     {
        if(_running == false) return;
       _ledWrapper->setBrightness(1);

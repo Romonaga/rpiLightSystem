@@ -1,21 +1,21 @@
-#include "showfire.h"
+#include "showflame.h"
 #include <QDebug>
 
-ShowFire::ShowFire(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
-    ILightShow(settings,ledWrapper, lightShow, showParms)
+ShowFlame::ShowFlame(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
+    ILightShow(ledWrapper, lightShow, showParms)
 {
    
 }
 
 
 
-void ShowFire::startShow()
+void ShowFlame::startShow()
 {
 
-      for(int counter = 0; counter < 255; counter++)
+      for(int counter = 0; counter < _numLoops; counter++)
       {
           if(_running == false)
-              return;// int r = 255, g = 50, b = 35;
+              return;
 
         for (u_int32_t i = 0; i < _ledWrapper->getNumberLeds(); i++)
         {

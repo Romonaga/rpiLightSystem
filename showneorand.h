@@ -7,7 +7,7 @@ class ShowNeoRand : public ILightShow
 {
     Q_OBJECT
 public:
-    ShowNeoRand(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
+    ShowNeoRand(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
 
     // ILightShow interface
 public:

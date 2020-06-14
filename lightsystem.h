@@ -31,15 +31,24 @@ public:
     void stopSystem();
     const char *getEnumName(int index);
 
-    void runShow();
 
 private:
     SystemSettings* _settings;
     void lightsOff();
     void stopShows();
     void startShows();
+
+    void runShow();
+    void saveuserPlayList(QJsonObject jsonObject);
+    void playuserPlayList(QJsonObject jsonObject);
+    void deleteuserPlayList(QJsonObject jsonObject);
+
+    void processShows(QString msg, QJsonObject jsonObject);
+    void processPower(QJsonObject jsonObject, QString state);
+
     unsigned int random9();
     uint32_t Bow(int n);
+
 
 private: //shows
     void chaser(u_int32_t wait);

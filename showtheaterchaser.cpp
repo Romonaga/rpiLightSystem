@@ -1,7 +1,7 @@
 #include "showtheaterchaser.h"
 
-ShowTheaterChaser::ShowTheaterChaser(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
-    ILightShow(settings,ledWrapper, lightShow, showParms)
+ShowTheaterChaser::ShowTheaterChaser(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
+    ILightShow(ledWrapper, lightShow, showParms)
 {
 
 }
@@ -11,7 +11,7 @@ void ShowTheaterChaser::startShow()
 {
 
 
-    for (int j=0; j < 256; j++)
+    for (int j=0; j < _numLoops; j++)
     {
         if(_running == false)
             return;

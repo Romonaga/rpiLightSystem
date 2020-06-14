@@ -7,7 +7,7 @@ class ShowHnH : public ILightShow
 {
     Q_OBJECT
 public:
-    ShowHnH(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
+    ShowHnH(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
 
     // ILightShow interface
 public:

@@ -7,7 +7,7 @@ class ShowCyclon : public ILightShow
 {
     Q_OBJECT
 public:
-    ShowCyclon(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
+    ShowCyclon(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
 
     // ILightShow interface
 public:
@@ -15,8 +15,6 @@ public:
     void stopShow();
 
 private:
-    uint8_t _speed;
-    uint8_t _width;
 
 
 };

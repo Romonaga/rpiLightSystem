@@ -1,7 +1,7 @@
 #include "showtheaterchaserainbow.h"
 
-ShowTheaterChaseRainBow::ShowTheaterChaseRainBow(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
-    ILightShow(settings,ledWrapper, lightShow, showParms)
+ShowTheaterChaseRainBow::ShowTheaterChaseRainBow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
+    ILightShow(ledWrapper, lightShow, showParms)
 {
 
 }
@@ -11,7 +11,7 @@ void ShowTheaterChaseRainBow::startShow()
 {
 
 
-    for (int j=0; j < 256; j++)
+    for (int j=0; j < _numLoops; j++)
     {
         if(_running == false)
             return;

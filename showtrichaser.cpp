@@ -1,7 +1,7 @@
 #include "showtrichaser.h"
 
-ShowTriChaser::ShowTriChaser(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
-    ILightShow(settings,ledWrapper, lightShow, showParms)
+ShowTriChaser::ShowTriChaser(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
+    ILightShow(ledWrapper, lightShow, showParms)
 {
 
 
@@ -14,7 +14,7 @@ void ShowTriChaser::startShow()
     ws2811_return_t renderResults = WS2811_SUCCESS;
     ws2811_led_t curcolor = _color1;
 
-    for(int counter = 0; counter < 25; counter++)
+    for(int counter = 0; counter < _numLoops; counter++)
     {
 
         for(uint32_t i=0; i < _ledWrapper->getNumberLeds(); i++)

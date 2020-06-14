@@ -1,9 +1,8 @@
 #include "showcyclon.h"
 
-ShowCyclon::ShowCyclon(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
-    ILightShow(settings,ledWrapper, lightShow, showParms)
+ShowCyclon::ShowCyclon(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
+    ILightShow(ledWrapper, lightShow, showParms)
 {
-    _speed = 30;
     _width = 20;
 
 }
@@ -14,7 +13,7 @@ void ShowCyclon::startShow()
 {
 
 
-    for(int counter = 0; counter < 25; counter++)
+    for(int counter = 0; counter < _numLoops; counter++)
     {
       // First slide the leds in one direction
       for(u_int32_t i = 0; i <= _ledWrapper->getNumberLeds() - _width; i++)
@@ -33,7 +32,7 @@ void ShowCyclon::startShow()
         }
         if(_running == false)
             return;
-        Ws2811Wrapper::waitMillSec(_speed);
+        Ws2811Wrapper::waitMillSec(_wait);
         _ledWrapper->clearLeds();
       }
 
@@ -53,7 +52,7 @@ void ShowCyclon::startShow()
         }
         if(_running == false)
             return;
-        Ws2811Wrapper::waitMillSec(_speed);
+        Ws2811Wrapper::waitMillSec(_wait);
       }
     }
 

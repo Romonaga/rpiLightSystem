@@ -1,13 +1,16 @@
 #include "lightsystem.h"
+#include "playlistmanager.h"
+#include <QSqlDatabase>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonValue>
 #include <QDebug>
 
+
 //Shows
 #include "showblink.h"
-#include "showfire.h"
+#include "showflame.h"
 #include "showchaser.h"
 #include "showtheaterchaser.h"
 #include "showtheaterchaserainbow.h"
@@ -21,6 +24,7 @@
 #include "showcolor3.h"
 #include "showcolor4.h"
 #include "showtrichaser.h"
+#include "showcolor.h"
 
 LightSystem::LightSystem(QObject *parent) : QObject(parent)
 {
@@ -79,9 +83,77 @@ void LightSystem::stopShows()
    _logger->logInfo("LightSystem::stopShows Stopped");
 }
 
+void LightSystem::saveuserPlayList(QJsonObject jsonObject)
+{
+
+    PlayListManager pmanager;
+    pmanager.savePlayList(jsonObject.value("playlistName").toString(), jsonObject.value("UserID").toString().toInt(), _runningShows);
+}
+
+void LightSystem::deleteuserPlayList(QJsonObject jsonObject)
+{
+
+   PlayListManager pmanager;
+   pmanager.deletePlayList(jsonObject.value("UserID").toString().toInt(), jsonObject.value("playlistName").toString().toInt());
+}
+
+void LightSystem::playuserPlayList(QJsonObject jsonObject)
+{
+    PlayListManager pmanager;
+    QString playList = pmanager.getPlayList(jsonObject.value("UserID").toString().toInt(),jsonObject.value("playlistName").toString().toInt());
+    QJsonDocument doc = QJsonDocument::fromJson(playList.toUtf8());
+
+    if(!doc.isNull())
+    {
+        if(doc.isArray())
+        {
+            QJsonArray jsonArray = doc.array();
+            foreach (QJsonValue info, jsonArray)
+            {
+                QString msg = QJsonDocument::fromVariant(info.toVariant()).toJson(QJsonDocument::Compact);
+                processMsgReceived(msg);
+            }
+
+        }
+    }
+
+}
+
+void LightSystem::processShows(QString msg, QJsonObject jsonObject)
+{
+    if(jsonObject.value("powerOn").isString())
+        startShows();
+
+    _settings->setBrightness(jsonObject.value("brightness").toString().toInt());
+    _ledWrapper.setBrightness(_settings->getBrightness());
+
+    if(jsonObject.value("shows").isString())
+    {
+
+        queueShow(static_cast<LedLightShows>(jsonObject.value("shows").toString().toInt()),msg);
+    }
+    else
+    {
+        QJsonArray jsonArray = jsonObject["shows"].toArray();
+
+        foreach (const QJsonValue & value, jsonArray)
+            queueShow(static_cast<LedLightShows>(value.toString().toInt()), msg);
+    }
+}
+
+void LightSystem::processPower(QJsonObject jsonObject, QString state)
+{
+    state = jsonObject.value("state").toString();
+
+    if(state == "ON")
+        startShows();
+    else
+        stopShows();
+}
+
 void LightSystem::processMsgReceived(QString msg)
 {
-   fprintf(stderr," LightSystem::processMsgReceived: %s\r\n", msg.toStdString().c_str());
+   //fprintf(stderr," LightSystem::processMsgReceived: %s\r\n", msg.toStdString().c_str());
 
     QJsonObject jsonObject;
     QString state;
@@ -95,31 +167,23 @@ void LightSystem::processMsgReceived(QString msg)
             jsonObject = doc.object();
             if(jsonObject.value("state").isString())
             {
-                state = jsonObject.value("state").toString();
-
-                if(state == "ON")
-                    startShows();
-                else
-                    stopShows();
+                processPower(jsonObject, state);
+            }
+            else if(jsonObject.value("savePlaylist").toInt())
+            {
+                saveuserPlayList(jsonObject);
+            }
+            else if(jsonObject.value("playPlaylist").toInt())
+            {
+                playuserPlayList(jsonObject);
+            }
+            else if(jsonObject.value("deletePlaylist").toInt())
+            {
+                deleteuserPlayList(jsonObject);
             }
             else
             {
-                _settings->setBrightness(jsonObject.value("brightness").toString().toInt());
-                _ledWrapper.setBrightness(_settings->getBrightness());
-
-                if(jsonObject.value("shows").isString())
-                {
-                    queueShow(static_cast<LedLightShows>(jsonObject.value("shows").toString().toInt()),msg);
-                }
-                else
-                {
-                    QJsonArray jsonArray = jsonObject["shows"].toArray();
-
-                    foreach (const QJsonValue & value, jsonArray)
-                        queueShow(static_cast<LedLightShows>(value.toString().toInt()), msg);
-                }
-
-
+                processShows(msg, jsonObject);
             }
 
         }
@@ -151,63 +215,67 @@ void LightSystem::queueShow(const LedLightShows& show, const QString& showParms)
     switch(show)
     {
         case Blink:
-            _runningShows.append(new ShowBlink(_settings, &_ledWrapper, show, showParms));
+            _runningShows.append(new ShowBlink(&_ledWrapper, show, showParms));
             break;
 
         case Chaser:
-            _runningShows.append(new ShowChaser(_settings, &_ledWrapper, show, showParms));
+            _runningShows.append(new ShowChaser(&_ledWrapper, show, showParms));
             break;
 
         case TC:
-            _runningShows.append(new ShowTheaterChaser(_settings, &_ledWrapper, show, showParms));
+            _runningShows.append(new ShowTheaterChaser(&_ledWrapper, show, showParms));
             break;
 
         case TCR:
-            _runningShows.append(new ShowTheaterChaseRainBow(_settings, &_ledWrapper, show, showParms));
+            _runningShows.append(new ShowTheaterChaseRainBow(&_ledWrapper, show, showParms));
             break;
 
         case Color3R:
-            _runningShows.append(new ShowColor3R(_settings, &_ledWrapper, show, showParms));
+            _runningShows.append(new ShowColor3R(&_ledWrapper, show, showParms));
             break;
 
         case Cyclon:
-            _runningShows.append(new ShowCyclon(_settings, &_ledWrapper, show, showParms));
+            _runningShows.append(new ShowCyclon(&_ledWrapper, show, showParms));
             break;
 
         case ColorWipe:
-            _runningShows.append(new ShowColorWipe(_settings, &_ledWrapper, show, showParms));
+            _runningShows.append(new ShowColorWipe(&_ledWrapper, show, showParms));
             break;
 
         case HAndH:
-            _runningShows.append(new ShowHnH(_settings, &_ledWrapper, show, showParms));
+            _runningShows.append(new ShowHnH(&_ledWrapper, show, showParms));
             break;
 
         case Rainbow:
-            _runningShows.append(new ShowRainbow(_settings, &_ledWrapper, show, showParms));
+            _runningShows.append(new ShowRainbow(&_ledWrapper, show, showParms));
             break;
 
         case RainbowCycle:
-            _runningShows.append(new ShowRainbowCycle(_settings, &_ledWrapper, show, showParms));
+            _runningShows.append(new ShowRainbowCycle(&_ledWrapper, show, showParms));
             break;
 
         case NeoRand:
-            _runningShows.append(new ShowNeoRand(_settings, &_ledWrapper, show, showParms));
+            _runningShows.append(new ShowNeoRand(&_ledWrapper, show, showParms));
             break;
 
         case Flame:
-            _runningShows.append(new ShowFire(_settings, &_ledWrapper, show, showParms));
+            _runningShows.append(new ShowFlame(&_ledWrapper, show, showParms));
             break;
 
         case ColorThirds:
-            _runningShows.append(new ShowColor3(_settings, &_ledWrapper, show, showParms));
+            _runningShows.append(new ShowColor3(&_ledWrapper, show, showParms));
             break;
 
         case ColorForths:
-            _runningShows.append(new ShowColor4(_settings, &_ledWrapper, show, showParms));
+            _runningShows.append(new ShowColor4(&_ledWrapper, show, showParms));
             break;
 
         case TriChaser:
-            _runningShows.append(new ShowTriChaser(_settings, &_ledWrapper, show, showParms));
+            _runningShows.append(new ShowTriChaser(&_ledWrapper, show, showParms));
+            break;
+
+        case DisplayColor:
+            _runningShows.append(new ShowColor(&_ledWrapper, show, showParms));
             break;
 
     default:

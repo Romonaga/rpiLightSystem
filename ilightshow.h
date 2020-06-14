@@ -32,7 +32,8 @@
             X(12, Flame, "Flame"),                   \
             X(13, ColorThirds, "ColorThirds"),                   \
             X(14, ColorForths, "ColorForths"),                   \
-            X(15, TriChaser, "Tri-Color Chase")                   \
+            X(15, TriChaser, "Tri-Color Chase"),                   \
+            X(16, DisplayColor, "Display A Color")                   \
 
 
 #define LIGHT_SHOWS_ENUM(type, name, str) name = type
@@ -50,12 +51,14 @@ class ILightShow : public QThread
     Q_OBJECT
 
 public:
-    explicit ILightShow(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString& showParms);
+    explicit ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString& showParms);
     void stopShow();
 
 
     LedLightShows getLightShow() const;
     QString getShowName();
+
+    QString getShowParms() const;
 
 private:
     virtual void startShow() = 0;
@@ -63,11 +66,10 @@ private:
 protected:
     SystemSettings* _settings;
     Ws2811Wrapper* _ledWrapper;
+    LedLightShows _lightShow;
     QString _showParms;
 
     bool _running;
-
-    LedLightShows _lightShow;
     DNRLogger* _logger;
 
     bool _clearOnStart;
@@ -77,6 +79,8 @@ protected:
     ws2811_led_t _color3;
     ws2811_led_t _color4;
     uint8_t _brightness;
+    uint8_t _numLoops;
+    uint8_t _width;
 
     uint16_t _wait;
     int _r;

@@ -15,6 +15,7 @@ SystemSettings* SystemSettings::_instance = nullptr;
 SystemSettings::SystemSettings()
 {
     _mmConfFile =  "/etc/rpilightsystem.conf";
+
 }
 
 void SystemSettings::setBrightness(int brightness)
@@ -74,8 +75,8 @@ bool SystemSettings::settingsExists()
 
 void SystemSettings::loadSystemSettings()
 {
-    QSqlDatabase  database = QSqlDatabase().addDatabase("QMYSQL","rpiLightSystem");
-
+   
+    QSqlDatabase database = QSqlDatabase().addDatabase("QMYSQL","rpiLightSystem");
 
     database.setHostName(_server);
     database.setUserName(_user);
@@ -106,7 +107,7 @@ void SystemSettings::loadSystemSettings()
         {
             fprintf(stderr, "%s", qry.lastError().text().toStdString().c_str());
         }
-
+        database.close();
     }
     else
     {
@@ -116,7 +117,6 @@ void SystemSettings::loadSystemSettings()
 
 bool SystemSettings::loadSettings()
 {
-
     if(settingsExists())
     {
         QSettings settings(_mmConfFile, QSettings::IniFormat);

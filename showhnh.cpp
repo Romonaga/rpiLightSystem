@@ -1,7 +1,7 @@
 #include "showhnh.h"
 
-ShowHnH::ShowHnH(SystemSettings* settings, Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
-    ILightShow(settings,ledWrapper, lightShow, showParms)
+ShowHnH::ShowHnH(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
+    ILightShow(ledWrapper, lightShow, showParms)
 {
 
 }
@@ -13,7 +13,7 @@ void ShowHnH::startShow()
     u_int32_t half = _ledWrapper->getNumberLeds() / 2;
     u_int32_t counter = 0;
 
-    for(int count = 0; count < 25; count++)
+    for(int count = 0; count < _numLoops; count++)
     {
 
         for(counter = 0; counter < half; counter++)
