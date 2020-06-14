@@ -60,6 +60,12 @@ It is assumed you are using the latest version of buster.
     1. clone or download the rpiLightsSystem
     2. qmake .
     3. make
+12. Congrats, you are one step closer, we still have work to do.
+    1. From the rpiLightSystems folder, you will need the file from conf, it needs to be placed in /etc please make sure you edit the file to march your system settings.
+13. //TODO Website instructions.
+14. //TODO mosquitto install instruction. 
+15. //TODO sql instructions.
+
 
 
 
