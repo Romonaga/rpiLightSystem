@@ -42,6 +42,7 @@ private:
     void saveuserPlayList(QJsonObject jsonObject);
     void playuserPlayList(QJsonObject jsonObject);
     void deleteuserPlayList(QJsonObject jsonObject);
+    void clearQueue();
 
     void processShows(QString msg, QJsonObject jsonObject);
     void processPower(QJsonObject jsonObject, QString state);

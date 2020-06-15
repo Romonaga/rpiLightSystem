@@ -151,6 +151,28 @@ void LightSystem::processPower(QJsonObject jsonObject, QString state)
         stopShows();
 }
 
+void LightSystem::clearQueue()
+{
+    if(_runningShows.count() == 0) return;
+
+    std::stringstream info;
+
+    info << "LightSystem::clearQueue(" << _runningShows.count() << ")";
+    _logger->logInfo(info.str());
+
+    _runningShowsMutex.lock();
+    foreach (ILightShow* show, _runningShows)
+    {
+        delete show;
+    }
+    _runningShows.clear();
+    _runningShowsMutex.unlock();
+
+    info.str("");
+    info << "LightSystem::clearQueue(" << _runningShows.count() << ")";
+    _logger->logInfo(info.str());
+}
+
 void LightSystem::processMsgReceived(QString msg)
 {
    //fprintf(stderr," LightSystem::processMsgReceived: %s\r\n", msg.toStdString().c_str());
@@ -180,6 +202,10 @@ void LightSystem::processMsgReceived(QString msg)
             else if(jsonObject.value("deletePlaylist").toInt())
             {
                 deleteuserPlayList(jsonObject);
+            }
+            else if(jsonObject.value("clearQueue").toInt())
+            {
+                clearQueue();
             }
             else
             {
@@ -374,6 +400,7 @@ bool LightSystem::startSystem()
 
 void LightSystem::stopSystem()
 {
+    if(false == _started) return;
     _logger->logInfo("LightSystem::stopSystem Stopping");
     _started = false;
     stopShows();
