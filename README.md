@@ -10,12 +10,13 @@ Features.
 * Fully open source.
 * Simple to use, easy to setup.
 * Website for controling the Lightshows is work produced by Myrana.
+</b>
 
 This is the start to a large project.  Wife wanted accent lighting, Daugher and I wanted to to be different.  
 
 Everything that is needed to build and run this project is or will be included in this repository. This will save you time finding the repos needed.  Please follow the build instructions and install instructions for all libs that I have used.  While we have attempted to document as best as possible, it is always best to follow the directions provided by package owner.
 
-<b>These instructions are for Rasperry Pi Buster. It is assumed you are using the latest version of buster.
+<b>These instructions are for Rasperry Pi Buster. It is assumed you are using the latest version of buster.</b>
 
 1. sudo apt install git
 2. sudo apt install qt5-default libqt5sql5-mysql
