@@ -177,7 +177,7 @@ void LightSystem::clearQueue()
 
 void LightSystem::processMsgReceived(QString msg)
 {
-   //fprintf(stderr," LightSystem::processMsgReceived: %s\r\n", msg.toStdString().c_str());
+   fprintf(stderr," LightSystem::processMsgReceived: %s\r\n", msg.toStdString().c_str());
 
     QJsonObject jsonObject;
     QString state;
@@ -360,6 +360,7 @@ void LightSystem::showComplete(ILightShow* show)
 
     info << "LightSystem::showComplete Show(" <<  show->getShowName().toStdString().c_str() << ")";
     _logger->logInfo(info.str());
+    show->stopShow();
     cleanUpShow(show);
     runShow();
 }
