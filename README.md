@@ -1,6 +1,8 @@
 # rpiLightSystem
 <b>RPI LED Light System, is simply, a way to control multiple LED lights over the internet.
 
+While we have provided source code, as well as instructions for building system.  What is not provided here is the hardware, nor the electronics schematics required to drive the light strips. It is assumed that you, the user of this software, understand and have the background in working with these strips.  LumaWin, does provide kits. that are prebuilt, and ready to go with all the hardware required for installation, as well as a preconfigured Raspberry Pi.
+
 Features.
 * Customizable Lightshows
 * Many precanned shows.
