@@ -37,6 +37,7 @@ private:
     void lightsOff();
     void stopShows();
     void startShows();
+    void cleanUpShow(ILightShow* show);
 
     void runShow();
     void saveuserPlayList(QJsonObject jsonObject);

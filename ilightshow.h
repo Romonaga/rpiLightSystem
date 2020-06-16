@@ -60,6 +60,8 @@ public:
 
     QString getShowParms() const;
 
+    bool isRunning() const;
+
 private:
     virtual void startShow() = 0;
 

@@ -104,6 +104,7 @@ void ILightShow::run()
     startShow();
     _running = false;
     emit showComplete(this);
+
 }
 
 void ILightShow::stopShow()
@@ -112,6 +113,7 @@ void ILightShow::stopShow()
     wait();
     if(_clearOnFinish)
         _ledWrapper->clearLeds();
+
 
 }
 
@@ -131,4 +133,9 @@ QString ILightShow::getShowName()
 QString ILightShow::getShowParms() const
 {
     return _showParms;
+}
+
+bool ILightShow::isRunning() const
+{
+    return _running;
 }

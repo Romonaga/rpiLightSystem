@@ -41,6 +41,7 @@ void ShowTriChaser::startShow()
             Ws2811Wrapper::waitMillSec(_wait);
 
         }
+        
         _ledWrapper->clearLeds();
     }
   

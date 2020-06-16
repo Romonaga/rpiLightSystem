@@ -160,17 +160,19 @@ void LightSystem::clearQueue()
     info << "LightSystem::clearQueue(" << _runningShows.count() << ")";
     _logger->logInfo(info.str());
 
-    _runningShowsMutex.lock();
-    foreach (ILightShow* show, _runningShows)
+    QList<ILightShow*> shows = _runningShows.toList();
+    foreach (ILightShow* show, shows)
     {
-        delete show;
-    }
-    _runningShows.clear();
-    _runningShowsMutex.unlock();
+        if(show->isRunning() == false)
+        {
+            cleanUpShow(show);
+        }
+        else
+        {
+            show->stopShow();
+        }
 
-    info.str("");
-    info << "LightSystem::clearQueue(" << _runningShows.count() << ")";
-    _logger->logInfo(info.str());
+    }
 }
 
 void LightSystem::processMsgReceived(QString msg)
@@ -336,19 +338,29 @@ void LightSystem::runShow()
 }
 
 
-void LightSystem::showComplete(ILightShow* show)
+void LightSystem::cleanUpShow(ILightShow* show)
 {
 
     std::stringstream info;
 
-    info << "LightSystem::showComplete Show(" <<  show->getShowName().toStdString().c_str() << ")";
+    info << "LightSystem::cleanUpShow Show(" <<  show->getShowName().toStdString().c_str() << ")";
     _logger->logInfo(info.str());
-    show->stopShow();
     _runningShowsMutex.lock();
     if(show != nullptr) delete show;
 
-    _runningShows.removeFirst();
+    _runningShows.removeOne(show);
     _runningShowsMutex.unlock();
+
+}
+
+
+void LightSystem::showComplete(ILightShow* show)
+{
+    std::stringstream info;
+
+    info << "LightSystem::showComplete Show(" <<  show->getShowName().toStdString().c_str() << ")";
+    _logger->logInfo(info.str());
+    cleanUpShow(show);
     runShow();
 }
 
