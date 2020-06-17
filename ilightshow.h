@@ -33,7 +33,9 @@
             X(13, ColorThirds, "ColorThirds"),                   \
             X(14, ColorForths, "ColorForths"),                   \
             X(15, TriChaser, "Tri-Color Chase"),                   \
-            X(16, DisplayColor, "Display A Color")                   \
+            X(16, DisplayColor, "Display A Color"),                   \
+            X(17, ColorEvery, "Color Every X Led."),                   \
+            X(18, TwinkleOverlay, "Twinkle Overlay.")                   \
 
 
 #define LIGHT_SHOWS_ENUM(type, name, str) name = type
@@ -61,6 +63,7 @@ public:
     QString getShowParms() const;
 
     bool isRunning() const;
+    int genRand(int min, int max);
 
 private:
     virtual void startShow() = 0;
@@ -85,6 +88,8 @@ protected:
     uint8_t _width;
 
     uint16_t _wait;
+    uint16_t _colorEvery;
+
     int _r;
     int _g;
     int _b;

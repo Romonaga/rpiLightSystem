@@ -19,6 +19,7 @@ SOURCES += main.cpp \
     showcolor3.cpp \
     showcolor3r.cpp \
     showcolor4.cpp \
+    showcolorevery.cpp \
     showcolorwipe.cpp \
     showcyclon.cpp \
     showflame.cpp \
@@ -29,6 +30,7 @@ SOURCES += main.cpp \
     showtheaterchaser.cpp \
     showtheaterchaserainbow.cpp \
     showtrichaser.cpp \
+    showtwinkle.cpp \
     systemsettings.cpp
 
 # The following define makes your compiler emit warnings if you use
@@ -53,6 +55,7 @@ HEADERS += \
     showcolor3.h \
     showcolor3r.h \
     showcolor4.h \
+    showcolorevery.h \
     showcolorwipe.h \
     showcyclon.h \
     showflame.h \
@@ -63,6 +66,7 @@ HEADERS += \
     showtheaterchaser.h \
     showtheaterchaserainbow.h \
     showtrichaser.h \
+    showtwinkle.h \
     systemsettings.h
 
 LIBS += -lWs2811Wrapper

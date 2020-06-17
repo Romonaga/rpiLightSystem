@@ -25,6 +25,8 @@
 #include "showcolor4.h"
 #include "showtrichaser.h"
 #include "showcolor.h"
+#include "showcolorevery.h"
+#include "showtwinkle.h"
 
 LightSystem::LightSystem(QObject *parent) : QObject(parent)
 {
@@ -85,20 +87,32 @@ void LightSystem::stopShows()
 
 void LightSystem::saveuserPlayList(QJsonObject jsonObject)
 {
+    std::stringstream info;
 
+    info << "saveuserPlayList " << jsonObject.value("playlistName").toString().toStdString().c_str();
+    _logger->logInfo(info.str());
     PlayListManager pmanager;
-    pmanager.savePlayList(jsonObject.value("playlistName").toString(), jsonObject.value("UserID").toString().toInt(), _runningShows);
+    if(_runningShows.count() != 0)
+        pmanager.savePlayList(jsonObject.value("playlistName").toString(), jsonObject.value("UserID").toString().toInt(), _runningShows);
 }
 
 void LightSystem::deleteuserPlayList(QJsonObject jsonObject)
 {
+    std::stringstream info;
 
-   PlayListManager pmanager;
-   pmanager.deletePlayList(jsonObject.value("UserID").toString().toInt(), jsonObject.value("playlistName").toString().toInt());
+    info << "deleteuserPlayList " << jsonObject.value("playlistName").toString().toStdString().c_str();;
+    _logger->logInfo(info.str());
+    PlayListManager pmanager;
+    pmanager.deletePlayList(jsonObject.value("UserID").toString().toInt(), jsonObject.value("playlistName").toString().toInt());
 }
 
 void LightSystem::playuserPlayList(QJsonObject jsonObject)
 {
+    std::stringstream info;
+
+    info << "playuserPlayList " << jsonObject.value("playlistName").toString().toStdString().c_str();;
+    _logger->logInfo(info.str());
+
     PlayListManager pmanager;
     QString playList = pmanager.getPlayList(jsonObject.value("UserID").toString().toInt(),jsonObject.value("playlistName").toString().toInt());
     QJsonDocument doc = QJsonDocument::fromJson(playList.toUtf8());
@@ -124,21 +138,21 @@ void LightSystem::processShows(QString msg, QJsonObject jsonObject)
     if(jsonObject.value("powerOn").isString())
         startShows();
 
-    _settings->setBrightness(jsonObject.value("brightness").toString().toInt());
-    _ledWrapper.setBrightness(_settings->getBrightness());
+    if(jsonObject.value("brightness").isString())
+        _ledWrapper.setBrightness(jsonObject.value("brightness").toString().toInt());
 
     if(jsonObject.value("shows").isString())
     {
 
         queueShow(static_cast<LedLightShows>(jsonObject.value("shows").toString().toInt()),msg);
     }
-    else
+    /*else
     {
         QJsonArray jsonArray = jsonObject["shows"].toArray();
 
         foreach (const QJsonValue & value, jsonArray)
             queueShow(static_cast<LedLightShows>(value.toString().toInt()), msg);
-    }
+    }*/
 }
 
 void LightSystem::processPower(QJsonObject jsonObject, QString state)
@@ -304,6 +318,14 @@ void LightSystem::queueShow(const LedLightShows& show, const QString& showParms)
 
         case DisplayColor:
             _runningShows.append(new ShowColor(&_ledWrapper, show, showParms));
+            break;
+
+        case ColorEvery:
+            _runningShows.append(new ShowColorEvery(&_ledWrapper, show, showParms));
+            break;
+
+        case TwinkleOverlay:
+            _runningShows.append(new ShowTwinkle(&_ledWrapper, show, showParms));
             break;
 
     default:

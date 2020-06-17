@@ -8,7 +8,9 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
     _logger = DNRLogger::instance();
     _settings = SystemSettings::getInstance();
 
+    srand(time(nullptr));
     _running = false;
+    _colorEvery = 0;
 
     QJsonObject jsonObject;
     QJsonObject jsonColors;
@@ -29,6 +31,7 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
            _clearOnFinish = (bool)jsonObject.value("clearFinish").toInt();
            _numLoops = jsonObject.value("numLoops").toString().toInt();
            _width = jsonObject.value("width").toString().toInt();
+           _colorEvery = jsonObject.value("colorEvery").toString().toInt();
 
            if(jsonObject["colors"].isObject())
            {
@@ -101,6 +104,8 @@ void ILightShow::run()
     if(_clearOnStart)
         _ledWrapper->clearLeds();
 
+    _settings->setBrightness(_brightness);
+
     startShow();
     _running = false;
 
@@ -139,3 +144,9 @@ bool ILightShow::isRunning() const
 {
     return _running;
 }
+
+int ILightShow::genRand(int min, int max)
+{
+   return (rand() % max) + min;
+}
+
