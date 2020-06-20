@@ -40,9 +40,7 @@ Everything that is needed to build and run this project is or will be included i
     1. clone or download both paho repos.
     2. We fist need to build and install the c version, before we can do the c++.
         1. The read me is clear, you will need some support libs.  While I will outline docs are best.
-            1. sudo apt install build-essential gcc make cmake cmake-gui cmake-curses-gui
-            2. OpenSSL sudo apt install libssl-dev
-            3. sudo apt install doxygen graphviz
+            1. sudo apt install build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev doxygen graphviz
         2. Now we can run make
         3. sudo make install
     3. This next one is not so forward, however the README.md does explain very well how to build this.
