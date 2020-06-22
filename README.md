@@ -18,25 +18,23 @@ Everything that is needed to build and run this project is or will be included i
 
 <b>These instructions are for Rasperry Pi Buster. It is assumed you are using the latest version of buster.</b>
 
-1. sudo apt install git
-2. sudo apt install qt5-default libqt5sql5-mysql
-3. sudo apt install build-essential gcc make cmake cmake-gui cmake-curses-gui
-4. sudo apt install scons (Needed for Ws2811lib.
-5. clone or download DNRLogger from this repo.  
+1. sudo apt install git qt5-default libqt5sql5-mysql build-essential gcc make cmake cmake-gui cmake-curses-gui
+2. sudo apt install scons (Needed for Ws2811lib.)
+3. clone or download DNRLogger from this repo.  
     1. qmake .
     2. make
     3. sudo make install
-6. Time to build the WS2811 support.
+4. Time to build the WS2811 support.
     1. clone or download the rpi_ws281x lib from  this repo.
     2. run scons, this will build the lib.
         1. sudo  cp *.h /usr/local/include/.
         2. sudo cp libws2811.a /usr/local/lib/.
-7. Lets build my wrapper around that fanatic lib!
-8. clone or download Ws2811Wrapper from this repo
+5. Lets build my wrapper around that fanatic lib!
+6. clone or download Ws2811Wrapper from this repo
     1. run qmake .
     2. make
     3. sudo make install
-9. Ok now for the harder one, support for MQQT (mosquitto)
+7. Ok now for the harder one, support for MQQT (mosquitto)
     1. clone or download both paho repos.
     2. We fist need to build and install the c version, before we can do the c++.
         1. The read me is clear, you will need some support libs.  While I will outline docs are best.
@@ -48,20 +46,20 @@ Everything that is needed to build and run this project is or will be included i
         2. cmake -Bbuild -H. -DPAHO_BUILD_DOCUMENTATION=TRUE -DPAHO_BUILD_SAMPLES=TRUE
         3. $ sudo cmake --build build/ --target install
         4. $ sudo ldconfig
-10. Time to build the projects MQTT wrapper.
+ 8. Time to build the projects MQTT wrapper.
     1. clone or download the MQTTMessageBus from this repo
         1. qmake .
         2. make
         3. sudo make install
-11. If you made it this far, well, it seems you can now build the rpiLightsSystem project.
+ 9. If you made it this far, well, it seems you can now build the rpiLightsSystem project.
     1. clone or download the rpiLightsSystem
     2. qmake .
     3. make
-12. Congrats, you are one step closer, we still have work to do.
+10. Congrats, you are one step closer, we still have work to do.
     1. From the rpiLightSystems folder, you will need the file from conf, it needs to be placed in /etc please make sure you edit the file to march your system settings.
-13. //TODO Website instructions.
-14. //TODO mosquitto install instruction. 
-15. //TODO sql instructions.
+11. //TODO Website instructions.
+12. //TODO mosquitto install instruction. 
+13. //TODO sql instructions.
 
 
 
