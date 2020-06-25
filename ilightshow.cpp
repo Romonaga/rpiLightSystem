@@ -14,7 +14,7 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
     _wait = 0;
     _clearOnStart = false;
     _clearOnFinish = false;
-    _numLoops = 1;
+    _numMins = 1;
     _width = 1;
     _colorEvery = 2;
     _color1 = Ws2811Wrapper::Color(125, 125, 125);
@@ -44,8 +44,8 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
             _clearOnStart = (bool)jsonObject.value("clearStart").toInt();
             _clearOnFinish = (bool)jsonObject.value("clearFinish").toInt();
 
-            if(jsonObject.value("numLoops").isString())
-                _numLoops = jsonObject.value("numLoops").toString().toDouble();
+            if(jsonObject.value("minutes").isString())
+                _numMins = jsonObject.value("minutes").toString().toDouble();
 
             if(jsonObject.value("width").isString())
                 _width = jsonObject.value("width").toString().toInt();
@@ -123,7 +123,7 @@ void ILightShow::run()
 
     _settings->setBrightness(_brightness);
 
-    _endTime =  time(nullptr) + (_numLoops * 60);
+    _endTime =  time(nullptr) + (_numMins * 60);
     
     startShow();
     _running = false;

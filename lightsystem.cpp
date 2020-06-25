@@ -159,19 +159,18 @@ void LightSystem::processShow(QString msg, QJsonObject jsonObject)
         queueShow(static_cast<LedLightShows>(jsonObject.value("shows").toString().toInt()),msg);
 }
 
-void LightSystem::processPower(QJsonObject jsonObject, QString state)
+void LightSystem::processPower(QJsonObject jsonObject)
 {
 
     std::stringstream info;
 
+    QString state = jsonObject.value("state").toString();
     info << "LightSystem::processPower state(" << state.toStdString().c_str() << ")";
     _logger->logInfo(info.str());
 
-    state = jsonObject.value("state").toString();
-
     if(state == "ON")
         startShows();
-    else
+    else if(state == "OFF")
         stopShows();
 }
 
@@ -204,10 +203,9 @@ void LightSystem::processMsgReceived(QString msg)
    std::stringstream info;
 
    info << "LightSystem::processMsgReceived: " << msg.toStdString().c_str();
-   _logger->logDebug(info.str());
+   _logger->logInfo(info.str());
 
     QJsonObject jsonObject;
-    QString state;
 
     QJsonDocument doc = QJsonDocument::fromJson(msg.toUtf8());
 
@@ -218,7 +216,7 @@ void LightSystem::processMsgReceived(QString msg)
             jsonObject = doc.object();
             if(jsonObject.value("state").isString())
             {
-                processPower(jsonObject, state);
+                processPower(jsonObject);
             }
             else if(jsonObject.value("savePlaylist").toInt())
             {

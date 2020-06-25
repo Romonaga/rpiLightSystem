@@ -1,5 +1,4 @@
 #include "showflame.h"
-#include <QDebug>
 
 ShowFlame::ShowFlame(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
     ILightShow(ledWrapper, lightShow, showParms)

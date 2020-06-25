@@ -6,8 +6,6 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
-#include <QDebug>
-
 
 
 SystemSettings* SystemSettings::_instance = nullptr;

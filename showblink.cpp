@@ -11,7 +11,7 @@ ShowBlink::ShowBlink(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, 
 void ShowBlink::startShow()
 {
 
-    for (int counter = 0; counter < _numLoops; counter++)
+    while(_endTime > time(nullptr))
     {
        if(_running == false) return;
       _ledWrapper->setBrightness(1);

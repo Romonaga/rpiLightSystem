@@ -1,5 +1,4 @@
 #include "showcolor.h"
-#include <QDebug>
 
 ShowColor::ShowColor(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
     ILightShow(ledWrapper, lightShow, showParms)

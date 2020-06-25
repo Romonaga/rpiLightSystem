@@ -87,7 +87,7 @@ protected:
     uint8_t _brightness;
     time_t _endTime;
 
-    double _numLoops;
+    double _numMins;
     uint8_t _width;
 
     uint16_t _wait;
