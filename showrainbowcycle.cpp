@@ -6,28 +6,23 @@ ShowRainbowCycle::ShowRainbowCycle(Ws2811Wrapper* ledWrapper, const LedLightShow
 
 }
 
-
-
 void ShowRainbowCycle::startShow()
 {
-
-    u_int32_t i, j;
-
-    for(j=0; j < _numLoops ; j++)
+    while(_endTime > time(nullptr))
     {
-        if(_running == false)
-            return;
-
         // 5 cycles of all colors on wheel
-        for(i=0; i < _ledWrapper->getNumberLeds(); i++)
-           _ledWrapper->setPixelColor(_settings->getStripHeight(), i, Ws2811Wrapper::Wheel(((i * 256 / _ledWrapper->getNumberLeds()) + j) & 255));
+        for(uint16_t cycle =0; cycle < 256 * 5; cycle++)
+        {
+            if(_running == false || _endTime < time(nullptr))
+                return ;
 
-        _ledWrapper->show();
-        if(_running == false)
-            return;
-        Ws2811Wrapper::waitMillSec(_wait);
+            for(uint16_t led =0; led < _ledWrapper->getNumberLeds() ; led++)
+               _ledWrapper->setPixelColor(_settings->getStripHeight(), led, Ws2811Wrapper::Wheel(((led * 256 / _ledWrapper->getNumberLeds()) + cycle) & 255));
+
+             _ledWrapper->show();
+
+            Ws2811Wrapper::waitMillSec(_wait);
+        }
     }
 
 }
-
-

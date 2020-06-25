@@ -35,7 +35,8 @@
             X(15, TriChaser, "Tri-Color Chase"),                   \
             X(16, DisplayColor, "Display A Color"),                   \
             X(17, ColorEvery, "Color Every X Led."),                   \
-            X(18, TwinkleOverlay, "Twinkle Overlay.")                   \
+            X(18, TwinkleOverlay, "Twinkle Overlay."),                   \
+            X(19, PulseOverlay, "Pulse Overlay.")                   \
 
 
 #define LIGHT_SHOWS_ENUM(type, name, str) name = type
@@ -84,7 +85,9 @@ protected:
     ws2811_led_t _color3;
     ws2811_led_t _color4;
     uint8_t _brightness;
-    uint8_t _numLoops;
+    time_t _endTime;
+
+    double _numLoops;
     uint8_t _width;
 
     uint16_t _wait;

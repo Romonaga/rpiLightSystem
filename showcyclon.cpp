@@ -13,7 +13,7 @@ void ShowCyclon::startShow()
 {
 
 
-    for(int counter = 0; counter < _numLoops; counter++)
+    while(_endTime > time(nullptr))
     {
       // First slide the leds in one direction
       for(u_int32_t i = 0; i <= _ledWrapper->getNumberLeds() - _width; i++)

@@ -9,8 +9,18 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
     _settings = SystemSettings::getInstance();
 
     srand(time(nullptr));
+
     _running = false;
-    _colorEvery = 0;
+    _wait = 0;
+    _clearOnStart = false;
+    _clearOnFinish = false;
+    _numLoops = 1;
+    _width = 1;
+    _colorEvery = 2;
+    _color1 = Ws2811Wrapper::Color(125, 125, 125);
+    _color2 = Ws2811Wrapper::Color(0, 125, 125);
+    _color3 = Ws2811Wrapper::Color(125, 0, 125);
+    _color4 = Ws2811Wrapper::Color(125, 125, 0);
 
     QJsonObject jsonObject;
     QJsonObject jsonColors;
@@ -24,14 +34,24 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
        if(doc.isObject())
        {
 
-           jsonObject = doc.object();
-           _ledWrapper->setBrightness(jsonObject.value("brightness").toString().toInt());
-           _wait = jsonObject.value("delay").toString().toInt();
-           _clearOnStart = (bool)jsonObject.value("clearStart").toInt();
-           _clearOnFinish = (bool)jsonObject.value("clearFinish").toInt();
-           _numLoops = jsonObject.value("numLoops").toString().toInt();
-           _width = jsonObject.value("width").toString().toInt();
-           _colorEvery = jsonObject.value("colorEvery").toString().toInt();
+            jsonObject = doc.object();
+            if(jsonObject.value("brightness").isString())
+                _ledWrapper->setBrightness(jsonObject.value("brightness").toString().toInt());
+
+            if(jsonObject.value("delay").isString())
+                _wait = jsonObject.value("delay").toString().toInt();
+
+            _clearOnStart = (bool)jsonObject.value("clearStart").toInt();
+            _clearOnFinish = (bool)jsonObject.value("clearFinish").toInt();
+
+            if(jsonObject.value("numLoops").isString())
+                _numLoops = jsonObject.value("numLoops").toString().toDouble();
+
+            if(jsonObject.value("width").isString())
+                _width = jsonObject.value("width").toString().toInt();
+
+            if(jsonObject.value("colorEvery").isString())
+                _colorEvery = jsonObject.value("colorEvery").toString().toInt();
 
            if(jsonObject["colors"].isObject())
            {
@@ -85,14 +105,11 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
        else
        {
            _logger->logWarning("ShowFire::ShowFire Invalid JSON");
-           return;
        }
    }
    else
    {
        _logger->logWarning("ShowFire::ShowFire Document is not an object");
-       return;
-
    }
 
 }
@@ -106,6 +123,8 @@ void ILightShow::run()
 
     _settings->setBrightness(_brightness);
 
+    _endTime =  time(nullptr) + (_numLoops * 60);
+    
     startShow();
     _running = false;
 

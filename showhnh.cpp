@@ -13,7 +13,7 @@ void ShowHnH::startShow()
     u_int32_t half = _ledWrapper->getNumberLeds() / 2;
     u_int32_t counter = 0;
 
-    for(int count = 0; count < _numLoops; count++)
+    while(_endTime > time(nullptr))
     {
 
         for(counter = 0; counter < half; counter++)

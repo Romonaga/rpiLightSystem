@@ -30,7 +30,7 @@ void ShowNeoRand::startShow()
 
 
    _rno = random9();
-   for(int counter = 0; counter < _numLoops; counter++)
+   while(_endTime > time(nullptr))
    {
      if (_running == false) return;
      for (u_int32_t i = 0; i < _ledWrapper->getNumberLeds(); i++)

@@ -45,7 +45,7 @@ private:
     void deleteuserPlayList(QJsonObject jsonObject);
     void clearQueue();
 
-    void processShows(QString msg, QJsonObject jsonObject);
+    void processShow(QString msg, QJsonObject jsonObject);
     void processPower(QJsonObject jsonObject, QString state);
 
     unsigned int random9();

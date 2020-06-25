@@ -17,7 +17,7 @@ void ShowColor4::startShow()
     u_int32_t counter = 0;
 
 
-    for(int count = 0; count < _numLoops; count++)
+     while(_endTime > time(nullptr))
     {
         _ledWrapper->clearLeds();
         u_int32_t  currentDivision = forths;

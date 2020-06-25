@@ -13,6 +13,7 @@ SOURCES += main.cpp \
     lightsystem.cpp \
     mqttreceiver.cpp \
     playlistmanager.cpp \
+    showPulse.cpp \
     showblink.cpp \
     showchaser.cpp \
     showcolor.cpp \
@@ -49,6 +50,7 @@ HEADERS += \
     lightsystem.h \
     mqttreceiver.h \
     playlistmanager.h \
+    showPulse.h \
     showblink.h \
     showchaser.h \
     showcolor.h \

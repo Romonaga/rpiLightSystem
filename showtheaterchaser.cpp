@@ -10,8 +10,9 @@ ShowTheaterChaser::ShowTheaterChaser(Ws2811Wrapper* ledWrapper, const LedLightSh
 void ShowTheaterChaser::startShow()
 {
 
+    unsigned int j = 0;
 
-    for (int j=0; j < _numLoops; j++)
+    while(_endTime > time(nullptr))
     {
         if(_running == false)
             return;
@@ -32,6 +33,7 @@ void ShowTheaterChaser::startShow()
           }
         }
     }
+    j++;
 
 }
 

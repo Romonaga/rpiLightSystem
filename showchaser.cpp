@@ -13,7 +13,7 @@ void ShowChaser::startShow()
 
     ws2811_return_t renderResults;
 
-    for(int count = 0; count < _numLoops; count++)
+    while(_endTime > time(nullptr))
     {
         for(u_int32_t counter = 0; counter < _ledWrapper->getNumberLeds(); counter++)
         {
@@ -29,7 +29,9 @@ void ShowChaser::startShow()
             Ws2811Wrapper::waitMillSec(_wait);
 
         }
-         _ledWrapper->clearLeds();
+
+        Ws2811Wrapper::waitMillSec(_wait);
+        _ledWrapper->clearLeds();
     }
 }
 

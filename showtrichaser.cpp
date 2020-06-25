@@ -14,7 +14,7 @@ void ShowTriChaser::startShow()
     ws2811_return_t renderResults = WS2811_SUCCESS;
     ws2811_led_t curcolor = _color1;
 
-    for(int counter = 0; counter < _numLoops; counter++)
+    while(_endTime > time(nullptr))
     {
 
         for(uint32_t i=0; i < _ledWrapper->getNumberLeds(); i++)

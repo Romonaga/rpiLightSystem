@@ -27,6 +27,7 @@
 #include "showcolor.h"
 #include "showcolorevery.h"
 #include "showtwinkle.h"
+#include "showPulse.h"
 
 LightSystem::LightSystem(QObject *parent) : QObject(parent)
 {
@@ -43,7 +44,7 @@ LightSystem::LightSystem(QObject *parent) : QObject(parent)
 
 LightSystem::~LightSystem()
 {
-    _logger->logInfo("~LightSystem Going Offline");
+
     if(_mqq != nullptr)
     {
         stopSystem();
@@ -51,6 +52,8 @@ LightSystem::~LightSystem()
 
     }
     _ledWrapper.clearLeds();
+
+    _logger->logInfo("~LightSystem Offline");
 }
 
 const char *LightSystem::getEnumName(int index)
@@ -64,10 +67,11 @@ void LightSystem::startShows()
 
     if(_running) return;
 
-    _logger->logInfo("LightSystem::startShows Starting");
     _running = true;
     runShow();
+
     _logger->logInfo("LightSystem::startShows Started");
+
 }
 
 
@@ -75,7 +79,6 @@ void LightSystem::stopShows()
 {
     if(false == _running) return;
 
-    _logger->logInfo("LightSystem::stopShows Stopping");
    _running = false;
 
     if(_runningShows.count() > 0)
@@ -91,6 +94,7 @@ void LightSystem::saveuserPlayList(QJsonObject jsonObject)
 
     info << "saveuserPlayList " << jsonObject.value("playlistName").toString().toStdString().c_str();
     _logger->logInfo(info.str());
+
     PlayListManager pmanager;
     if(_runningShows.count() != 0)
         pmanager.savePlayList(jsonObject.value("playlistName").toString(), jsonObject.value("UserID").toString().toInt(), _runningShows);
@@ -133,30 +137,36 @@ void LightSystem::playuserPlayList(QJsonObject jsonObject)
 
 }
 
-void LightSystem::processShows(QString msg, QJsonObject jsonObject)
+void LightSystem::processShow(QString msg, QJsonObject jsonObject)
 {
+
     if(jsonObject.value("powerOn").isString())
         startShows();
 
     if(jsonObject.value("brightness").isString())
+    {
+
         _ledWrapper.setBrightness(jsonObject.value("brightness").toString().toInt());
 
-    if(jsonObject.value("shows").isString())
-    {
-
-        queueShow(static_cast<LedLightShows>(jsonObject.value("shows").toString().toInt()),msg);
+        if(_runningShows.count() > 0)
+        {
+            if(_runningShows[0]->isRunning() == false)
+               _ledWrapper.show();
+        }
     }
-    /*else
-    {
-        QJsonArray jsonArray = jsonObject["shows"].toArray();
 
-        foreach (const QJsonValue & value, jsonArray)
-            queueShow(static_cast<LedLightShows>(value.toString().toInt()), msg);
-    }*/
+    if(jsonObject.value("shows").isString())
+        queueShow(static_cast<LedLightShows>(jsonObject.value("shows").toString().toInt()),msg);
 }
 
 void LightSystem::processPower(QJsonObject jsonObject, QString state)
 {
+
+    std::stringstream info;
+
+    info << "LightSystem::processPower state(" << state.toStdString().c_str() << ")";
+    _logger->logInfo(info.str());
+
     state = jsonObject.value("state").toString();
 
     if(state == "ON")
@@ -191,7 +201,10 @@ void LightSystem::clearQueue()
 
 void LightSystem::processMsgReceived(QString msg)
 {
-   fprintf(stderr," LightSystem::processMsgReceived: %s\r\n", msg.toStdString().c_str());
+   std::stringstream info;
+
+   info << "LightSystem::processMsgReceived: " << msg.toStdString().c_str();
+   _logger->logDebug(info.str());
 
     QJsonObject jsonObject;
     QString state;
@@ -225,7 +238,7 @@ void LightSystem::processMsgReceived(QString msg)
             }
             else
             {
-                processShows(msg, jsonObject);
+                processShow(msg, jsonObject);
             }
 
         }
@@ -326,6 +339,10 @@ void LightSystem::queueShow(const LedLightShows& show, const QString& showParms)
 
         case TwinkleOverlay:
             _runningShows.append(new ShowTwinkle(&_ledWrapper, show, showParms));
+            break;
+
+        case PulseOverlay:
+            _runningShows.append(new ShowPulse(&_ledWrapper, show, showParms));
             break;
 
     default:

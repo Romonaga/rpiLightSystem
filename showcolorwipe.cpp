@@ -12,7 +12,7 @@ ShowColorWipe::ShowColorWipe(Ws2811Wrapper* ledWrapper, const LedLightShows &lig
 void ShowColorWipe::startShow()
 {
 
-    for(int counter = 0; counter < _numLoops; counter++)
+     while(_endTime > time(nullptr))
     {
 
         for(uint32_t i=0; i < _ledWrapper->getNumberLeds(); i++)

@@ -17,7 +17,7 @@ void ShowColor3::startShow()
     u_int32_t third = _ledWrapper->getNumberLeds() / 3;
 
 
-    for(u_int32_t count = 0; count < _numLoops; count++)
+    while(_endTime > time(nullptr))
     {
         u_int32_t counter = 0;
         u_int32_t  currentDivision = third;
