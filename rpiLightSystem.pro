@@ -32,6 +32,31 @@ SOURCES += main.cpp \
     showtheaterchaserainbow.cpp \
     showtrichaser.cpp \
     showtwinkle.cpp \
+    src/ilightshow.cpp \
+    src/lightsystem.cpp \
+    src/main.cpp \
+    src/mqttreceiver.cpp \
+    src/playlistmanager.cpp \
+    src/showPulse.cpp \
+    src/showblink.cpp \
+    src/showchaser.cpp \
+    src/showcolor.cpp \
+    src/showcolor3.cpp \
+    src/showcolor3r.cpp \
+    src/showcolor4.cpp \
+    src/showcolorevery.cpp \
+    src/showcolorwipe.cpp \
+    src/showcyclon.cpp \
+    src/showflame.cpp \
+    src/showhnh.cpp \
+    src/showneorand.cpp \
+    src/showrainbow.cpp \
+    src/showrainbowcycle.cpp \
+    src/showtheaterchaser.cpp \
+    src/showtheaterchaserainbow.cpp \
+    src/showtrichaser.cpp \
+    src/showtwinkle.cpp \
+    src/systemsettings.cpp \
     systemsettings.cpp
 
 # The following define makes your compiler emit warnings if you use
@@ -46,7 +71,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
-    ilightshow.h \
     lightsystem.h \
     mqttreceiver.h \
     playlistmanager.h \
@@ -69,6 +93,30 @@ HEADERS += \
     showtheaterchaserainbow.h \
     showtrichaser.h \
     showtwinkle.h \
+    src/ilightshow.h \
+    src/lightsystem.h \
+    src/mqttreceiver.h \
+    src/playlistmanager.h \
+    src/showPulse.h \
+    src/showblink.h \
+    src/showchaser.h \
+    src/showcolor.h \
+    src/showcolor3.h \
+    src/showcolor3r.h \
+    src/showcolor4.h \
+    src/showcolorevery.h \
+    src/showcolorwipe.h \
+    src/showcyclon.h \
+    src/showflame.h \
+    src/showhnh.h \
+    src/showneorand.h \
+    src/showrainbow.h \
+    src/showrainbowcycle.h \
+    src/showtheaterchaser.h \
+    src/showtheaterchaserainbow.h \
+    src/showtrichaser.h \
+    src/showtwinkle.h \
+    src/systemsettings.h \
     systemsettings.h
 
 LIBS += -lWs2811Wrapper
