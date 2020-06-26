@@ -78,6 +78,6 @@ LIBS += -lMQTTMessageBus
 LIBS += -lDNRLogger
 
 unix {
-    target.path = /usr/local/bin
+    target.path = /lumawin
     INSTALLS += target
 }

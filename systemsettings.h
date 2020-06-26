@@ -46,6 +46,10 @@ public:
 
     void setBrightness(int brightness);
 
+    bool getLogShows() const;
+
+    int getSystemId() const;
+
 private:
     SystemSettings();
     static SystemSettings* _instance;
@@ -60,12 +64,14 @@ private:
     //System Setings From DB
     QString _systemName;
     int _stripType;
+    int _systemId;
     uint16_t _stripHeight;
     uint16_t _stripWidth;
     short _dma;
     short _gpio;
     int _brightness;
     bool _dbgLog;
+    bool _logShows;
 
 };
 

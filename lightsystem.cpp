@@ -1,11 +1,17 @@
-#include "lightsystem.h"
-#include "playlistmanager.h"
 #include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QSqlRecord>
+
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonValue>
 #include <QDebug>
+
+//LightShow system
+#include "lightsystem.h"
+#include "playlistmanager.h"
 
 
 //Shows
@@ -357,6 +363,49 @@ void LightSystem::queueShow(const LedLightShows& show, const QString& showParms)
     if(kickOff) runShow();
 }
 
+void LightSystem::logShow(ILightShow* show)
+{
+    if(false == _settings->getLogShows()) return;
+
+    QSqlDatabase database = QSqlDatabase().addDatabase("QMYSQL","logShow");
+    database.setHostName(_settings->getServer());
+    database.setUserName(_settings->getUser());
+    database.setPassword(_settings->getPwd());
+    database.setDatabaseName(_settings->getDataBase());
+
+    if(database.open())
+    {
+        std::stringstream sql;
+
+
+        sql << "insert into showsRan(userID, systemID, showId, showParms) values(" <<
+                show->getUserId() << "," <<
+                _settings->getSystemId() << "," <<
+                static_cast<int>(show->getLightShow()) << ",'" <<
+                show->getShowParms().toStdString().c_str() << "')" ;
+
+        QSqlQuery result(sql.str().c_str(), database);
+        if(result.lastError().type() != QSqlError::NoError)
+        {
+            _logger->logInfo(result.lastError().text().toStdString());
+
+        }
+
+        database.close();
+
+
+    }
+    else
+    {
+        _logger->logInfo(database.lastError().text().toStdString());
+
+    }
+
+    QSqlDatabase::removeDatabase("logShow");
+
+}
+
+
 void LightSystem::runShow()
 {
     if(false == _running) return;
@@ -369,8 +418,10 @@ void LightSystem::runShow()
         info.str("");
         info << "LightSystem::runShow(" << _runningShows[0]->getShowName().toStdString().c_str() << ")";
         _logger->logInfo(info.str());
+
         connect(_runningShows[0], SIGNAL(showComplete(ILightShow*)), this, SLOT(showComplete(ILightShow*)));
         _runningShows[0]->start();
+
     }
 }
 
@@ -398,8 +449,10 @@ void LightSystem::showComplete(ILightShow* show)
     info << "LightSystem::showComplete Show(" <<  show->getShowName().toStdString().c_str() << ")";
     _logger->logInfo(info.str());
     show->stopShow();
+    logShow(show);
     cleanUpShow(show);
     runShow();
+
 }
 
 

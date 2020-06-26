@@ -66,6 +66,8 @@ public:
     bool isRunning() const;
     int genRand(int min, int max);
 
+    int getUserId() const;
+
 private:
     virtual void startShow() = 0;
 
@@ -74,6 +76,8 @@ protected:
     Ws2811Wrapper* _ledWrapper;
     LedLightShows _lightShow;
     QString _showParms;
+    int _userId;
+
 
     bool _running;
     DNRLogger* _logger;

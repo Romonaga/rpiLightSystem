@@ -16,6 +16,11 @@ SystemSettings::SystemSettings()
 
 }
 
+bool SystemSettings::getLogShows() const
+{
+    return _logShows;
+}
+
 void SystemSettings::setBrightness(int brightness)
 {
     _brightness = brightness;
@@ -71,6 +76,12 @@ bool SystemSettings::settingsExists()
     return QFileInfo(_mmConfFile).exists();
 }
 
+int SystemSettings::getSystemId() const
+{
+    return _systemId;
+}
+
+
 void SystemSettings::loadSystemSettings()
 {
    
@@ -92,6 +103,7 @@ void SystemSettings::loadSystemSettings()
         if(qry.lastError().type() == QSqlError::NoError)
         {
             qry.next();
+            _systemId = qry.value("ID").toInt();
             _systemName = qry.value("systemName").toString();
             _stripType = qry.value("stripType").toUInt();
             _stripHeight = qry.value("stripHeight").toUInt();
@@ -130,7 +142,8 @@ bool SystemSettings::loadSettings()
             settings.beginGroup("SETTINGS");
 
             _mqttBroker = settings.value("MQTTBroker","").toString();
-            _dbgLog = settings.value("DBGLOG","").toBool();
+            _dbgLog = settings.value("DBGLOG",false).toBool();
+            _logShows = settings.value("LOGSHOWS", false).toBool();
             settings.endGroup();
 
             loadSystemSettings();

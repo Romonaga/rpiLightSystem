@@ -47,6 +47,7 @@ private:
 
     void processShow(QString msg, QJsonObject jsonObject);
     void processPower(QJsonObject jsonObject);
+    void logShow(ILightShow* show);
 
     unsigned int random9();
     uint32_t Bow(int n);

@@ -35,6 +35,10 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
        {
 
             jsonObject = doc.object();
+
+            if(jsonObject.value("UserID").isString())
+                _userId = jsonObject.value("UserID").toString().toInt();
+
             if(jsonObject.value("brightness").isString())
                 _ledWrapper->setBrightness(jsonObject.value("brightness").toString().toInt());
 
@@ -167,5 +171,10 @@ bool ILightShow::isRunning() const
 int ILightShow::genRand(int min, int max)
 {
    return (rand() % max) + min;
+}
+
+int ILightShow::getUserId() const
+{
+    return _userId;
 }
 
