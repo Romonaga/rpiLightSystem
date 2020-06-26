@@ -8,31 +8,7 @@ CONFIG += console
 CONFIG -= app_bundle
 
 TEMPLATE = app
-SOURCES += main.cpp \
-    ilightshow.cpp \
-    lightsystem.cpp \
-    mqttreceiver.cpp \
-    playlistmanager.cpp \
-    showPulse.cpp \
-    showblink.cpp \
-    showchaser.cpp \
-    showcolor.cpp \
-    showcolor3.cpp \
-    showcolor3r.cpp \
-    showcolor4.cpp \
-    showcolorevery.cpp \
-    showcolorwipe.cpp \
-    showcyclon.cpp \
-    showflame.cpp \
-    showhnh.cpp \
-    showneorand.cpp \
-    showrainbow.cpp \
-    showrainbowcycle.cpp \
-    showtheaterchaser.cpp \
-    showtheaterchaserainbow.cpp \
-    showtrichaser.cpp \
-    showtwinkle.cpp \
-    src/ilightshow.cpp \
+SOURCES += src/ilightshow.cpp \
     src/lightsystem.cpp \
     src/main.cpp \
     src/mqttreceiver.cpp \
@@ -56,8 +32,7 @@ SOURCES += main.cpp \
     src/showtheaterchaserainbow.cpp \
     src/showtrichaser.cpp \
     src/showtwinkle.cpp \
-    src/systemsettings.cpp \
-    systemsettings.cpp
+    src/systemsettings.cpp 
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -71,28 +46,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
-    lightsystem.h \
-    mqttreceiver.h \
-    playlistmanager.h \
-    showPulse.h \
-    showblink.h \
-    showchaser.h \
-    showcolor.h \
-    showcolor3.h \
-    showcolor3r.h \
-    showcolor4.h \
-    showcolorevery.h \
-    showcolorwipe.h \
-    showcyclon.h \
-    showflame.h \
-    showhnh.h \
-    showneorand.h \
-    showrainbow.h \
-    showrainbowcycle.h \
-    showtheaterchaser.h \
-    showtheaterchaserainbow.h \
-    showtrichaser.h \
-    showtwinkle.h \
     src/ilightshow.h \
     src/lightsystem.h \
     src/mqttreceiver.h \
@@ -116,8 +69,7 @@ HEADERS += \
     src/showtheaterchaserainbow.h \
     src/showtrichaser.h \
     src/showtwinkle.h \
-    src/systemsettings.h \
-    systemsettings.h
+    src/systemsettings.h 
 
 LIBS += -lWs2811Wrapper
 LIBS += -lws2811
