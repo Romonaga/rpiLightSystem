@@ -16,6 +16,41 @@ SystemSettings::SystemSettings()
 
 }
 
+short SystemSettings::getLightFeatureGpio() const
+{
+    return _lightFeatureGpio;
+}
+
+short SystemSettings::getMotionFeatureGpio() const
+{
+    return _motionFeatureGpio;
+}
+
+uint16_t SystemSettings::getLightPlayList() const
+{
+    return _lightPlayList;
+}
+
+uint16_t SystemSettings::getMotionPlayList() const
+{
+    return _motionPlayList;
+}
+
+uint16_t SystemSettings::getMotionDelayOff() const
+{
+    return _motionDelayOff;
+}
+
+bool SystemSettings::getUseLightFeature() const
+{
+    return _useLightFeature;
+}
+
+bool SystemSettings::getUseMotionFeature() const
+{
+    return _useMotionFeature;
+}
+
 bool SystemSettings::getLogShows() const
 {
     return _logShows;
@@ -111,6 +146,15 @@ void SystemSettings::loadSystemSettings()
             _dma = qry.value("dma").toInt();
             _gpio = qry.value("gpio").toInt();
             _brightness = qry.value("brightness").toInt();
+            _useMotionFeature = qry.value("useMotionFeature").toBool();
+            _useLightFeature = qry.value("useLightFeature").toBool();
+            _motionDelayOff = qry.value("motionDelayOff").toUInt();
+            _motionPlayList = qry.value("motionPlayList").toUInt();
+            _lightPlayList = qry.value("lightPlayList").toUInt();
+            _motionFeatureGpio = qry.value("motionFeatureGpio").toInt();
+            _lightFeatureGpio = qry.value("lightFeatureGpio").toInt();
+
+
 
         }
         else

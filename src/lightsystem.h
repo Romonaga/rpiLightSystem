@@ -13,6 +13,8 @@
 #include "mqttreceiver.h"
 #include "dnrlogger.h"
 #include "ilightshow.h"
+#include "motionlightsfeature.h"
+#include "lightsensorfeature.h"
 
 //broker = "RomoServer.local";
 //topic = "MotionDetect/#";
@@ -32,6 +34,8 @@ public:
     const char *getEnumName(int index);
 
 
+    void playPlayList(QString playList);
+
 private:
     SystemSettings* _settings;
     void lightsOff();
@@ -47,6 +51,8 @@ private:
 
     void processShow(QString msg, QJsonObject jsonObject);
     void processPower(QJsonObject jsonObject);
+    void chgBrightness(QJsonObject jsonObject);
+
     void logShow(ILightShow* show);
 
     unsigned int random9();
@@ -81,12 +87,17 @@ private:
     DNRLogger* _logger;
     QVector<ILightShow*> _runningShows;
     QMutex _runningShowsMutex;
+    MotionLightsFeature* _motionFeature;
+    LightSensorFeature* _lightSensorFeature;
+
     
 
 
 public slots:
     void processMsgReceived(QString msg);
     void showComplete(ILightShow* show);
+    void motionStateChange(MotionLightsFeature* feature, int state);
+    void lightStateChange(LightSensorFeature* feature, int state);
 
 
 };

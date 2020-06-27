@@ -35,6 +35,9 @@
 #include "showtwinkle.h"
 #include "showPulse.h"
 
+
+
+
 LightSystem::LightSystem(QObject *parent) : QObject(parent)
 {
     _settings = SystemSettings::getInstance();
@@ -44,6 +47,8 @@ LightSystem::LightSystem(QObject *parent) : QObject(parent)
     _mqq = nullptr;
     _logger = DNRLogger::instance();
     _logger->setDebugOut(_settings->getDbgLog());
+    _motionFeature = nullptr;
+    _lightSensorFeature = nullptr;
 
 }
 
@@ -54,9 +59,20 @@ LightSystem::~LightSystem()
     if(_mqq != nullptr)
     {
         stopSystem();
-
-
     }
+
+    if(_motionFeature)
+    {
+        _motionFeature->stop();
+        delete _motionFeature;
+    }
+
+    if(_lightSensorFeature)
+    {
+        _lightSensorFeature->stop();
+        delete _lightSensorFeature;
+    }
+
     _ledWrapper.clearLeds();
 
     _logger->logInfo("~LightSystem Offline");
@@ -116,15 +132,9 @@ void LightSystem::deleteuserPlayList(QJsonObject jsonObject)
     pmanager.deletePlayList(jsonObject.value("UserID").toString().toInt(), jsonObject.value("playlistName").toString().toInt());
 }
 
-void LightSystem::playuserPlayList(QJsonObject jsonObject)
+
+void LightSystem::playPlayList(QString playList)
 {
-    std::stringstream info;
-
-    info << "playuserPlayList " << jsonObject.value("playlistName").toString().toStdString().c_str();;
-    _logger->logInfo(info.str());
-
-    PlayListManager pmanager;
-    QString playList = pmanager.getPlayList(jsonObject.value("UserID").toString().toInt(),jsonObject.value("playlistName").toString().toInt());
     QJsonDocument doc = QJsonDocument::fromJson(playList.toUtf8());
 
     if(!doc.isNull())
@@ -140,30 +150,35 @@ void LightSystem::playuserPlayList(QJsonObject jsonObject)
 
         }
     }
+}
+
+void LightSystem::playuserPlayList(QJsonObject jsonObject)
+{
+    std::stringstream info;
+
+    info << "playuserPlayList " << jsonObject.value("playlistName").toString().toStdString().c_str();;
+    _logger->logInfo(info.str());
+
+    PlayListManager pmanager;
+    QString playList = pmanager.getPlayList(jsonObject.value("UserID").toString().toInt(),jsonObject.value("playlistName").toString().toInt());
+    playPlayList(playList);
 
 }
 
 void LightSystem::processShow(QString msg, QJsonObject jsonObject)
 {
 
-    if(jsonObject.value("powerOn").isString())
-        startShows();
-
-    if(jsonObject.value("brightness").isString())
+    if(jsonObject.value("show").isString())
     {
-
-        _ledWrapper.setBrightness(jsonObject.value("brightness").toString().toInt());
-
-        if(_runningShows.count() > 0)
+        if(jsonObject.value("powerOn").isString())
         {
-            if(_runningShows[0]->isRunning() == false)
-               _ledWrapper.show();
+            startShows();
         }
+        queueShow(static_cast<LedLightShows>(jsonObject.value("show").toString().toInt()),msg);
     }
 
-    if(jsonObject.value("shows").isString())
-        queueShow(static_cast<LedLightShows>(jsonObject.value("shows").toString().toInt()),msg);
 }
+
 
 void LightSystem::processPower(QJsonObject jsonObject)
 {
@@ -204,6 +219,23 @@ void LightSystem::clearQueue()
     }
 }
 
+void LightSystem::chgBrightness(QJsonObject jsonObject)
+{
+    if(jsonObject.value("chgBrightness").isString())
+    {
+
+        _ledWrapper.setBrightness(jsonObject.value("chgBrightness").toString().toInt());
+
+        if(_runningShows.count() > 0)
+        {
+            if(_runningShows[0]->isRunning() == false)
+               _ledWrapper.show();
+        }
+    }
+
+}
+
+
 void LightSystem::processMsgReceived(QString msg)
 {
    std::stringstream info;
@@ -223,6 +255,10 @@ void LightSystem::processMsgReceived(QString msg)
             if(jsonObject.value("state").isString())
             {
                 processPower(jsonObject);
+            }
+            else if(jsonObject.value("chgBrightness").isString())
+            {
+                chgBrightness(jsonObject);
             }
             else if(jsonObject.value("savePlaylist").toInt())
             {
@@ -493,6 +529,25 @@ bool LightSystem::startSystem()
        _ledWrapper.setBrightness(_settings->getBrightness());
        _ledWrapper.setClearOnExit(true);
 
+       _logger->logInfo("Checking / Loading Features");
+       if(true == _settings->getUseMotionFeature())
+       {
+           _logger->logInfo("Starting MotionLights Feature");
+           _motionFeature = new MotionLightsFeature();
+           connect(_motionFeature, SIGNAL(motionLightsStateChange(MotionLightsFeature*, int)), this, SLOT(motionStateChange(MotionLightsFeature*, int)));
+           _motionFeature->start();
+       }
+
+       if(true == _settings->getUseLightFeature())
+       {
+           _logger->logInfo("Starting LightSensor Feature");
+           _lightSensorFeature = new LightSensorFeature();
+
+           connect(_lightSensorFeature, SIGNAL(lightSensorStateChange(LightSensorFeature*, int)), this, SLOT(lightStateChange(LightSensorFeature*, int)));
+           _lightSensorFeature->start();
+       }
+
+
     }
     else
     {
@@ -512,3 +567,48 @@ void LightSystem::stopSystem()
 }
 
 
+void LightSystem::motionStateChange(MotionLightsFeature* feature, int state)
+{
+    (void)feature;
+
+    std::stringstream info;
+
+    info << "motionStatechange: " << state;
+    if(state == 1 && _runningShows.count() == 0)
+    {
+        PlayListManager pmanager;
+        QString playList = pmanager.getPlayList(_settings->getMotionPlayList());
+        playPlayList(playList);
+        startShows();
+    }
+    else if(state == 0)
+    {
+        stopShows();
+        _ledWrapper.clearLeds();
+    }
+
+    _logger->logInfo(info.str());
+}
+
+void LightSystem::lightStateChange(LightSensorFeature *feature, int state)
+{
+    (void)feature;
+    std::stringstream info;
+
+    info << "lightStateChange: " << state;
+    if(state == 0 && _runningShows.count() == 0)
+    {
+        PlayListManager pmanager;
+        QString playList = pmanager.getPlayList(_settings->getLightPlayList());
+        playPlayList(playList);
+        startShows();
+    }
+    else if(state == 1)
+    {
+        stopShows();
+        _ledWrapper.clearLeds();
+    }
+
+    _logger->logInfo(info.str());
+
+}

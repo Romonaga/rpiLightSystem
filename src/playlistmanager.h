@@ -18,6 +18,7 @@ public:
     ~PlayListManager();
     bool savePlayList(const QString& name, int32_t userId, const QVector<ILightShow*>& shows);
     QString getPlayList(int32_t userId, int32_t playlistID);
+    QString getPlayList(int32_t playlistID);
     bool deletePlayList(int32_t userId, int32_t playlistID);
 
 

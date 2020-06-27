@@ -50,6 +50,20 @@ public:
 
     int getSystemId() const;
 
+    bool getUseMotionFeature() const;
+
+    bool getUseLightFeature() const;
+
+    uint16_t getMotionDelayOff() const;
+
+    uint16_t getMotionPlayList() const;
+
+    uint16_t getLightPlayList() const;
+
+    short getMotionFeatureGpio() const;
+
+    short getLightFeatureGpio() const;
+
 private:
     SystemSettings();
     static SystemSettings* _instance;
@@ -72,6 +86,17 @@ private:
     int _brightness;
     bool _dbgLog;
     bool _logShows;
+    bool _useMotionFeature;
+    bool _useLightFeature;
+    uint16_t _motionDelayOff;
+
+    uint16_t _motionPlayList;
+    uint16_t _lightPlayList;
+    short _motionFeatureGpio;
+    short _lightFeatureGpio;
+
+
+
 
 };
 

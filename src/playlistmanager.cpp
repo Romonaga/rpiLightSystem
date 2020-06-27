@@ -65,7 +65,7 @@ bool PlayListManager::savePlayList(const QString &name, int32_t userId, const QV
 
     }
 
-    QSqlDatabase::removeDatabase("playListManager");
+  //  QSqlDatabase::removeDatabase("playListManager");
     return retVal;
 
 }
@@ -104,9 +104,46 @@ QString PlayListManager::getPlayList(int32_t userId, int32_t playlistID)
         _logger->logInfo(database.lastError().text().toStdString());
     }
 
-    QSqlDatabase::removeDatabase("playListManager");
+   // QSqlDatabase::removeDatabase("playListManager");
     return playList;
 }
+
+QString PlayListManager::getPlayList(int32_t playlistID)
+{
+    QString playList;
+
+    QSqlDatabase database = QSqlDatabase().addDatabase("QMYSQL","playListManager");
+    database.setHostName(_settings->getServer());
+    database.setUserName(_settings->getUser());
+    database.setPassword(_settings->getPwd());
+    database.setDatabaseName(_settings->getDataBase());
+
+    if(database.open())
+    {
+        std::stringstream sql;
+        sql << "select showParms from userPlaylist where ID = " << playlistID;
+        QSqlQuery result(sql.str().c_str(), database);
+        if(result.lastError().type() == QSqlError::NoError)
+        {
+            result.next();
+            playList = result.value("showParms").toString();
+
+        }
+        else
+        {
+            _logger->logInfo(result.lastError().text().toStdString());
+        }
+        database.close();
+    }
+    else
+    {
+        _logger->logInfo(database.lastError().text().toStdString());
+    }
+
+   // QSqlDatabase::removeDatabase("playListManager");
+    return playList;
+}
+
 
 
 bool PlayListManager::deletePlayList(int32_t userId, int32_t playlistID)
@@ -138,6 +175,6 @@ bool PlayListManager::deletePlayList(int32_t userId, int32_t playlistID)
         _logger->logInfo(database.lastError().text().toStdString());
     }
     }
-    QSqlDatabase::removeDatabase("playListManager");
+   // QSqlDatabase::removeDatabase("playListManager");
     return retVal;
 }
