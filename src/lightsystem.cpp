@@ -135,12 +135,14 @@ void LightSystem::deleteuserPlayList(QJsonObject jsonObject)
 
 void LightSystem::playPlayList(QString playList)
 {
+
     QJsonDocument doc = QJsonDocument::fromJson(playList.toUtf8());
 
     if(!doc.isNull())
     {
         if(doc.isArray())
         {
+
             QJsonArray jsonArray = doc.array();
             foreach (QJsonValue info, jsonArray)
             {
@@ -547,6 +549,14 @@ bool LightSystem::startSystem()
            _lightSensorFeature->start();
        }
 
+       if(true == _settings->getUseTimeFeature())
+       {
+           _logger->logInfo("Starting Time Feature");
+           _timeFeature = new TimeFeature();
+
+           connect(_timeFeature, SIGNAL(timeStateChange(TimeFeature*, int)), this, SLOT(timeStateChange(TimeFeature*, int)));
+           _timeFeature->start();
+       }
 
     }
     else
@@ -595,9 +605,15 @@ void LightSystem::lightStateChange(LightSensorFeature *feature, int state)
     (void)feature;
     std::stringstream info;
 
-    info << "lightStateChange: " << state;
+    info << "LightSystem::lightStateChange: " << state;
+    _logger->logInfo(info.str());
+
     if(state == 0 && _runningShows.count() == 0)
     {
+        info.str("");
+        info << "lightStateChange Run PlayList(" << _settings->getLightPlayList() << ")";
+        _logger->logInfo(info.str());
+
         PlayListManager pmanager;
         QString playList = pmanager.getPlayList(_settings->getLightPlayList());
         playPlayList(playList);
@@ -605,10 +621,43 @@ void LightSystem::lightStateChange(LightSensorFeature *feature, int state)
     }
     else if(state == 1)
     {
+        info.str("");
+       info << "lightStateChange Stop Lights";
+       _logger->logInfo(info.str());
         stopShows();
         _ledWrapper.clearLeds();
     }
 
+
+
+}
+
+
+void LightSystem::timeStateChange(TimeFeature *feature, int state)
+{
+    (void)feature;
+    std::stringstream info;
+
+    info << "LightSystem::timeStateChange: " << state;
     _logger->logInfo(info.str());
 
+    if(state == 1 && _runningShows.count() == 0)
+    {
+        info.str("");
+        info << "timeStateChange Run PlayList(" << _settings->getTimePlayList() << ")";
+        _logger->logInfo(info.str());
+
+        PlayListManager pmanager;
+        QString playList = pmanager.getPlayList(_settings->getTimePlayList());
+        playPlayList(playList);
+        startShows();
+    }
+    else if(state == 0)
+    {
+        info.str("");
+       info << "timeStateChange Stop Lights";
+       _logger->logInfo(info.str());
+        stopShows();
+        _ledWrapper.clearLeds();
+    }
 }

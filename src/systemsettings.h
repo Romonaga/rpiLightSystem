@@ -64,6 +64,14 @@ public:
 
     short getLightFeatureGpio() const;
 
+    bool getUseTimeFeature() const;
+
+    QString getTimeFeatureStart() const;
+
+    QString getTimeFeatureEnd() const;
+
+    uint16_t getTimePlayList() const;
+
 private:
     SystemSettings();
     static SystemSettings* _instance;
@@ -88,13 +96,18 @@ private:
     bool _logShows;
     bool _useMotionFeature;
     bool _useLightFeature;
+    bool _useTimeFeature;
+
     uint16_t _motionDelayOff;
 
     uint16_t _motionPlayList;
     uint16_t _lightPlayList;
+    uint16_t _timePlayList;
     short _motionFeatureGpio;
     short _lightFeatureGpio;
 
+    QString _timeFeatureStart;
+    QString _timeFeatureEnd;
 
 
 

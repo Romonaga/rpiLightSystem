@@ -17,6 +17,7 @@ class LightSensorFeature : public QThread
 
 public:
     explicit LightSensorFeature();
+    ~LightSensorFeature();
     void stop();
 
 private:

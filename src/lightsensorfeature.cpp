@@ -9,11 +9,14 @@ LightSensorFeature::LightSensorFeature()
 {
     _logger = DNRLogger::instance();
     _settings = SystemSettings::getInstance();
-    _pinLastState = -1;
+    _pinLastState = 1;
     _noMotionTimer = 0;
+}
+
+LightSensorFeature::~LightSensorFeature()
+{
     stop();
     _logger->logInfo("LightSensorFeature Shutting Down.");
-
 }
 
 void LightSensorFeature::run()

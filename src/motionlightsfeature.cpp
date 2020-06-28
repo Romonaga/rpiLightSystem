@@ -9,11 +9,17 @@ MotionLightsFeature::MotionLightsFeature()
 {
     _logger = DNRLogger::instance();
     _settings = SystemSettings::getInstance();
-    _pinLastState = -1;
+    _pinLastState = 0;
     _noMotionTimer = 0;
     stop();
     _logger->logInfo("MotionLightsFeature Shutting Down.");
 
+}
+
+MotionLightsFeature::~MotionLightsFeature()
+{
+    stop();
+    _logger->logInfo("MotionLightsFeature Shutting Down.");
 }
 
 void MotionLightsFeature::run()

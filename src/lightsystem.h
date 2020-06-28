@@ -15,6 +15,7 @@
 #include "ilightshow.h"
 #include "motionlightsfeature.h"
 #include "lightsensorfeature.h"
+#include "timefeature.h"
 
 //broker = "RomoServer.local";
 //topic = "MotionDetect/#";
@@ -89,6 +90,8 @@ private:
     QMutex _runningShowsMutex;
     MotionLightsFeature* _motionFeature;
     LightSensorFeature* _lightSensorFeature;
+    TimeFeature* _timeFeature;
+
 
     
 
@@ -98,6 +101,7 @@ public slots:
     void showComplete(ILightShow* show);
     void motionStateChange(MotionLightsFeature* feature, int state);
     void lightStateChange(LightSensorFeature* feature, int state);
+    void timeStateChange(TimeFeature* feature, int state);
 
 
 };

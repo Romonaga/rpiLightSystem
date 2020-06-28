@@ -150,7 +150,6 @@ bool PlayListManager::deletePlayList(int32_t userId, int32_t playlistID)
 {
     bool retVal = false;
 
-    {
     QSqlDatabase database = QSqlDatabase().addDatabase("QMYSQL","playListManager");
     database.setHostName(_settings->getServer());
     database.setUserName(_settings->getUser());
@@ -173,7 +172,6 @@ bool PlayListManager::deletePlayList(int32_t userId, int32_t playlistID)
     else
     {
         _logger->logInfo(database.lastError().text().toStdString());
-    }
     }
    // QSqlDatabase::removeDatabase("playListManager");
     return retVal;

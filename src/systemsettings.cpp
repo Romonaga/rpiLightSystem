@@ -16,6 +16,26 @@ SystemSettings::SystemSettings()
 
 }
 
+uint16_t SystemSettings::getTimePlayList() const
+{
+    return _timePlayList;
+}
+
+QString SystemSettings::getTimeFeatureEnd() const
+{
+    return _timeFeatureEnd;
+}
+
+QString SystemSettings::getTimeFeatureStart() const
+{
+    return _timeFeatureStart;
+}
+
+bool SystemSettings::getUseTimeFeature() const
+{
+    return _useTimeFeature;
+}
+
 short SystemSettings::getLightFeatureGpio() const
 {
     return _lightFeatureGpio;
@@ -148,12 +168,16 @@ void SystemSettings::loadSystemSettings()
             _brightness = qry.value("brightness").toInt();
             _useMotionFeature = qry.value("useMotionFeature").toBool();
             _useLightFeature = qry.value("useLightFeature").toBool();
+            _useTimeFeature = qry.value("useTimeFeature").toBool();
             _motionDelayOff = qry.value("motionDelayOff").toUInt();
             _motionPlayList = qry.value("motionPlayList").toUInt();
             _lightPlayList = qry.value("lightPlayList").toUInt();
+            _timePlayList = qry.value("timePlayList").toUInt();
             _motionFeatureGpio = qry.value("motionFeatureGpio").toInt();
             _lightFeatureGpio = qry.value("lightFeatureGpio").toInt();
 
+            _timeFeatureStart = qry.value("timeFeatureStart").toString();
+            _timeFeatureEnd = qry.value("timeFeatureEnd").toString();
 
 
         }

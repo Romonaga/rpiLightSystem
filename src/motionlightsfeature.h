@@ -17,6 +17,7 @@ class MotionLightsFeature : public QThread
 
 public:
     explicit MotionLightsFeature();
+    ~MotionLightsFeature();
     void stop();
 
 private:

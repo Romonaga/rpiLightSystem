@@ -34,7 +34,8 @@ SOURCES += src/ilightshow.cpp \
     src/showtheaterchaserainbow.cpp \
     src/showtrichaser.cpp \
     src/showtwinkle.cpp \
-    src/systemsettings.cpp 
+    src/systemsettings.cpp  \
+    src/timefeature.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -73,7 +74,8 @@ HEADERS += \
     src/showtheaterchaserainbow.h \
     src/showtrichaser.h \
     src/showtwinkle.h \
-    src/systemsettings.h 
+    src/systemsettings.h \
+    src/timefeature.h
 
 LIBS += -lWs2811Wrapper
 LIBS += -lws2811
