@@ -514,11 +514,11 @@ bool LightSystem::startSystem()
         info << "start() Settings Host(" << _settings->getHostName().toStdString().c_str() << ") DMA(" << _settings->getDma() << ") GPIO(" <<
                 _settings->getGpio() << ") sType(" << _settings->getStripType() << ") Width(" <<
                 _settings->getStripWidth() << ") Height(" << _settings->getStripHeight() << ") Brightness(" <<
-                _settings->getBrightness() << ") MQTTBroker(" << _settings->getMqttBroker().toStdString().c_str() << ") DebugLog(" <<
+                _settings->getBrightness() << ") useGammaCorrection(" << _settings->getUseGammaCorrection() << ") MQTTBroker(" << _settings->getMqttBroker().toStdString().c_str() << ") DebugLog(" <<
                 _settings->getDbgLog() << ")";
 
        _logger->logInfo(info.str());
-       renderResults = _ledWrapper.initStrip(_settings->getStripWidth(), _settings->getStripHeight(), (LedStripType)_settings->getStripType(), _settings->getDma(), _settings->getGpio());
+       renderResults = _ledWrapper.initStrip(_settings->getStripWidth(), _settings->getStripHeight(), (LedStripType)_settings->getStripType(), _settings->getDma(), _settings->getGpio(), _settings->getUseGammaCorrection());
        if(renderResults != WS2811_SUCCESS)
        {
            info.str("");

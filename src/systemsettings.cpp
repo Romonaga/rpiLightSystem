@@ -136,6 +136,10 @@ int SystemSettings::getSystemId() const
     return _systemId;
 }
 
+bool SystemSettings::getUseGammaCorrection() const
+{
+    return _useGammaCorrection;
+}
 
 void SystemSettings::loadSystemSettings()
 {
@@ -178,6 +182,7 @@ void SystemSettings::loadSystemSettings()
 
             _timeFeatureStart = qry.value("timeFeatureStart").toString();
             _timeFeatureEnd = qry.value("timeFeatureEnd").toString();
+            _useGammaCorrection = qry.value("useGammaCorrection").toBool();
 
 
         }

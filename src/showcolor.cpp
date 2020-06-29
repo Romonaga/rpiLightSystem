@@ -11,14 +11,15 @@ ShowColor::ShowColor(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, 
 void ShowColor::startShow()
 {
 
-
-    for (u_int32_t i = 0; i < _ledWrapper->getNumberLeds(); i++)
+    for(u_int32_t row = 1; row <= _ledWrapper->getHight(); row++)
     {
-      _ledWrapper->setPixelColor(_settings->getStripHeight(), i, _color1);
+        for (u_int32_t led = 0; led < _ledWrapper->getWidth(); led++)
+        {
+          _ledWrapper->setPixelColor(row, led, _color1);
+        }
     }
 
     _ledWrapper->show();
 
 }
-
 
