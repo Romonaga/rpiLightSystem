@@ -73,6 +73,12 @@ LightSystem::~LightSystem()
         delete _lightSensorFeature;
     }
 
+    if(_timeFeature)
+    {
+        _timeFeature->stop();
+        delete _timeFeature;
+    }
+
     _ledWrapper.clearLeds();
 
     _logger->logInfo("~LightSystem Offline");

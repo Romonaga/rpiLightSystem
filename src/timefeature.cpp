@@ -3,7 +3,7 @@
 #include <QTime>
 #include <QDateTime>
 #include <time.h>
-
+#include <sstream>
 
 
 
@@ -25,29 +25,28 @@ void TimeFeature::run()
     std::mutex mtx;
     std::unique_lock<std::mutex> lck(mtx);
 
-     _logger->logInfo("TimeFeature run.");
-
     QTime startTime;
     QTime endTime;
     bool addDay = false;
+    std::stringstream info;
 
     startTime = QTime::fromString(_settings->getTimeFeatureStart(),"HH:mm");
     endTime = QTime::fromString(_settings->getTimeFeatureEnd(),"HH:mm");
 
     if(startTime.hour() > endTime.hour()) addDay = true;
 
-    qDebug() << "QT Start: " << startTime << " End: " << endTime;
+    QDateTime start = QDateTime(QDateTime::currentDateTime().date(), startTime);
+    QDateTime end = (addDay == true) ? QDateTime(QDateTime::currentDateTime().date().addDays(1), endTime) : QDateTime(QDateTime::currentDateTime().date(), endTime);
+    _startTime = start.toSecsSinceEpoch();
+    _endTime = end.toSecsSinceEpoch();
+
+    info << "Time Feature Start(" << start.toString().toStdString().c_str() << ") End(" << end.toString().toStdString().c_str() << ")";
+    _logger->logInfo(info.str());
 
     _running = true;
 
     while(_conditionVar.wait_for(lck,std::chrono::milliseconds(300)) == std::cv_status::timeout && _running == true) //todo remove hardcoded wait_for
     {
-
-        _startTime = QDateTime(QDateTime::currentDateTime().date(), startTime).toSecsSinceEpoch();
-
-
-        _endTime = QDateTime(QDateTime::currentDateTime().date(), endTime).toSecsSinceEpoch();       
-        _endTime  = (addDay == true) ? QDateTime(QDateTime::currentDateTime().date(), endTime).addDays(1).toSecsSinceEpoch() : QDateTime(QDateTime::currentDateTime().date(), endTime).toSecsSinceEpoch();
 
         if(time(nullptr) >= _startTime &&  time(nullptr) < _endTime && _started == false)
         {
@@ -59,6 +58,15 @@ void TimeFeature::run()
         {
 
             _started = false;
+            start = QDateTime(QDateTime::currentDateTime().date(), startTime);
+            end = (addDay == true) ? QDateTime(QDateTime::currentDateTime().date().addDays(1), endTime) : QDateTime(QDateTime::currentDateTime().date(), endTime);
+            _startTime = start.toSecsSinceEpoch();
+            _endTime = end.toSecsSinceEpoch();
+
+            info.str("");
+            info << "Time Feature Reset(" << start.toString().toStdString().c_str() << ") End(" << end.toString().toStdString().c_str() << ")";
+            _logger->logInfo(info.str());
+
             emit timeStateChange(this, 0);
         }
 
