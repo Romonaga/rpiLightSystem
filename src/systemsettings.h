@@ -72,7 +72,7 @@ public:
 
     uint16_t getTimePlayList() const;
 
-    bool getUseGammaCorrection() const;
+    double getGamma() const;
 
 private:
     SystemSettings();
@@ -107,8 +107,9 @@ private:
     uint16_t _timePlayList;
     short _motionFeatureGpio;
     short _lightFeatureGpio;
+    double _gamma;
 
-    bool _useGammaCorrection;
+
 
     QString _timeFeatureStart;
     QString _timeFeatureEnd;

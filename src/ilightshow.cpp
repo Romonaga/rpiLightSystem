@@ -1,4 +1,6 @@
 #include "ilightshow.h"
+#include <math.h>
+
 #include <QDebug>
 
 
@@ -47,6 +49,7 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
 
             _clearOnStart = (bool)jsonObject.value("clearStart").toInt();
             _clearOnFinish = (bool)jsonObject.value("clearFinish").toInt();
+            _useGammaCorrection = (bool)jsonObject.value("gammaCorrection").toInt();
 
             if(jsonObject.value("minutes").isString())
                 _numMins = jsonObject.value("minutes").toString().toDouble();
@@ -99,7 +102,6 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
                    _b = jsonColor.value("b").toInt();
                   _color1 = Ws2811Wrapper::Color(_r, _g, _b);
 
-
                }
 
            }
@@ -126,6 +128,7 @@ void ILightShow::run()
         _ledWrapper->clearLeds();
 
     _settings->setBrightness(_brightness);
+     gammaCorrection();
 
     _endTime =  time(nullptr) + (_numMins * 60);
     
@@ -151,6 +154,18 @@ LedLightShows ILightShow::getLightShow() const
 }
 
 
+void ILightShow::gammaCorrection()
+{
+
+    for(int  counter = 0; counter <= 255; counter++)
+    {
+        _gammaCorrection[counter] = (!_useGammaCorrection) ? counter :
+                (int)(pow((float)counter / (float)255.00, _settings->getGamma()) * 255.00 + 0.5);
+    }
+
+    _ledWrapper->setCustomGammaCorrection(_gammaCorrection);
+
+}
 
 QString ILightShow::getShowName()
 {

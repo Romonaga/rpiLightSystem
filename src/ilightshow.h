@@ -67,6 +67,9 @@ public:
     int genRand(int min, int max);
 
     int getUserId() const;
+    void gammaCorrection();
+
+
 
 private:
     virtual void startShow() = 0;
@@ -84,6 +87,9 @@ protected:
 
     bool _clearOnStart;
     bool _clearOnFinish;
+    bool _useGammaCorrection;
+    uint8_t  _gammaCorrection[256];
+
     ws2811_led_t _color1;
     ws2811_led_t _color2;
     ws2811_led_t _color3;
