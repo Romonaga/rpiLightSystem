@@ -31,10 +31,12 @@ void ShowTheaterChaser::startShow()
           {
             _ledWrapper->setPixelColor(_settings->getStripHeight(), i+q, 0);        //turn every third pixel off
           }
+
+          j++;
         }
+
     }
-    j++;
+
 
 }
-
 

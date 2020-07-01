@@ -30,6 +30,7 @@ SOURCES += src/ilightshow.cpp \
     src/showneorand.cpp \
     src/showrainbow.cpp \
     src/showrainbowcycle.cpp \
+    src/showscanner.cpp \
     src/showtheaterchaser.cpp \
     src/showtheaterchaserainbow.cpp \
     src/showtrichaser.cpp \
@@ -70,6 +71,7 @@ HEADERS += \
     src/showneorand.h \
     src/showrainbow.h \
     src/showrainbowcycle.h \
+    src/showscanner.h \
     src/showtheaterchaser.h \
     src/showtheaterchaserainbow.h \
     src/showtrichaser.h \

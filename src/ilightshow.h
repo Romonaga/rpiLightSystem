@@ -36,7 +36,8 @@
             X(16, DisplayColor, "Display A Color"),                   \
             X(17, ColorEvery, "Color Every X Led."),                   \
             X(18, TwinkleOverlay, "Twinkle Overlay."),                   \
-            X(19, PulseOverlay, "Pulse Overlay.")                   \
+            X(19, PulseOverlay, "Pulse Overlay."),                   \
+            X(20, Scanner, "Scanner.")                   \
 
 
 #define LIGHT_SHOWS_ENUM(type, name, str) name = type

@@ -34,7 +34,7 @@
 #include "showcolorevery.h"
 #include "showtwinkle.h"
 #include "showPulse.h"
-
+#include "showscanner.h"
 
 
 
@@ -233,12 +233,9 @@ void LightSystem::chgBrightness(QJsonObject jsonObject)
     {
 
         _ledWrapper.setBrightness(jsonObject.value("chgBrightness").toString().toInt());
+        if(_runningShows.count() == 0)
+            _ledWrapper.show();
 
-        if(_runningShows.count() > 0)
-        {
-            if(_runningShows[0]->isRunning() == false)
-               _ledWrapper.show();
-        }
     }
 
 }
@@ -392,6 +389,11 @@ void LightSystem::queueShow(const LedLightShows& show, const QString& showParms)
         case PulseOverlay:
             _runningShows.append(new ShowPulse(&_ledWrapper, show, showParms));
             break;
+
+        case Scanner:
+            _runningShows.append(new ShowScanner(&_ledWrapper, show, showParms));
+            break;
+
 
     default:
         _logger->logWarning("Unknown Show");
