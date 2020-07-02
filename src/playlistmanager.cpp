@@ -29,9 +29,9 @@ bool PlayListManager::savePlayList(const QString &name, int32_t userId, const QV
     QJsonArray array;
 
     QSqlDatabase database = QSqlDatabase().addDatabase("QMYSQL","playListManager");
-    database.setHostName(_settings->getServer());
-    database.setUserName(_settings->getUser());
-    database.setPassword(_settings->getPwd());
+    database.setHostName(_settings->getDBServer());
+    database.setUserName(_settings->getDBUser());
+    database.setPassword(_settings->getDBPwd());
     database.setDatabaseName(_settings->getDataBase());
 
     if(database.open())
@@ -76,9 +76,9 @@ QString PlayListManager::getPlayList(int32_t userId, int32_t playlistID)
     QString playList;
 
     QSqlDatabase database = QSqlDatabase().addDatabase("QMYSQL","playListManager");
-    database.setHostName(_settings->getServer());
-    database.setUserName(_settings->getUser());
-    database.setPassword(_settings->getPwd());
+    database.setHostName(_settings->getDBServer());
+    database.setUserName(_settings->getDBUser());
+    database.setPassword(_settings->getDBPwd());
     database.setDatabaseName(_settings->getDataBase());
 
     if(database.open())
@@ -113,9 +113,9 @@ QString PlayListManager::getPlayList(int32_t playlistID)
     QString playList;
 
     QSqlDatabase database = QSqlDatabase().addDatabase("QMYSQL","playListManager");
-    database.setHostName(_settings->getServer());
-    database.setUserName(_settings->getUser());
-    database.setPassword(_settings->getPwd());
+    database.setHostName(_settings->getDBServer());
+    database.setUserName(_settings->getDBUser());
+    database.setPassword(_settings->getDBPwd());
     database.setDatabaseName(_settings->getDataBase());
 
     if(database.open())
@@ -151,9 +151,9 @@ bool PlayListManager::deletePlayList(int32_t userId, int32_t playlistID)
     bool retVal = false;
 
     QSqlDatabase database = QSqlDatabase().addDatabase("QMYSQL","playListManager");
-    database.setHostName(_settings->getServer());
-    database.setUserName(_settings->getUser());
-    database.setPassword(_settings->getPwd());
+    database.setHostName(_settings->getDBServer());
+    database.setUserName(_settings->getDBUser());
+    database.setPassword(_settings->getDBPwd());
     database.setDatabaseName(_settings->getDataBase());
 
     if(database.open())

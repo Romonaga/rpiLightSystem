@@ -3,6 +3,8 @@
 
 #include <QThread>
 #include <QString>
+#include <QSqlQuery>
+
 #include <time.h>
 #include  <condition_variable>
 
@@ -16,19 +18,24 @@ class TimeFeature : public QThread
     Q_OBJECT
 
 public:
-    explicit TimeFeature();
+    explicit TimeFeature(const QSqlQuery& qry);
     ~TimeFeature();
     void stop();
 
+    uint32_t getFeaturePlayList() const;
 
 private:
     SystemSettings* _settings;
     bool _running;
     DNRLogger* _logger;
     std::condition_variable _conditionVar;
+    QString _timeFeatureStart;
+    QString _timeFeatureEnd;
+
     time_t _startTime;
     time_t _endTime;
     bool _started;
+    uint32_t _featurePlayList;
 
 
 

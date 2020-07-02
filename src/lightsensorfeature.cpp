@@ -1,16 +1,22 @@
 #include "lightsensorfeature.h"
+#include <QSqlQuery>
 #include <QDebug>
 #include <time.h>
 #include <wiringPi.h>
 
 
 
-LightSensorFeature::LightSensorFeature()
+LightSensorFeature::LightSensorFeature(const QSqlQuery &qry)
 {
     _logger = DNRLogger::instance();
     _settings = SystemSettings::getInstance();
-    _pinLastState = 1;
     _noMotionTimer = 0;
+
+    _featurePlayList = qry.value("featurePlayList").toUInt();
+    _gpioPin = qry.value("featureGpio").toUInt();
+
+    _logger->logInfo("LightSensorFeature Init.");
+
 }
 
 LightSensorFeature::~LightSensorFeature()
@@ -22,6 +28,7 @@ LightSensorFeature::~LightSensorFeature()
 void LightSensorFeature::run()
 {
     int pinRead;
+    int pinLastState = 1;
     std::mutex mtx;
     std::unique_lock<std::mutex> lck(mtx);
 
@@ -33,14 +40,14 @@ void LightSensorFeature::run()
     }
 
     _running = true;
-    pinMode(_settings->getLightFeatureGpio(), INPUT);
+    pinMode(_gpioPin, INPUT);
 
     while(_conditionVar.wait_for(lck,std::chrono::milliseconds(300)) == std::cv_status::timeout && _running == true) //todo remove hardcoded wait_for
     {
-        if( (pinRead = digitalRead(_settings->getLightFeatureGpio())) != _pinLastState)
+        if( (pinRead = digitalRead(_gpioPin)) != pinLastState)
         {
-                _pinLastState = pinRead;
-                emit lightSensorStateChange(this, _pinLastState);
+                pinLastState = pinRead;
+                emit lightSensorStateChange(this, pinLastState);
 
         }
 
@@ -60,3 +67,10 @@ void LightSensorFeature::stop()
         _logger->logInfo("LightSensorFeature Stopped.");
     }
 }
+
+
+uint32_t LightSensorFeature::getFeaturePlayList() const
+{
+    return _featurePlayList;
+}
+

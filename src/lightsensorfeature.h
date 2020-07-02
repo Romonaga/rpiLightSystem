@@ -3,6 +3,8 @@
 
 #include <QThread>
 #include <QString>
+#include <QSqlQuery>
+
 #include <time.h>
 #include  <condition_variable>
 
@@ -16,9 +18,10 @@ class LightSensorFeature : public QThread
     Q_OBJECT
 
 public:
-    explicit LightSensorFeature();
+    explicit LightSensorFeature(const QSqlQuery& qry);
     ~LightSensorFeature();
     void stop();
+    uint32_t getFeaturePlayList() const;
 
 private:
     int _pinLastState;
@@ -29,6 +32,9 @@ protected:
     DNRLogger* _logger;
     std::condition_variable _conditionVar;
     time_t _noMotionTimer;
+    uint32_t _featurePlayList;
+    short _gpioPin;
+
 
 
 protected:

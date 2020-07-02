@@ -7,11 +7,18 @@
 
 
 
-TimeFeature::TimeFeature()
+TimeFeature::TimeFeature(const QSqlQuery& qry)
 {
     _logger = DNRLogger::instance();
     _settings = SystemSettings::getInstance();
     _started = false;
+     _featurePlayList = qry.value("featurePlayList").toUInt();
+
+     _timeFeatureStart = qry.value("timeFeatureStart").toString();
+     _timeFeatureEnd = qry.value("timeFeatureEnd").toString();
+
+     _logger->logInfo("TimeFeature Init.");
+
 }
 
 TimeFeature::~TimeFeature()
@@ -30,8 +37,8 @@ void TimeFeature::run()
     bool addDay = false;
     std::stringstream info;
 
-    startTime = QTime::fromString(_settings->getTimeFeatureStart(),"HH:mm");
-    endTime = QTime::fromString(_settings->getTimeFeatureEnd(),"HH:mm");
+    startTime = QTime::fromString(_timeFeatureStart,"HH:mm");
+    endTime = QTime::fromString(_timeFeatureEnd,"HH:mm");
 
     if(startTime.hour() > endTime.hour()) addDay = true;
 
@@ -86,4 +93,10 @@ void TimeFeature::stop()
         _conditionVar.notify_all();
         _logger->logInfo("TimeFeature Stopped.");
     }
+}
+
+
+uint32_t TimeFeature::getFeaturePlayList() const
+{
+    return _featurePlayList;
 }

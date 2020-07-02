@@ -3,6 +3,8 @@
 
 #include <QThread>
 #include <QString>
+#include <QSqlQuery>
+
 #include <time.h>
 #include  <condition_variable>
 
@@ -16,17 +18,23 @@ class MotionLightsFeature : public QThread
     Q_OBJECT
 
 public:
-    explicit MotionLightsFeature();
+    explicit MotionLightsFeature(const QSqlQuery& qry);
     ~MotionLightsFeature();
     void stop();
 
+    uint32_t getFeaturePlayList() const;
+
 private:
-    int _pinLastState;
     SystemSettings* _settings;
     bool _running;
     DNRLogger* _logger;
     std::condition_variable _conditionVar;
     time_t _noMotionTimer;
+    uint32_t _motionDelayOff;
+    uint32_t motionDelayOff;
+    uint32_t _featurePlayList;
+    short _gpioPin;
+
 
 
 protected:

@@ -14,16 +14,16 @@ public:
     bool loadSettings();
     bool settingsExists();
 
-    QString getServer() const;
+    QString getDBServer() const;
     void setServer(const QString &server);
 
     QString getDataBase() const;
     void setDataBase(const QString &dataBase);
 
-    QString getUser() const;
+    QString getDBUser() const;
     void setUser(const QString &user);
 
-    QString getPwd() const;
+    QString getDBPwd() const;
     void setPwd(const QString &pwd);
 
 
@@ -50,28 +50,6 @@ public:
 
     int getSystemId() const;
 
-    bool getUseMotionFeature() const;
-
-    bool getUseLightFeature() const;
-
-    uint16_t getMotionDelayOff() const;
-
-    uint16_t getMotionPlayList() const;
-
-    uint16_t getLightPlayList() const;
-
-    short getMotionFeatureGpio() const;
-
-    short getLightFeatureGpio() const;
-
-    bool getUseTimeFeature() const;
-
-    QString getTimeFeatureStart() const;
-
-    QString getTimeFeatureEnd() const;
-
-    uint16_t getTimePlayList() const;
-
     double getGamma() const;
 
 private:
@@ -96,23 +74,7 @@ private:
     int _brightness;
     bool _dbgLog;
     bool _logShows;
-    bool _useMotionFeature;
-    bool _useLightFeature;
-    bool _useTimeFeature;
-
-    uint16_t _motionDelayOff;
-
-    uint16_t _motionPlayList;
-    uint16_t _lightPlayList;
-    uint16_t _timePlayList;
-    short _motionFeatureGpio;
-    short _lightFeatureGpio;
     double _gamma;
-
-
-
-    QString _timeFeatureStart;
-    QString _timeFeatureEnd;
 
 
 

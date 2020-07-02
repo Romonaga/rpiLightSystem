@@ -21,61 +21,6 @@ double SystemSettings::getGamma() const
     return _gamma;
 }
 
-uint16_t SystemSettings::getTimePlayList() const
-{
-    return _timePlayList;
-}
-
-QString SystemSettings::getTimeFeatureEnd() const
-{
-    return _timeFeatureEnd;
-}
-
-QString SystemSettings::getTimeFeatureStart() const
-{
-    return _timeFeatureStart;
-}
-
-bool SystemSettings::getUseTimeFeature() const
-{
-    return _useTimeFeature;
-}
-
-short SystemSettings::getLightFeatureGpio() const
-{
-    return _lightFeatureGpio;
-}
-
-short SystemSettings::getMotionFeatureGpio() const
-{
-    return _motionFeatureGpio;
-}
-
-uint16_t SystemSettings::getLightPlayList() const
-{
-    return _lightPlayList;
-}
-
-uint16_t SystemSettings::getMotionPlayList() const
-{
-    return _motionPlayList;
-}
-
-uint16_t SystemSettings::getMotionDelayOff() const
-{
-    return _motionDelayOff;
-}
-
-bool SystemSettings::getUseLightFeature() const
-{
-    return _useLightFeature;
-}
-
-bool SystemSettings::getUseMotionFeature() const
-{
-    return _useMotionFeature;
-}
-
 bool SystemSettings::getLogShows() const
 {
     return _logShows;
@@ -171,18 +116,6 @@ void SystemSettings::loadSystemSettings()
             _dma = qry.value("dma").toInt();
             _gpio = qry.value("gpio").toInt();
             _brightness = qry.value("brightness").toInt();
-            _useMotionFeature = qry.value("useMotionFeature").toBool();
-            _useLightFeature = qry.value("useLightFeature").toBool();
-            _useTimeFeature = qry.value("useTimeFeature").toBool();
-            _motionDelayOff = qry.value("motionDelayOff").toUInt();
-            _motionPlayList = qry.value("motionPlayList").toUInt();
-            _lightPlayList = qry.value("lightPlayList").toUInt();
-            _timePlayList = qry.value("timePlayList").toUInt();
-            _motionFeatureGpio = qry.value("motionFeatureGpio").toInt();
-            _lightFeatureGpio = qry.value("lightFeatureGpio").toInt();
-
-            _timeFeatureStart = qry.value("timeFeatureStart").toString();
-            _timeFeatureEnd = qry.value("timeFeatureEnd").toString();
             _gamma = qry.value("gamma").toDouble();
 
 
@@ -233,7 +166,7 @@ bool SystemSettings::loadSettings()
     return false;
 }
 
-QString SystemSettings::getPwd() const
+QString SystemSettings::getDBPwd() const
 {
     return _pwd;
 }
@@ -243,7 +176,7 @@ void SystemSettings::setPwd(const QString &pwd)
     _pwd = pwd;
 }
 
-QString SystemSettings::getUser() const
+QString SystemSettings::getDBUser() const
 {
     return _user;
 }
@@ -263,7 +196,7 @@ void SystemSettings::setDataBase(const QString &dataBase)
     _dataBase = dataBase;
 }
 
-QString SystemSettings::getServer() const
+QString SystemSettings::getDBServer() const
 {
     return _server;
 }

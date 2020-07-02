@@ -1,3 +1,5 @@
+#include <unistd.h>
+
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
@@ -49,6 +51,8 @@ LightSystem::LightSystem(QObject *parent) : QObject(parent)
     _logger->setDebugOut(_settings->getDbgLog());
     _motionFeature = nullptr;
     _lightSensorFeature = nullptr;
+    _timeFeature = nullptr;
+    _luxFeature = nullptr;
 
 }
 
@@ -77,6 +81,12 @@ LightSystem::~LightSystem()
     {
         _timeFeature->stop();
         delete _timeFeature;
+    }
+
+    if(_luxFeature)
+    {
+        _luxFeature->stop();
+        delete _luxFeature;
     }
 
     _ledWrapper.clearLeds();
@@ -414,9 +424,9 @@ void LightSystem::logShow(ILightShow* show)
     if(false == _settings->getLogShows()) return;
 
     QSqlDatabase database = QSqlDatabase().addDatabase("QMYSQL","logShow");
-    database.setHostName(_settings->getServer());
-    database.setUserName(_settings->getUser());
-    database.setPassword(_settings->getPwd());
+    database.setHostName(_settings->getDBServer());
+    database.setUserName(_settings->getDBUser());
+    database.setPassword(_settings->getDBPwd());
     database.setDatabaseName(_settings->getDataBase());
 
     if(database.open())
@@ -502,6 +512,87 @@ void LightSystem::showComplete(ILightShow* show)
 }
 
 
+void LightSystem::loadFeatures()
+{
+    _logger->logInfo("loadFeatures");
+
+    QSqlDatabase database = QSqlDatabase().addDatabase("QMYSQL","rpiLightFeatures");
+
+    database.setHostName(_settings->getInstance()->getDBServer());
+    database.setUserName(_settings->getInstance()->getDBUser());
+    database.setPassword(_settings->getInstance()->getDBPwd());
+    database.setDatabaseName(_settings->getInstance()->getDataBase());
+    if(database.open())
+    {
+        QString sql("select * from lightSystemFeatures where lightSystemId = ");
+        sql.append(QString::number(_settings->getInstance()->getSystemId()));
+        _logger->logInfo(sql.toStdString());
+        QSqlQuery qry = database.exec(sql);
+
+        if(qry.lastError().type() == QSqlError::NoError)
+        {
+
+            while(qry.next())
+            {
+
+                int lightfeatureId = qry.value("featureId").toInt();
+                switch(lightfeatureId)
+                {
+                    case 1:
+                    {
+                        _logger->logInfo("Starting MotionLights Feature");
+                        _motionFeature = new MotionLightsFeature(qry);
+                        connect(_motionFeature, SIGNAL(motionLightsStateChange(MotionLightsFeature*, int)), this, SLOT(motionStateChange(MotionLightsFeature*, int)));
+                        _motionFeature->start();
+                    }
+                    break;
+
+                    case 2:
+                    {
+                        _logger->logInfo("Starting LightSensor Feature");
+                        _lightSensorFeature = new LightSensorFeature(qry);
+                        connect(_lightSensorFeature, SIGNAL(lightSensorStateChange(LightSensorFeature*, int)), this, SLOT(lightStateChange(LightSensorFeature*, int)));
+                        _lightSensorFeature->start();
+                    }
+                    break;
+
+                    case 3:
+                    {
+                        _logger->logInfo("Starting Time Feature");
+                        _timeFeature = new TimeFeature(qry);
+                        connect(_timeFeature, SIGNAL(timeStateChange(TimeFeature*, int)), this, SLOT(timeStateChange(TimeFeature*, int)));
+                        _timeFeature->start();
+                    }
+                    break;
+
+                    case 4:
+                    {
+                        _logger->logInfo("Starting LightLux Feature");
+                        _luxFeature = new LightLuxFeature(qry);
+                        connect(_luxFeature, SIGNAL(lightLuxStateChange(LightLuxFeature*, quint32)), this, SLOT(lightLuxStateChange(LightLuxFeature*, quint32)));
+                        _luxFeature->start();
+                    }
+                    break;
+
+                }
+
+            }
+
+
+        }
+        else
+        {
+            fprintf(stderr, "%s", qry.lastError().text().toStdString().c_str());
+        }
+        database.close();
+    }
+    else
+    {
+        fprintf(stderr, "%s", database.lastError().text().toStdString().c_str());
+    }
+
+}
+
 bool LightSystem::startSystem()
 {
     std::stringstream info;
@@ -527,7 +618,8 @@ bool LightSystem::startSystem()
            info << "LightSystem start() Failed Code(" << renderResults << ") Msg(" <<
                    _ledWrapper.ws2811_get_return_t_str(renderResults) << ")";
            _logger->logWarning(info.str());
-           return -12;
+           _started = false;
+           return _started;
        }
 
         _logger->logInfo("Setting Up MQTT");
@@ -539,32 +631,7 @@ bool LightSystem::startSystem()
        _ledWrapper.setBrightness(_settings->getBrightness());
        _ledWrapper.setClearOnExit(true);
 
-       _logger->logInfo("Checking / Loading Features");
-       if(true == _settings->getUseMotionFeature())
-       {
-           _logger->logInfo("Starting MotionLights Feature");
-           _motionFeature = new MotionLightsFeature();
-           connect(_motionFeature, SIGNAL(motionLightsStateChange(MotionLightsFeature*, int)), this, SLOT(motionStateChange(MotionLightsFeature*, int)));
-           _motionFeature->start();
-       }
-
-       if(true == _settings->getUseLightFeature())
-       {
-           _logger->logInfo("Starting LightSensor Feature");
-           _lightSensorFeature = new LightSensorFeature();
-
-           connect(_lightSensorFeature, SIGNAL(lightSensorStateChange(LightSensorFeature*, int)), this, SLOT(lightStateChange(LightSensorFeature*, int)));
-           _lightSensorFeature->start();
-       }
-
-       if(true == _settings->getUseTimeFeature())
-       {
-           _logger->logInfo("Starting Time Feature");
-           _timeFeature = new TimeFeature();
-
-           connect(_timeFeature, SIGNAL(timeStateChange(TimeFeature*, int)), this, SLOT(timeStateChange(TimeFeature*, int)));
-           _timeFeature->start();
-       }
+      loadFeatures();
 
     }
     else
@@ -587,15 +654,19 @@ void LightSystem::stopSystem()
 
 void LightSystem::motionStateChange(MotionLightsFeature* feature, int state)
 {
-    (void)feature;
-
     std::stringstream info;
 
-    info << "motionStatechange: " << state;
+    info << "LightSystem::motionStateChange: " << state;
+    _logger->logInfo(info.str());
+
     if(state == 1 && _runningShows.count() == 0)
     {
+        info.str("");
+        info << "motionStateChange Run PlayList(" << feature->getFeaturePlayList() << ")";
+        _logger->logInfo(info.str());
+
         PlayListManager pmanager;
-        QString playList = pmanager.getPlayList(_settings->getMotionPlayList());
+        QString playList = pmanager.getPlayList(feature->getFeaturePlayList());
         playPlayList(playList);
         startShows();
     }
@@ -610,7 +681,6 @@ void LightSystem::motionStateChange(MotionLightsFeature* feature, int state)
 
 void LightSystem::lightStateChange(LightSensorFeature *feature, int state)
 {
-    (void)feature;
     std::stringstream info;
 
     info << "LightSystem::lightStateChange: " << state;
@@ -619,11 +689,11 @@ void LightSystem::lightStateChange(LightSensorFeature *feature, int state)
     if(state == 0 && _runningShows.count() == 0)
     {
         info.str("");
-        info << "lightStateChange Run PlayList(" << _settings->getLightPlayList() << ")";
+        info << "lightStateChange Run PlayList(" << feature->getFeaturePlayList() << ")";
         _logger->logInfo(info.str());
 
         PlayListManager pmanager;
-        QString playList = pmanager.getPlayList(_settings->getLightPlayList());
+        QString playList = pmanager.getPlayList(feature->getFeaturePlayList());
         playPlayList(playList);
         startShows();
     }
@@ -636,14 +706,11 @@ void LightSystem::lightStateChange(LightSensorFeature *feature, int state)
         _ledWrapper.clearLeds();
     }
 
-
-
 }
 
 
 void LightSystem::timeStateChange(TimeFeature *feature, int state)
 {
-    (void)feature;
     std::stringstream info;
 
     info << "LightSystem::timeStateChange: " << state;
@@ -652,11 +719,11 @@ void LightSystem::timeStateChange(TimeFeature *feature, int state)
     if(state == 1 && _runningShows.count() == 0)
     {
         info.str("");
-        info << "timeStateChange Run PlayList(" << _settings->getTimePlayList() << ")";
+        info << "timeStateChange Run PlayList(" << feature->getFeaturePlayList() << ")";
         _logger->logInfo(info.str());
 
         PlayListManager pmanager;
-        QString playList = pmanager.getPlayList(_settings->getTimePlayList());
+        QString playList = pmanager.getPlayList(feature->getFeaturePlayList());
         playPlayList(playList);
         startShows();
     }
@@ -668,5 +735,37 @@ void LightSystem::timeStateChange(TimeFeature *feature, int state)
         stopShows();
         _ledWrapper.clearLeds();
     }
+}
+
+
+void LightSystem::lightLuxStateChange(LightLuxFeature *feature, quint32 lux)
+{
+    std::stringstream info;
+
+    info << "LightSystem::lightLuxStateChange: " << lux;
+    _logger->logInfo(info.str());
+
+
+    if(_runningShows.count() == 0)
+    {
+        if(feature->getLuxThreshHold() <= lux)
+        {
+            info.str("");
+            info << "lightLuxStateChange Run PlayList(" << feature->getFeaturePlayList() << ")";
+            _logger->logInfo(info.str());
+
+            PlayListManager pmanager;
+            QString playList = pmanager.getPlayList(feature->getFeaturePlayList());
+            playPlayList(playList);
+            startShows();
+        }
+    }
+
+
+    int  brightness = 255 - lux;
+    brightness = (brightness <= 0) ? 1 : brightness;
+
+    _ledWrapper.setBrightness(brightness);
+
 }
 

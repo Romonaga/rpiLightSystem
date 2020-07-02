@@ -129,6 +129,8 @@ int main(int argc, char *argv[])
 
     _lightSystem = new LightSystem;
 
-    _lightSystem->startSystem();
+    if(false == _lightSystem->startSystem())
+        return 1;
+
     return a.exec();
 }

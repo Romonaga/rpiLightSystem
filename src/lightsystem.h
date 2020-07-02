@@ -16,6 +16,8 @@
 #include "motionlightsfeature.h"
 #include "lightsensorfeature.h"
 #include "timefeature.h"
+#include "lightluxfeature.h"
+
 
 //broker = "RomoServer.local";
 //topic = "MotionDetect/#";
@@ -55,6 +57,7 @@ private:
     void chgBrightness(QJsonObject jsonObject);
 
     void logShow(ILightShow* show);
+    void loadFeatures();
 
     unsigned int random9();
     uint32_t Bow(int n);
@@ -91,6 +94,8 @@ private:
     MotionLightsFeature* _motionFeature;
     LightSensorFeature* _lightSensorFeature;
     TimeFeature* _timeFeature;
+    LightLuxFeature* _luxFeature;
+
 
 
     
@@ -102,6 +107,7 @@ public slots:
     void motionStateChange(MotionLightsFeature* feature, int state);
     void lightStateChange(LightSensorFeature* feature, int state);
     void timeStateChange(TimeFeature* feature, int state);
+    void lightLuxStateChange(LightLuxFeature* feature, quint32 lux);
 
 
 };

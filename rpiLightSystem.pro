@@ -9,6 +9,7 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 SOURCES += src/ilightshow.cpp \
+    src/lightluxfeature.cpp \
     src/lightsensorfeature.cpp \
     src/lightsystem.cpp \
     src/main.cpp \
@@ -51,6 +52,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 HEADERS += \
     src/ilightshow.h \
+    src/lightluxfeature.h \
     src/lightsensorfeature.h \
     src/lightsystem.h \
     src/motionlightsfeature.h \
@@ -85,6 +87,7 @@ LIBS += -lpaho-mqttpp3 -lpaho-mqtt3a
 LIBS += -lMQTTMessageBus
 LIBS += -lDNRLogger
 LIBS += -lwiringPi
+LIBS += -li2c
 
 unix {
     target.path = /lumawin
