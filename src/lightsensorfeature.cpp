@@ -64,6 +64,7 @@ void LightSensorFeature::stop()
     {
         _running = false;
         _conditionVar.notify_all();
+        wait();
         _logger->logInfo("LightSensorFeature Stopped.");
     }
 }

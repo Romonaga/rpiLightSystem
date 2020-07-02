@@ -526,7 +526,6 @@ void LightSystem::loadFeatures()
     {
         QString sql("select * from lightSystemFeatures where lightSystemId = ");
         sql.append(QString::number(_settings->getInstance()->getSystemId()));
-        _logger->logInfo(sql.toStdString());
         QSqlQuery qry = database.exec(sql);
 
         if(qry.lastError().type() == QSqlError::NoError)
@@ -623,7 +622,7 @@ bool LightSystem::startSystem()
        }
 
         _logger->logInfo("Setting Up MQTT");
-        _mqq = new MqttReceiver(_settings->getMqttBroker(), _settings->getHostName(), 1);
+        _mqq = new MqttReceiver(_settings->getMqttBroker(), _settings->getHostName(), 0);
         connect(_mqq, SIGNAL(msgReceived(QString)), this, SLOT(processMsgReceived(QString)));
 
 
@@ -742,18 +741,26 @@ void LightSystem::lightLuxStateChange(LightLuxFeature *feature, quint32 lux)
 {
     std::stringstream info;
 
-    if(_runningShows.count() == 0)
+    if(lux <= feature->getLuxThreshHold())
     {
-        if(feature->getLuxThreshHold() <= lux)
+        if(_runningShows.count() == 0)
         {
-            info << "lightLuxStateChange Run PlayList(" << feature->getFeaturePlayList() << ") Lux(" << lux << ")";
+
+                info << "lightLuxStateChange Run PlayList(" << feature->getFeaturePlayList() << ") Lux(" << lux << ") ThreshHold(" << feature->getLuxThreshHold() <<")";
+                _logger->logInfo(info.str());
+
+                PlayListManager pmanager;
+                QString playList = pmanager.getPlayList(feature->getFeaturePlayList());
+                playPlayList(playList);
+                startShows();
+        }
+        else
+        {
+            info << "lightLuxStateChange Show Running Lux(" << lux << ") ThreshHold(" << feature->getLuxThreshHold() <<")";
             _logger->logInfo(info.str());
 
-            PlayListManager pmanager;
-            QString playList = pmanager.getPlayList(feature->getFeaturePlayList());
-            playPlayList(playList);
-            startShows();
         }
+
     }
 
     int  brightness = 255 - lux;
