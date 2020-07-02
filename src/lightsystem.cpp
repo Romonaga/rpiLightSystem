@@ -742,16 +742,11 @@ void LightSystem::lightLuxStateChange(LightLuxFeature *feature, quint32 lux)
 {
     std::stringstream info;
 
-    info << "LightSystem::lightLuxStateChange: " << lux;
-    _logger->logInfo(info.str());
-
-
     if(_runningShows.count() == 0)
     {
         if(feature->getLuxThreshHold() <= lux)
         {
-            info.str("");
-            info << "lightLuxStateChange Run PlayList(" << feature->getFeaturePlayList() << ")";
+            info << "lightLuxStateChange Run PlayList(" << feature->getFeaturePlayList() << ") Lux(" << lux << ")";
             _logger->logInfo(info.str());
 
             PlayListManager pmanager;
@@ -760,7 +755,6 @@ void LightSystem::lightLuxStateChange(LightLuxFeature *feature, quint32 lux)
             startShows();
         }
     }
-
 
     int  brightness = 255 - lux;
     brightness = (brightness <= 0) ? 1 : brightness;
