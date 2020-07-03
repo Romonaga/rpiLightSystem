@@ -39,6 +39,8 @@ public:
 
     void playPlayList(QString playList);
 
+
+    
 private:
     SystemSettings* _settings;
     void lightsOff();
@@ -58,6 +60,7 @@ private:
 
     void logShow(ILightShow* show);
     void loadFeatures();
+    void stopFeatures();
 
     unsigned int random9();
     uint32_t Bow(int n);

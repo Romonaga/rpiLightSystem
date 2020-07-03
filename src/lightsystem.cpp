@@ -57,14 +57,8 @@ LightSystem::LightSystem(QObject *parent) : QObject(parent)
 }
 
 
-LightSystem::~LightSystem()
+void LightSystem::stopFeatures()
 {
-
-    if(_mqq != nullptr)
-    {
-        stopSystem();
-    }
-
     if(_motionFeature)
     {
         _motionFeature->stop();
@@ -88,6 +82,17 @@ LightSystem::~LightSystem()
         _luxFeature->stop();
         delete _luxFeature;
     }
+}
+
+LightSystem::~LightSystem()
+{
+
+    if(_mqq != nullptr)
+    {
+        stopSystem();
+    }
+
+    stopFeatures();
 
     _ledWrapper.clearLeds();
 
@@ -286,6 +291,12 @@ void LightSystem::processMsgReceived(QString msg)
             else if(jsonObject.value("deletePlaylist").toInt())
             {
                 deleteuserPlayList(jsonObject);
+            }
+            else if(jsonObject.value("systemConfigChange").toInt())
+            {
+                _logger->logInfo("System Configuration Changes detected.");
+                stopFeatures();
+                loadFeatures();
             }
             else if(jsonObject.value("clearQueue").toInt())
             {
@@ -567,7 +578,7 @@ void LightSystem::loadFeatures()
                     case 4:
                     {
                         _logger->logInfo("Starting LightLux Feature");
-                        _luxFeature = new LightLuxFeature(qry);
+                        _luxFeature = new LightLuxFeature(qry, ContinueHigh);
                         connect(_luxFeature, SIGNAL(lightLuxStateChange(LightLuxFeature*, quint32)), this, SLOT(lightLuxStateChange(LightLuxFeature*, quint32)));
                         _luxFeature->start();
                     }
@@ -590,6 +601,7 @@ void LightSystem::loadFeatures()
         fprintf(stderr, "%s", database.lastError().text().toStdString().c_str());
     }
 
+     QSqlDatabase::removeDatabase("rpiLightFeatures");
 }
 
 bool LightSystem::startSystem()
@@ -740,6 +752,7 @@ void LightSystem::timeStateChange(TimeFeature *feature, int state)
 void LightSystem::lightLuxStateChange(LightLuxFeature *feature, quint32 lux)
 {
     std::stringstream info;
+    int  brightness;
 
     if(lux <= feature->getLuxThreshHold())
     {
@@ -763,7 +776,8 @@ void LightSystem::lightLuxStateChange(LightLuxFeature *feature, quint32 lux)
 
     }
 
-    int  brightness = 255 - lux;
+    lux = (lux > 255) ? 255 : lux;
+    brightness = 255 - lux;
     brightness = (brightness <= 0) ? 1 : brightness;
 
     _ledWrapper.setBrightness(brightness);
