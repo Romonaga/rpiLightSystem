@@ -52,6 +52,8 @@ public:
 
     double getGamma() const;
 
+    bool getMasterDevice() const;
+
 private:
     SystemSettings();
     static SystemSettings* _instance;
@@ -75,6 +77,8 @@ private:
     bool _dbgLog;
     bool _logShows;
     double _gamma;
+    bool _masterDevice;
+
 
 
 

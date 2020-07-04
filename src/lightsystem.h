@@ -49,10 +49,8 @@ private:
     void cleanUpShow(ILightShow* show);
 
     void runShow();
-    void saveuserPlayList(QJsonObject jsonObject);
     void edituserPlayList(QJsonObject jsonObject);
     void playuserPlayList(QJsonObject jsonObject);
-    void deleteuserPlayList(QJsonObject jsonObject);
     void clearQueue();
 
     void processShow(QString msg, QJsonObject jsonObject);

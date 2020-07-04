@@ -131,37 +131,6 @@ void LightSystem::stopShows()
    _logger->logInfo("LightSystem::stopShows Stopped");
 }
 
-void LightSystem::saveuserPlayList(QJsonObject jsonObject)
-{
-    std::stringstream info;
-
-    info << "saveuserPlayList " << jsonObject.value("playlistName").toString().toStdString().c_str();
-    _logger->logInfo(info.str());
-
-    PlayListManager pmanager;
-    if(_runningShows.count() != 0)
-        pmanager.savePlayList(jsonObject.value("playlistName").toString(), jsonObject.value("UserID").toString().toInt(), _runningShows);
-}
-
-void LightSystem::deleteuserPlayList(QJsonObject jsonObject)
-{
-    std::stringstream info;
-
-    info << "deleteuserPlayList " << jsonObject.value("playlistName").toString().toStdString().c_str();;
-    _logger->logInfo(info.str());
-    PlayListManager pmanager;
-    pmanager.deletePlayList(jsonObject.value("UserID").toString().toInt(), jsonObject.value("playlistName").toString().toInt());
-}
-
-void LightSystem::edituserPlayList(QJsonObject jsonObject)
-{
-    _logger->logInfo("edituserPlayList");
-
-    PlayListManager pmanager;
-    pmanager.editPlayList(jsonObject);
-
-}
-
 void LightSystem::playPlayList(QString playList)
 {
 
@@ -185,13 +154,8 @@ void LightSystem::playPlayList(QString playList)
 
 void LightSystem::playuserPlayList(QJsonObject jsonObject)
 {
-    std::stringstream info;
-
-    info << "playuserPlayList " << jsonObject.value("playlistName").toString().toStdString().c_str();;
-    _logger->logInfo(info.str());
-
     PlayListManager pmanager;
-    QString playList = pmanager.getPlayList(jsonObject.value("UserID").toString().toInt(),jsonObject.value("playlistName").toString().toInt());
+    QString playList = pmanager.getPlayList(jsonObject);
     playPlayList(playList);
 
 }
@@ -288,17 +252,9 @@ void LightSystem::processMsgReceived(QString msg)
             {
                 chgBrightness(jsonObject);
             }
-            else if(jsonObject.value("savePlaylist").toInt())
-            {
-                saveuserPlayList(jsonObject);
-            }
             else if(jsonObject.value("playPlaylist").toInt())
             {
                 playuserPlayList(jsonObject);
-            }
-            else if(jsonObject.value("deletePlaylist").toInt())
-            {
-                deleteuserPlayList(jsonObject);
             }
             else if(jsonObject.value("systemConfigChange").toInt())
             {
@@ -309,10 +265,6 @@ void LightSystem::processMsgReceived(QString msg)
             else if(jsonObject.value("clearQueue").toInt())
             {
                 clearQueue();
-            }
-            else if(jsonObject.value("playlistEditSave").toInt())
-            {
-                edituserPlayList(jsonObject);
             }
             else
             {
@@ -655,6 +607,9 @@ bool LightSystem::startSystem()
        _ledWrapper.setClearOnExit(true);
 
       loadFeatures();
+
+      if(_settings->getMasterDevice())
+          _logger->logInfo("startSystem I am a master Device!");;
 
     }
     else

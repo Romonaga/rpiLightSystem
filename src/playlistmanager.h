@@ -16,12 +16,10 @@ class PlayListManager : public QObject
 public:
     explicit PlayListManager(QObject *parent = nullptr);
     ~PlayListManager();
-    bool savePlayList(const QString& name, int32_t userId, const QVector<ILightShow*>& shows);
-    QString getPlayList(int32_t userId, int32_t playlistID);
+    //Keeping as it has a good example of extracting JSON to string.
+  //  bool savePlayList(const QString& name, int32_t userId, const QVector<ILightShow*>& shows);
+    QString getPlayList(QJsonObject playList);
     QString getPlayList(int32_t playlistID);
-    bool deletePlayList(int32_t userId, int32_t playlistID);
-    bool editPlayList(QJsonObject playList);
-
 
 private:
     SystemSettings* _settings;

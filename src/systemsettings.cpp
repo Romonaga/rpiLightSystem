@@ -16,6 +16,11 @@ SystemSettings::SystemSettings()
 
 }
 
+bool SystemSettings::getMasterDevice() const
+{
+    return _masterDevice;
+}
+
 double SystemSettings::getGamma() const
 {
     return _gamma;
@@ -117,6 +122,7 @@ void SystemSettings::loadSystemSettings()
             _gpio = qry.value("gpio").toInt();
             _brightness = qry.value("brightness").toInt();
             _gamma = qry.value("gamma").toDouble();
+            _masterDevice = qry.value("masterDevice").toBool();
 
 
         }
