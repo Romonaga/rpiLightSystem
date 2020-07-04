@@ -153,6 +153,14 @@ void LightSystem::deleteuserPlayList(QJsonObject jsonObject)
     pmanager.deletePlayList(jsonObject.value("UserID").toString().toInt(), jsonObject.value("playlistName").toString().toInt());
 }
 
+void LightSystem::edituserPlayList(QJsonObject jsonObject)
+{
+    _logger->logInfo("edituserPlayList");
+
+    PlayListManager pmanager;
+    pmanager.editPlayList(jsonObject);
+
+}
 
 void LightSystem::playPlayList(QString playList)
 {
@@ -301,6 +309,10 @@ void LightSystem::processMsgReceived(QString msg)
             else if(jsonObject.value("clearQueue").toInt())
             {
                 clearQueue();
+            }
+            else if(jsonObject.value("playlistEditSave").toInt())
+            {
+                edituserPlayList(jsonObject);
             }
             else
             {

@@ -50,6 +50,7 @@ private:
 
     void runShow();
     void saveuserPlayList(QJsonObject jsonObject);
+    void edituserPlayList(QJsonObject jsonObject);
     void playuserPlayList(QJsonObject jsonObject);
     void deleteuserPlayList(QJsonObject jsonObject);
     void clearQueue();

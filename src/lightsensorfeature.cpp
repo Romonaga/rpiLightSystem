@@ -31,6 +31,7 @@ void LightSensorFeature::run()
     int pinLastState = 1;
     std::mutex mtx;
     std::unique_lock<std::mutex> lck(mtx);
+    time_t nextTrip = 0;
 
      _logger->logInfo("LightSensorFeature run.");
     if(wiringPiSetupPhys() != 0)
@@ -46,8 +47,12 @@ void LightSensorFeature::run()
     {
         if( (pinRead = digitalRead(_gpioPin)) != pinLastState)
         {
-                pinLastState = pinRead;
-                emit lightSensorStateChange(this, pinLastState);
+                if(nextTrip <= time(nullptr))
+                {
+                    pinLastState = pinRead;
+                    emit lightSensorStateChange(this, pinLastState);
+                    nextTrip = time(nullptr) + 120;
+                }
 
         }
 

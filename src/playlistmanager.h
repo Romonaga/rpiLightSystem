@@ -20,7 +20,7 @@ public:
     QString getPlayList(int32_t userId, int32_t playlistID);
     QString getPlayList(int32_t playlistID);
     bool deletePlayList(int32_t userId, int32_t playlistID);
-
+    bool editPlayList(QJsonObject playList);
 
 
 private:

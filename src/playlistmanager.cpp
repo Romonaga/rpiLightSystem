@@ -48,7 +48,6 @@ bool PlayListManager::savePlayList(const QString &name, int32_t userId, const QV
                QJsonDocument(array).toJson(QJsonDocument::Compact).toStdString().c_str() << "')" ;
 
         QSqlQuery result(sql.str().c_str(), database);
-       // = _database.exec(sql.str().c_str());
         if(result.lastError().type() != QSqlError::NoError)
         {
             _logger->logInfo(result.lastError().text().toStdString());
@@ -145,7 +144,37 @@ QString PlayListManager::getPlayList(int32_t playlistID)
 }
 
 
+bool PlayListManager::editPlayList(QJsonObject playList)
+{
+   bool retVal = false;
+   QSqlDatabase database = QSqlDatabase().addDatabase("QMYSQL","playListManager");
+   database.setHostName(_settings->getDBServer());
+   database.setUserName(_settings->getDBUser());
+   database.setPassword(_settings->getDBPwd());
+   database.setDatabaseName(_settings->getDataBase());
 
+   int playListID = playList["PlayList"].toString().toInt();
+   QString jsonContainer =  playList["jsonContainer"].toString();
+   if(database.open())
+   {
+       std::stringstream sql;
+       sql << "update userPlaylist set showParms='" << jsonContainer.toStdString().c_str() << "' where ID = " << playListID;
+       QSqlQuery result(sql.str().c_str(), database);
+       if(result.lastError().type() != QSqlError::NoError)
+       {
+           _logger->logInfo(result.lastError().text().toStdString());
+
+       }
+       retVal = true;
+       database.close();
+   }
+   else
+   {
+       _logger->logInfo(database.lastError().text().toStdString());
+   }
+   return retVal;
+
+}
 bool PlayListManager::deletePlayList(int32_t userId, int32_t playlistID)
 {
     bool retVal = false;

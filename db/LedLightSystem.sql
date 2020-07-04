@@ -16,6 +16,20 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `lLightSystemFeatures`
+--
+
+DROP TABLE IF EXISTS `lLightSystemFeatures`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `lLightSystemFeatures` (
+  `ID` int NOT NULL,
+  `featureName` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `lStripType`
 --
 
@@ -37,16 +51,37 @@ DROP TABLE IF EXISTS `lightShows`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `lightShows` (
-  `ID` int NOT NULL AUTO_INCREMENT,
+  `ID` int NOT NULL,
   `showName` varchar(100) DEFAULT NULL,
   `enabled` int DEFAULT NULL,
   `numColors` int DEFAULT NULL,
   `hasDelay` tinyint DEFAULT NULL,
-  `hasSpeed` tinyint DEFAULT NULL,
-  `isBlink` tinyint DEFAULT NULL,
   `hasWidth` tinyint DEFAULT NULL,
+  `hasMinutes` tinyint DEFAULT '1',
+  `colorEvery` tinyint DEFAULT '0',
+  `showOrder` tinyint DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `lightSystemFeatures`
+--
+
+DROP TABLE IF EXISTS `lightSystemFeatures`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `lightSystemFeatures` (
+  `featureId` int NOT NULL,
+  `lightSystemId` int NOT NULL,
+  `featureGpio` int DEFAULT '0',
+  `featurePlayList` int DEFAULT '0',
+  `motionDelayOff` int DEFAULT '0',
+  `timeFeatureStart` varchar(45) DEFAULT '0',
+  `timeFeatureEnd` varchar(45) DEFAULT '0',
+  `luxThreshHold` int DEFAULT '0',
+  PRIMARY KEY (`featureId`,`lightSystemId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,8 +102,47 @@ CREATE TABLE `lightSystems` (
   `serverHostName` varchar(50) DEFAULT NULL,
   `brightness` int DEFAULT NULL,
   `enabled` int DEFAULT NULL,
+  `userId` int DEFAULT NULL,
+  `gamma` double DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `productMedia`
+--
+
+DROP TABLE IF EXISTS `productMedia`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `productMedia` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `description` varchar(255) DEFAULT NULL,
+  `path` varchar(255) DEFAULT NULL,
+  `text` text,
+  `isVideo` tinyint DEFAULT '0',
+  `enabled` tinyint DEFAULT '0',
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `products`
+--
+
+DROP TABLE IF EXISTS `products`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `products` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(250) NOT NULL,
+  `code` varchar(100) NOT NULL,
+  `price` double(9,2) NOT NULL,
+  `image` varchar(250) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `code_UNIQUE` (`code`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -90,7 +164,25 @@ CREATE TABLE `registrationTable` (
   PRIMARY KEY (`ID`,`username`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   UNIQUE KEY `ID_UNIQUE` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `showsRan`
+--
+
+DROP TABLE IF EXISTS `showsRan`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `showsRan` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `systemId` int DEFAULT NULL,
+  `userID` int DEFAULT NULL,
+  `showId` int DEFAULT NULL,
+  `showParms` json DEFAULT NULL,
+  `timeStamp` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -106,7 +198,7 @@ CREATE TABLE `userPlaylist` (
   `playlistName` varchar(50) DEFAULT NULL,
   `showParms` json DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -118,4 +210,4 @@ CREATE TABLE `userPlaylist` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-14  5:32:20
+-- Dump completed on 2020-07-04  6:32:44
