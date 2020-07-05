@@ -9,11 +9,16 @@ While we have provided source code, as well as instructions for building system.
 
 Features.
 * Customizable Lightshows (done)
-* Many precanned shows. (always a work in progress)
+* Lights By Motion. (done)
+* Lights By Light Sensor. (done)
+* Lights By Timer. (done)
+* Lights By Lux Sensor BH1750FVI.  (WINGONEER GY-30 BH1750FVI)
+* Precanned shows. (always a work in progress)
 * Ability to save playlists. (done)
 * Ability to edit saved playlists. (done)
 * Control as many LightSystems/Lightshows as pi Memory allows. (not hit my limit yet)
 * Fully open source. (yep, it is)
+* Grouped Light Systems, control Light systems as a group.
 * Simple to use, easy to setup.  
 * Website for controling the Lightshows is work produced by Myrana.
 </b>
