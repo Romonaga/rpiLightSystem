@@ -607,6 +607,7 @@ bool LightSystem::startSystem()
        _ledWrapper.setClearOnExit(true);
 
       loadFeatures();
+      startShows();
 
       if(_settings->getMasterDevice())
           _logger->logInfo("startSystem I am a master Device!");;

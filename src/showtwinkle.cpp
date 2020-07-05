@@ -19,6 +19,7 @@ void ShowTwinkle::resetLeds()
     {
        _ledWrapper->setPixelColor(_settings->getStripHeight(), led, _twinks[led]);
        _ledWrapper->show();
+       Ws2811Wrapper::waitMillSec(_wait);
     }
 
     _twinks.clear();
