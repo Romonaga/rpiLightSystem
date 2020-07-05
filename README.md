@@ -8,13 +8,13 @@ Here we are, several years later, with my daughter leading up the website code.
 While we have provided source code, as well as instructions for building system.  What is not provided here is the hardware, nor the electronics schematics required to drive the light strips. It is assumed that you, the user of this software, understand and have the background in working with these strips.  LumaWin, does provide kits, that are prebuilt, and ready to go with all the required hardware for installation, as well as a preconfigured Raspberry Pi.  All you need to do is set it up.
 
 Features.
-* Customizable Lightshows
-* Many precanned shows.
-* Ability to save playlists.
-* Ability to edit saved playlists.
-* Control as many LightSystems/Lightshows as pi Memory allows.
-* Fully open source.
-* Simple to use, easy to setup.
+* Customizable Lightshows (done)
+* Many precanned shows. (always a work in progress)
+* Ability to save playlists. (done)
+* Ability to edit saved playlists. (done)
+* Control as many LightSystems/Lightshows as pi Memory allows. (not hit my limit yet)
+* Fully open source. (yep, it is)
+* Simple to use, easy to setup.  
 * Website for controling the Lightshows is work produced by Myrana.
 </b>
 
