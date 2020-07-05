@@ -78,7 +78,7 @@ QString PlayListManager::getPlayList(QJsonObject playList)
 
     std::stringstream info;
 
-    info << "getPlayList " << playList.value("playlistName").toString().toStdString().c_str();;
+    info << "getPlayList Web" << playList.value("playlistName").toString().toStdString().c_str();;
     _logger->logInfo(info.str());
 
     QSqlDatabase database = QSqlDatabase().addDatabase("QMYSQL","playListManager");
@@ -91,7 +91,8 @@ QString PlayListManager::getPlayList(QJsonObject playList)
     if(database.open())
     {
         std::stringstream sql;
-        sql << "select showParms from userPlaylist where userID = " << playList.value("UserID").toString().toInt() << " and ID = " << playList.value("playlistName").toString().toInt();
+        sql << "select showParms from userPlaylist where ID = " << playList.value("playlistName").toInt();
+        _logger->logInfo(sql.str());
         QSqlQuery result(sql.str().c_str(), database);
         if(result.lastError().type() == QSqlError::NoError)
         {
@@ -118,6 +119,12 @@ QString PlayListManager::getPlayList(QJsonObject playList)
 QString PlayListManager::getPlayList(int32_t playlistID)
 {
     QString playList;
+
+    std::stringstream info;
+
+    info << "getPlayList rpi" << (int)playlistID;
+    _logger->logInfo(info.str());
+
 
     QSqlDatabase database = QSqlDatabase().addDatabase("QMYSQL","playListManager");
     database.setHostName(_settings->getDBServer());
