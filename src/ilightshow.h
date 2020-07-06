@@ -65,7 +65,7 @@ public:
     QString getShowParms() const;
 
     bool isRunning() const;
-    int genRand(int min, int max);
+    int genRand(unsigned int min, unsigned int max);
 
     int getUserId() const;
     void gammaCorrection();

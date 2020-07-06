@@ -2,6 +2,8 @@
 #include <math.h>
 
 #include <QDebug>
+#include <random>
+
 
 
 ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString& showParms) :
@@ -183,9 +185,14 @@ bool ILightShow::isRunning() const
     return _running;
 }
 
-int ILightShow::genRand(int min, int max)
+
+int ILightShow::genRand(unsigned int min, unsigned int max)
 {
-   return (rand() % max) + min;
+    std::random_device seeder;
+    std::mt19937 engine(seeder());
+    std::uniform_int_distribution<unsigned int> dist(min, max);
+    return dist(engine);
+
 }
 
 int ILightShow::getUserId() const
