@@ -47,6 +47,8 @@ LightSystem::LightSystem(QObject *parent) : QObject(parent)
     _started = false;
     _running = false;
     _mqq = nullptr;
+    _twitch = nullptr;
+
     _logger = DNRLogger::instance();
     _logger->setDebugOut(_settings->getDbgLog());
     _motionFeature = nullptr;
@@ -88,9 +90,7 @@ LightSystem::~LightSystem()
 {
 
     if(_mqq != nullptr)
-    {
         stopSystem();
-    }
 
     stopFeatures();
 
@@ -101,7 +101,7 @@ LightSystem::~LightSystem()
 
 const char *LightSystem::getEnumName(int index)
 {
-    const char* _lightShowNames[] = {LIGHT_SHOWS(LIGHT_SHOWS_STRING)};
+    const char* _lightShowNames[] = {LIGHT_SHOWS(LIGHT_SHOWS_SHOW)};
     return _lightShowNames[index];
 }
 
@@ -287,6 +287,7 @@ void LightSystem::processMsgReceived(QString msg)
 
 
 }
+
 
 
 
@@ -586,7 +587,7 @@ bool LightSystem::startSystem()
                 _settings->getDbgLog() << ")";
 
        _logger->logInfo(info.str());
-       renderResults = _ledWrapper.initStrip(_settings->getStripWidth(), _settings->getStripHeight(), (LedStripType)_settings->getStripType(), _settings->getDma(), _settings->getGpio(), false);
+       renderResults = _ledWrapper.initStrip(_settings->getStripWidth(), _settings->getStripHeight(), (LedStripType)_settings->getStripType(), _settings->getDma(), _settings->getGpio());
        if(renderResults != WS2811_SUCCESS)
        {
            info.str("");
@@ -601,6 +602,16 @@ bool LightSystem::startSystem()
         _mqq = new MqttReceiver(_settings->getMqttBroker(), _settings->getHostName(), 0);
         connect(_mqq, SIGNAL(msgReceived(QString)), this, SLOT(processMsgReceived(QString)));
 
+        if(_settings->getMasterDevice())
+        {
+            std::stringstream queue;
+            queue << _settings->getHostName().toStdString().c_str() << "/TwitchBot";
+            _twitch  = new MqttReceiver(_settings->getMqttBroker(), queue.str().c_str(), 0,"TwitchBot");
+            connect(_twitch, SIGNAL(msgReceived(QString)), this, SLOT(processMsgReceivedTwitch(QString)));
+            _logger->logInfo("we are twitching");;
+
+        }
+
 
         _logger->logInfo("Configuring LED Strip");
        _ledWrapper.setBrightness(_settings->getBrightness());
@@ -609,8 +620,6 @@ bool LightSystem::startSystem()
       loadFeatures();
       startShows();
 
-      if(_settings->getMasterDevice())
-          _logger->logInfo("startSystem I am a master Device!");;
 
     }
     else
@@ -627,6 +636,10 @@ void LightSystem::stopSystem()
     _started = false;
     stopShows();
     _mqq->stop();
+
+    if(nullptr != _twitch)
+        _twitch->stop();
+
     _logger->logInfo("LightSystem::stopSystem Stopped");
 }
 
@@ -752,3 +765,157 @@ void LightSystem::lightLuxStateChange(LightLuxFeature *feature, quint32 lux)
 
 }
 
+
+//TWTICH
+LedLightShows LightSystem::getShowId(const QString& twitchId)
+{
+
+    const char* twitchNames[] = {LIGHT_SHOWS(LIGHT_SHOWS_TWITCH)};
+    for(int counter = 0; counter < LIGHT_SHOWS_ENUM_COUNT; counter++)
+    {
+        if(!twitchId.compare(twitchNames[counter],Qt::CaseInsensitive))
+        {
+            return (LedLightShows)counter;
+        }
+    }
+
+   return Nope;
+}
+
+
+QString LightSystem::parseTwitchCmd(const QStringList& showParms)
+{
+
+    QJsonObject showObject;
+    QJsonObject colors;
+
+
+    LedLightShows showId = getShowId(showParms[0]);
+    if(showId != Nope)
+    {
+        showObject.insert("show", QJsonValue::fromVariant(QString::number((int)showId)));
+        showObject.insert("gammacorrection", QJsonValue::fromVariant(1));
+        for(int counter = 1; counter < showParms.length(); counter++)
+        {
+            QStringList parm = showParms[counter].split('=');
+            if(parm.length() == 2)
+            {
+                if(!parm[0].compare("c1",Qt::CaseInsensitive))
+                {
+
+                    _logger->logInfo(parm[1].toStdString());
+
+                    quint32 color = std::stoul(parm[1].toStdString().c_str(), nullptr, 16);
+
+                    QJsonObject rgb;
+                    rgb.insert("r",QJsonValue::fromVariant(_ledWrapper.Red(color)));
+                    rgb.insert("g",QJsonValue::fromVariant(_ledWrapper.Green(color)));
+                    rgb.insert("b",QJsonValue::fromVariant(_ledWrapper.Blue(color)));
+
+                    colors.insert("color1", rgb);
+
+                 }
+
+                if(!parm[0].compare("c2",Qt::CaseInsensitive))
+                {
+
+                    _logger->logInfo(parm[1].toStdString());
+
+                    quint32 color = std::stoul(parm[1].toStdString().c_str(), nullptr, 16);
+
+                    QJsonObject rgb;
+                    rgb.insert("r",QJsonValue::fromVariant(_ledWrapper.Red(color)));
+                    rgb.insert("g",QJsonValue::fromVariant(_ledWrapper.Green(color)));
+                    rgb.insert("b",QJsonValue::fromVariant(_ledWrapper.Blue(color)));
+
+                    colors.insert("color2", rgb);
+
+                 }
+
+                if(!parm[0].compare("c1",Qt::CaseInsensitive))
+                {
+
+                    _logger->logInfo(parm[1].toStdString());
+
+                    quint32 color = std::stoul(parm[1].toStdString().c_str(), nullptr, 16);
+
+                    QJsonObject rgb;
+                    rgb.insert("r",QJsonValue::fromVariant(_ledWrapper.Red(color)));
+                    rgb.insert("g",QJsonValue::fromVariant(_ledWrapper.Green(color)));
+                    rgb.insert("b",QJsonValue::fromVariant(_ledWrapper.Blue(color)));
+
+                    colors.insert("color1", rgb);
+
+                 }
+
+                if(!parm[0].compare("c3",Qt::CaseInsensitive))
+                {
+
+                    _logger->logInfo(parm[1].toStdString());
+
+                    quint32 color = std::stoul(parm[1].toStdString().c_str(), nullptr, 16);
+
+                    QJsonObject rgb;
+                    rgb.insert("r",QJsonValue::fromVariant(_ledWrapper.Red(color)));
+                    rgb.insert("g",QJsonValue::fromVariant(_ledWrapper.Green(color)));
+                    rgb.insert("b",QJsonValue::fromVariant(_ledWrapper.Blue(color)));
+
+                    colors.insert("color3", rgb);
+
+                 }
+
+                if(!parm[0].compare("delay",Qt::CaseInsensitive))
+                    showObject.insert("delay", parm[1]);
+
+                if(!parm[0].compare("minutes",Qt::CaseInsensitive))
+                    showObject.insert("minutes", parm[1]);
+
+                if(!parm[0].compare("brightness",Qt::CaseInsensitive))
+                    showObject.insert("brightness", parm[1]);
+
+                if(!parm[0].compare("width",Qt::CaseInsensitive))
+                    showObject.insert("width", parm[1]);
+
+                if(!parm[0].compare("colorEvery",Qt::CaseInsensitive))
+                    showObject.insert("colorEvery", parm[1]);
+
+                if(!parm[0].compare("gamma",Qt::CaseInsensitive))
+                    showObject.insert("gamma", parm[1].toInt());
+
+                if(!parm[0].compare("clearstart",Qt::CaseInsensitive))
+                    showObject.insert("clearStart", parm[1].toInt());
+
+                if(!parm[0].compare("clearfinish",Qt::CaseInsensitive))
+                    showObject.insert("clearFinish", parm[1].toInt());
+
+
+            }
+        }
+
+        if(colors.length() > 0)
+            showObject.insert("colors", colors);
+
+        QJsonDocument doc(showObject);
+        return doc.toJson(QJsonDocument::Compact);
+
+    }
+
+    return "";
+}
+
+void LightSystem::processMsgReceivedTwitch(QString msg)
+{
+    std::stringstream info;
+
+    info << "LightSystem::processMsgReceivedTwitch: " << msg.toStdString().c_str();
+    _logger->logInfo(info.str());
+
+    if(msg.split(' ')[0] == "!runshow")
+    {
+         QString show(msg.split(' ')[1]);
+         QStringList showParms(show.split(','));
+         processMsgReceived(parseTwitchCmd(showParms));
+
+    }
+
+}

@@ -169,9 +169,10 @@ void ILightShow::gammaCorrection()
 
 }
 
+
 QString ILightShow::getShowName()
 {
-    const char* lightShowNames[] = {LIGHT_SHOWS(LIGHT_SHOWS_STRING)};
+    const char* lightShowNames[] = {LIGHT_SHOWS(LIGHT_SHOWS_SHOW)};
     return lightShowNames[_lightShow];
 }
 

@@ -27,6 +27,25 @@ MqttReceiver::MqttReceiver(const QString &broker, const QString &topic, int qos,
 }
 
 
+MqttReceiver::MqttReceiver(const QString &broker, const QString &topic, int qos, const QString& clientID, QObject *parent)
+    : QObject(parent), _broker(broker), _topic(topic), _qos(qos)
+{
+    _logger = DNRLogger::instance();
+    _data = new MQTTSubscriber(_broker.toStdString(), _topic.toStdString(), _qos, 200, 50);
+    _data->setDebugLogging(true);
+
+    _data->setPersistance(clientID.toStdString().c_str(), _qos);
+
+    auto mqttSubCallBack = [](void *caller, mqtt::const_message_ptr msg)
+    {
+        ((MqttReceiver*)caller)->callbackFunction(msg);
+    };
+
+    _data->connectCallback(mqttSubCallBack, this);
+
+    _data->start();
+}
+
 MqttReceiver::~MqttReceiver()
 {
     stop();

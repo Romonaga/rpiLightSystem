@@ -31,7 +31,7 @@ void ShowTwinkle::resetLeds()
               color = _twinks.value(led);
               _ledWrapper->setPixelColor(_settings->getStripHeight(), led, color);
               _twinks.remove(led);
-              Ws2811Wrapper::waitMillSec((int)_wait / 2);
+              Ws2811Wrapper::waitMillSec(genRand(1, _wait));
               break;
           }
 
@@ -44,6 +44,7 @@ void ShowTwinkle::startShow()
 {
     ws2811_led_t min;
     ws2811_led_t max;
+    int twinkChance  = 0;
 
     int twinkLed;
 
@@ -59,16 +60,17 @@ void ShowTwinkle::startShow()
     }
 
 
-    int twinkChance =  genRand(1, _ledWrapper->getNumberLeds() * .5);
     while(_endTime > time(nullptr))
     {
 
         resetLeds();
 
+        twinkChance =  genRand(1, _ledWrapper->getNumberLeds() / .5);
+
         for (unsigned int inner = 0; inner < _ledWrapper->getNumberLeds(); inner++)
         {
 
-            if(twinkChance > genRand(1, _ledWrapper->getNumberLeds()) - 1)
+            if(twinkChance > genRand(1,genRand(1, _ledWrapper->getNumberLeds()) - 1))
             {
                 twinkLed = genRand(1, _ledWrapper->getNumberLeds()) - 1;
                 if(_twinks.contains(twinkLed) == false)
@@ -87,7 +89,7 @@ void ShowTwinkle::startShow()
 
         if(_running == false)
             return;
-        Ws2811Wrapper::waitMillSec(_wait);
+       // Ws2811Wrapper::waitMillSec(_wait);
     }
 }
 

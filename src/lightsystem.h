@@ -60,6 +60,7 @@ private:
     void logShow(ILightShow* show);
     void loadFeatures();
     void stopFeatures();
+    QString parseTwitchCmd(const QStringList &showParms);
 
     unsigned int random9();
     uint32_t Bow(int n);
@@ -85,11 +86,16 @@ private: //shows
 
     void queueShow(const LedLightShows& show, const QString& showParms);
 
+    //TWITCH
+    LedLightShows getShowId(const QString& twitchId);
+
+
 private:
     Ws2811Wrapper _ledWrapper;
     bool _started; //TODO: Replace with proper thead lock
     bool _running;
     MqttReceiver* _mqq;
+    MqttReceiver* _twitch;
     DNRLogger* _logger;
     QVector<ILightShow*> _runningShows;
     QMutex _runningShowsMutex;
@@ -105,6 +111,7 @@ private:
 
 public slots:
     void processMsgReceived(QString msg);
+    void processMsgReceivedTwitch(QString msg);
     void showComplete(ILightShow* show);
     void motionStateChange(MotionLightsFeature* feature, int state);
     void lightStateChange(LightSensorFeature* feature, int state);

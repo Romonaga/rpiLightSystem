@@ -11,6 +11,11 @@ class MqttReceiver : public QObject
     Q_OBJECT
 public:
     explicit MqttReceiver(const QString &broker, const QString &topic, int qos, QObject *parent = nullptr);
+    explicit MqttReceiver(const QString &broker, const QString &topic, int qos, const QString& clientID, QObject *parent = nullptr);
+
+
+
+
 
     ~MqttReceiver();
     void stop();
