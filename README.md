@@ -21,6 +21,8 @@ Features.
 * Grouped Light Systems, control Light systems as a group.
 * Simple to use, easy to setup.  
 * Website for controling the Lightshows is work produced by Myrana.
+* Twitch Support, yes that is correct, you will be able to run a Twitch Bot to control and let others control Light Systems.
+
 </b>
 
 Everything that is needed to build and run this project is or will be included in this repository. This will save you time finding the repos needed.  Please follow the build instructions and install instructions for all libs that I have used.  While we have attempted to document as best as possible, it is always best to follow the directions provided by package owner.
