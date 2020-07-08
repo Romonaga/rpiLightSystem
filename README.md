@@ -21,7 +21,7 @@ Features.
 * Grouped Light Systems, control Light systems as a group.
 * Simple to use, easy to setup.  
 * Website for controling the Lightshows is work produced by Myrana.
-* Twitch Support, yes that is correct, you will be able to run a Twitch Bot to control and let others control Light Systems.
+* Twitch Support, yes that is correct, (https://www.twitch.tv/lumawin) you will be able to run a Twitch Bot to control and let others control Light Systems.
 
 </b>
 
