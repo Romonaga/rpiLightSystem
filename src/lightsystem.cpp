@@ -602,13 +602,13 @@ bool LightSystem::startSystem()
         _mqq = new MqttReceiver(_settings->getMqttBroker(), _settings->getHostName(), 0);
         connect(_mqq, SIGNAL(msgReceived(QString)), this, SLOT(processMsgReceived(QString)));
 
-        if(_settings->getMasterDevice())
+        if(_settings->getTwitchBotSupport())
         {
+            _logger->logInfo("Setting Up Twitch Support");
             std::stringstream queue;
             queue << _settings->getHostName().toStdString().c_str() << "/TwitchBot";
-            _twitch  = new MqttReceiver(_settings->getMqttBroker(), queue.str().c_str(), 0,"TwitchBot");
+            _twitch  = new MqttReceiver(_settings->getMqttBroker(), queue.str().c_str(), 0,queue.str().c_str());
             connect(_twitch, SIGNAL(msgReceived(QString)), this, SLOT(processMsgReceivedTwitch(QString)));
-            _logger->logInfo("we are twitching");;
 
         }
 
@@ -790,113 +790,131 @@ QString LightSystem::parseTwitchCmd(const QStringList& showParms)
     QJsonObject colors;
 
 
+    if(!showParms[0].compare("chgbrightness",Qt::CaseInsensitive))
+    {
+        showObject.insert("chgBrightness", showParms[1]);
+        QJsonDocument doc(showObject);
+        return doc.toJson(QJsonDocument::Compact);
+    }
+
+
+    if(!showParms[0].compare("clearqueue",Qt::CaseInsensitive))
+    {
+        showObject.insert("clearQueue", 1);
+        QJsonDocument doc(showObject);
+        return doc.toJson(QJsonDocument::Compact);
+    }
+
     LedLightShows showId = getShowId(showParms[0]);
     if(showId != Nope)
     {
+
         showObject.insert("show", QJsonValue::fromVariant(QString::number((int)showId)));
-        showObject.insert("gammacorrection", QJsonValue::fromVariant(1));
-        for(int counter = 1; counter < showParms.length(); counter++)
+        try
         {
-            QStringList parm = showParms[counter].split('=');
-            if(parm.length() == 2)
+            for(int counter = 1; counter < showParms.length(); counter++)
             {
-                if(!parm[0].compare("c1",Qt::CaseInsensitive))
+                QStringList parm = showParms[counter].split('=');
+                if(parm.length() == 2)
                 {
+                    if(!parm[0].compare("c1",Qt::CaseInsensitive))
+                    {
 
-                    _logger->logInfo(parm[1].toStdString());
+                        quint32 color = std::stoul(parm[1].toStdString().c_str(), nullptr, 16);
 
-                    quint32 color = std::stoul(parm[1].toStdString().c_str(), nullptr, 16);
+                        QJsonObject rgb;
+                        rgb.insert("r",QJsonValue::fromVariant(_ledWrapper.Red(color)));
+                        rgb.insert("g",QJsonValue::fromVariant(_ledWrapper.Green(color)));
+                        rgb.insert("b",QJsonValue::fromVariant(_ledWrapper.Blue(color)));
 
-                    QJsonObject rgb;
-                    rgb.insert("r",QJsonValue::fromVariant(_ledWrapper.Red(color)));
-                    rgb.insert("g",QJsonValue::fromVariant(_ledWrapper.Green(color)));
-                    rgb.insert("b",QJsonValue::fromVariant(_ledWrapper.Blue(color)));
+                        colors.insert("color1", rgb);
 
-                    colors.insert("color1", rgb);
+                     }
 
-                 }
-
-                if(!parm[0].compare("c2",Qt::CaseInsensitive))
-                {
-
-                    _logger->logInfo(parm[1].toStdString());
-
-                    quint32 color = std::stoul(parm[1].toStdString().c_str(), nullptr, 16);
-
-                    QJsonObject rgb;
-                    rgb.insert("r",QJsonValue::fromVariant(_ledWrapper.Red(color)));
-                    rgb.insert("g",QJsonValue::fromVariant(_ledWrapper.Green(color)));
-                    rgb.insert("b",QJsonValue::fromVariant(_ledWrapper.Blue(color)));
-
-                    colors.insert("color2", rgb);
-
-                 }
-
-                if(!parm[0].compare("c1",Qt::CaseInsensitive))
-                {
-
-                    _logger->logInfo(parm[1].toStdString());
-
-                    quint32 color = std::stoul(parm[1].toStdString().c_str(), nullptr, 16);
-
-                    QJsonObject rgb;
-                    rgb.insert("r",QJsonValue::fromVariant(_ledWrapper.Red(color)));
-                    rgb.insert("g",QJsonValue::fromVariant(_ledWrapper.Green(color)));
-                    rgb.insert("b",QJsonValue::fromVariant(_ledWrapper.Blue(color)));
-
-                    colors.insert("color1", rgb);
-
-                 }
-
-                if(!parm[0].compare("c3",Qt::CaseInsensitive))
-                {
-
-                    _logger->logInfo(parm[1].toStdString());
-
-                    quint32 color = std::stoul(parm[1].toStdString().c_str(), nullptr, 16);
-
-                    QJsonObject rgb;
-                    rgb.insert("r",QJsonValue::fromVariant(_ledWrapper.Red(color)));
-                    rgb.insert("g",QJsonValue::fromVariant(_ledWrapper.Green(color)));
-                    rgb.insert("b",QJsonValue::fromVariant(_ledWrapper.Blue(color)));
-
-                    colors.insert("color3", rgb);
-
-                 }
-
-                if(!parm[0].compare("delay",Qt::CaseInsensitive))
-                    showObject.insert("delay", parm[1]);
-
-                if(!parm[0].compare("minutes",Qt::CaseInsensitive))
-                    showObject.insert("minutes", parm[1]);
-
-                if(!parm[0].compare("brightness",Qt::CaseInsensitive))
-                    showObject.insert("brightness", parm[1]);
-
-                if(!parm[0].compare("width",Qt::CaseInsensitive))
-                    showObject.insert("width", parm[1]);
-
-                if(!parm[0].compare("colorEvery",Qt::CaseInsensitive))
-                    showObject.insert("colorEvery", parm[1]);
-
-                if(!parm[0].compare("gamma",Qt::CaseInsensitive))
-                    showObject.insert("gamma", parm[1].toInt());
-
-                if(!parm[0].compare("clearstart",Qt::CaseInsensitive))
-                    showObject.insert("clearStart", parm[1].toInt());
-
-                if(!parm[0].compare("clearfinish",Qt::CaseInsensitive))
-                    showObject.insert("clearFinish", parm[1].toInt());
+                    if(!parm[0].compare("c2",Qt::CaseInsensitive))
+                    {
 
 
+                        quint32 color = std::stoul(parm[1].toStdString().c_str(), nullptr, 16);
+
+                        QJsonObject rgb;
+                        rgb.insert("r",QJsonValue::fromVariant(_ledWrapper.Red(color)));
+                        rgb.insert("g",QJsonValue::fromVariant(_ledWrapper.Green(color)));
+                        rgb.insert("b",QJsonValue::fromVariant(_ledWrapper.Blue(color)));
+
+                        colors.insert("color2", rgb);
+
+                     }
+
+                    if(!parm[0].compare("c3",Qt::CaseInsensitive))
+                    {
+
+
+                        quint32 color = std::stoul(parm[1].toStdString().c_str(), nullptr, 16);
+
+                        QJsonObject rgb;
+                        rgb.insert("r",QJsonValue::fromVariant(_ledWrapper.Red(color)));
+                        rgb.insert("g",QJsonValue::fromVariant(_ledWrapper.Green(color)));
+                        rgb.insert("b",QJsonValue::fromVariant(_ledWrapper.Blue(color)));
+
+                        colors.insert("color3", rgb);
+
+                     }
+
+                    if(!parm[0].compare("c4",Qt::CaseInsensitive))
+                    {
+
+
+                        quint32 color = std::stoul(parm[1].toStdString().c_str(), nullptr, 16);
+
+                        QJsonObject rgb;
+                        rgb.insert("r",QJsonValue::fromVariant(_ledWrapper.Red(color)));
+                        rgb.insert("g",QJsonValue::fromVariant(_ledWrapper.Green(color)));
+                        rgb.insert("b",QJsonValue::fromVariant(_ledWrapper.Blue(color)));
+
+                        colors.insert("color4", rgb);
+
+                     }
+
+
+                    if(!parm[0].compare("delay",Qt::CaseInsensitive))
+                        showObject.insert("delay", parm[1]);
+
+                    if(!parm[0].compare("minutes",Qt::CaseInsensitive))
+                        showObject.insert("minutes", parm[1]);
+
+                    if(!parm[0].compare("brightness",Qt::CaseInsensitive))
+                        showObject.insert("brightness", parm[1]);
+
+                    if(!parm[0].compare("width",Qt::CaseInsensitive))
+                        showObject.insert("width", parm[1]);
+
+                    if(!parm[0].compare("colorEvery",Qt::CaseInsensitive))
+                        showObject.insert("colorEvery", parm[1]);
+
+                    if(!parm[0].compare("gamma",Qt::CaseInsensitive))
+                        showObject.insert("gamma", parm[1].toInt());
+
+                    if(!parm[0].compare("clearstart",Qt::CaseInsensitive))
+                        showObject.insert("clearStart", parm[1].toInt());
+
+                    if(!parm[0].compare("clearfinish",Qt::CaseInsensitive))
+                        showObject.insert("clearFinish", parm[1].toInt());
+
+                }
             }
+
+            if(colors.length() > 0)
+                showObject.insert("colors", colors);
+
+            QJsonDocument doc(showObject);
+            return doc.toJson(QJsonDocument::Compact);
+
         }
-
-        if(colors.length() > 0)
-            showObject.insert("colors", colors);
-
-        QJsonDocument doc(showObject);
-        return doc.toJson(QJsonDocument::Compact);
+        catch(...)
+        {
+            _logger->logCritical("Exception Parsing Parms!");
+        }
 
     }
 
@@ -910,12 +928,19 @@ void LightSystem::processMsgReceivedTwitch(QString msg)
     info << "LightSystem::processMsgReceivedTwitch: " << msg.toStdString().c_str();
     _logger->logInfo(info.str());
 
-    if(msg.split(' ')[0] == "!runshow")
+    if(msg.split(' ')[0] == "!lumawin")
     {
          QString show(msg.split(' ')[1]);
+
          QStringList showParms(show.split(','));
-         processMsgReceived(parseTwitchCmd(showParms));
+
+         QString msg = parseTwitchCmd(showParms);
+         if(msg.length() > 0)
+            processMsgReceived(msg);
 
     }
 
 }
+
+
+//'#'+(Math.random()*0xFFFFFF<<0).toString(16);

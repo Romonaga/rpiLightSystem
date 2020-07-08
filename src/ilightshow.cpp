@@ -15,11 +15,11 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
     srand(time(nullptr));
 
     _running = false;
-    _wait = 0;
+    _wait = 100;
     _clearOnStart = false;
     _clearOnFinish = false;
     _numMins = 1;
-    _width = 1;
+    _width = 5;
     _colorEvery = 2;
     _color1 = Ws2811Wrapper::Color(125, 125, 125);
     _color2 = Ws2811Wrapper::Color(0, 125, 125);

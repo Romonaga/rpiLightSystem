@@ -52,7 +52,7 @@ public:
 
     double getGamma() const;
 
-    bool getMasterDevice() const;
+    bool getTwitchBotSupport() const;
 
 private:
     SystemSettings();
@@ -77,7 +77,7 @@ private:
     bool _dbgLog;
     bool _logShows;
     double _gamma;
-    bool _masterDevice;
+    bool _twitchBotSupport;
 
 
 

@@ -16,9 +16,9 @@ SystemSettings::SystemSettings()
 
 }
 
-bool SystemSettings::getMasterDevice() const
+bool SystemSettings::getTwitchBotSupport() const
 {
-    return _masterDevice;
+    return _twitchBotSupport;
 }
 
 double SystemSettings::getGamma() const
@@ -122,7 +122,7 @@ void SystemSettings::loadSystemSettings()
             _gpio = qry.value("gpio").toInt();
             _brightness = qry.value("brightness").toInt();
             _gamma = qry.value("gamma").toDouble();
-            _masterDevice = qry.value("masterDevice").toBool();
+            _twitchBotSupport = qry.value("twitchBotSupport").toBool();
 
 
         }

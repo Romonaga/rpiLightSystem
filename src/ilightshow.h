@@ -124,3 +124,5 @@ signals:
 Q_DECLARE_INTERFACE(ILightShow,"ILightShow")
 #endif // ILIGHTSHOW_H
 
+
+
