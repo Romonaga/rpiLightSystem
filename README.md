@@ -12,16 +12,17 @@ Features.
 * Lights By Motion. (done)
 * Lights By Light Sensor. (done)
 * Lights By Timer. (done)
-* Lights By Lux Sensor BH1750FVI.  (WINGONEER GY-30 BH1750FVI)
+* Lights By Lux Sensor BH1750FVI.  (WINGONEER GY-30 BH1750FVI) (done)
 * Precanned shows. (always a work in progress)
 * Ability to save playlists. (done)
 * Ability to edit saved playlists. (done)
 * Control as many LightSystems/Lightshows as pi Memory allows. (not hit my limit yet)
 * Fully open source. (yep, it is)
-* Grouped Light Systems, control Light systems as a group.
+* Grouped Light Systems, control Light systems as a group. (not Started Yet)
 * Simple to use, easy to setup.  
-* Website for controling the Lightshows is work produced by Myrana.
-* Twitch Support, yes that is correct, (https://www.twitch.tv/lumawin) you will be able to run a Twitch Bot to control and let others control Light Systems.
+* Website for controling the Lightshows is work produced by Myrana. (always a work in progress)
+* Twitch Support, yes that is correct, (https://www.twitch.tv/lumawin) you will be able to run a Twitch Bot to control and let others control Light Systems. (done)
+* Twitch Pannel Support (Not Started)
 
 </b>
 
