@@ -30,7 +30,7 @@ Everything that is needed to build and run this project is or will be included i
 
 <b>These instructions are for Rasperry Pi Buster. It is assumed you are using the latest version of buster.</b>
 
-1. sudo apt install git qt5-default libqt5sql5-mysql build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev wiringpi libi2c-dev
+1. sudo apt install git qt5-default libqt5sql5-mysql build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev wiringpi libi2c-dev libcppunit-dev
 2. sudo apt install scons (Needed for Ws2811lib.)
 3. clone or download DNRLogger from this repo.  
     1. qmake .
@@ -53,11 +53,10 @@ Everything that is needed to build and run this project is or will be included i
             1. sudo apt install build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev doxygen graphviz
         2. Now we can run make
         3. sudo make install
-    3. This next one is not so forward, however the README.md does explain very well how to build this.
-        1. sudo apt-get install libcppunit-dev
-        2. cmake -Bbuild -H. -DPAHO_BUILD_DOCUMENTATION=TRUE -DPAHO_BUILD_SAMPLES=TRUE
-        3. $ sudo cmake --build build/ --target install
-        4. $ sudo ldconfig
+    3. This next one is not so forward, however the README.md does explain very well how to build this.      
+        1. cmake -Bbuild -H. -DPAHO_BUILD_DOCUMENTATION=TRUE -DPAHO_BUILD_SAMPLES=TRUE
+        2. $ sudo cmake --build build/ --target install
+        3. $ sudo ldconfig
  8. Time to build the projects MQTT wrapper.
     1. clone or download the MQTTMessageBus from this repo
         1. qmake .
