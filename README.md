@@ -41,7 +41,7 @@ Everything that is needed to build and run this project is or will be included i
     2. run scons, this will build the lib.
         1. sudo  cp *.h /usr/local/include/.
         2. sudo cp libws2811.a /usr/local/lib/.
-5. Lets build my wrapper around that fanatic lib!
+5. Lets build my wrapper around that fantastic lib!
 6. clone or download Ws2811Wrapper from this repo
     1. run qmake .
     2. make
