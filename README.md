@@ -12,16 +12,17 @@ Features.
 * Lights By Motion. (done)
 * Lights By Light Sensor. (done)
 * Lights By Timer. (done)
-* Lights By Lux Sensor BH1750FVI.  (WINGONEER GY-30 BH1750FVI)
+* Lights By Lux Sensor BH1750FVI.  (WINGONEER GY-30 BH1750FVI) (done)
 * Precanned shows. (always a work in progress)
 * Ability to save playlists. (done)
 * Ability to edit saved playlists. (done)
 * Control as many LightSystems/Lightshows as pi Memory allows. (not hit my limit yet)
 * Fully open source. (yep, it is)
-* Grouped Light Systems, control Light systems as a group.
+* Grouped Light Systems, control Light systems as a group. (not Started Yet)
 * Simple to use, easy to setup.  
-* Website for controling the Lightshows is work produced by Myrana.
-* Twitch Support, yes that is correct, (https://www.twitch.tv/lumawin) you will be able to run a Twitch Bot to control and let others control Light Systems.
+* Website for controling the Lightshows is work produced by Myrana. (always a work in progress)
+* Twitch Support, yes that is correct, (https://www.twitch.tv/lumawin) you will be able to run a Twitch Bot to control and let others control Light Systems. (done)
+* Twitch Pannel Support (Not Started)
 
 </b>
 
@@ -29,7 +30,7 @@ Everything that is needed to build and run this project is or will be included i
 
 <b>These instructions are for Rasperry Pi Buster. It is assumed you are using the latest version of buster.</b>
 
-1. sudo apt install git qt5-default libqt5sql5-mysql build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev wiringpi libi2c-dev
+1. sudo apt install git qt5-default libqt5sql5-mysql build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev wiringpi libi2c-dev libcppunit-dev
 2. sudo apt install scons (Needed for Ws2811lib.)
 3. clone or download DNRLogger from this repo.  
     1. qmake .
@@ -40,7 +41,7 @@ Everything that is needed to build and run this project is or will be included i
     2. run scons, this will build the lib.
         1. sudo  cp *.h /usr/local/include/.
         2. sudo cp libws2811.a /usr/local/lib/.
-5. Lets build my wrapper around that fanatic lib!
+5. Lets build my wrapper around that fantastic lib!
 6. clone or download Ws2811Wrapper from this repo
     1. run qmake .
     2. make
@@ -52,11 +53,10 @@ Everything that is needed to build and run this project is or will be included i
             1. sudo apt install build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev doxygen graphviz
         2. Now we can run make
         3. sudo make install
-    3. This next one is not so forward, however the README.md does explain very well how to build this.
-        1. sudo apt-get install libcppunit-dev
-        2. cmake -Bbuild -H. -DPAHO_BUILD_DOCUMENTATION=TRUE -DPAHO_BUILD_SAMPLES=TRUE
-        3. $ sudo cmake --build build/ --target install
-        4. $ sudo ldconfig
+    3. This next one is not so forward, however the README.md does explain very well how to build this.      
+        1. cmake -Bbuild -H. -DPAHO_BUILD_DOCUMENTATION=TRUE -DPAHO_BUILD_SAMPLES=TRUE
+        2. $ sudo cmake --build build/ --target install
+        3. $ sudo ldconfig
  8. Time to build the projects MQTT wrapper.
     1. clone or download the MQTTMessageBus from this repo
         1. qmake .
