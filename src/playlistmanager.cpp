@@ -29,7 +29,7 @@ PlayListManager::~PlayListManager()
 //    bool retVal = false;
 //    QJsonArray array;
 
-//    QSqlDatabase database = QSqlDatabase().addDatabase("QMYSQL","playListManager");
+//    QSqlDatabase database = QSqlDatabase::addDatabase("QMYSQL","playListManager");
 //    database.setHostName(_settings->getDBServer());
 //    database.setUserName(_settings->getDBUser());
 //    database.setPassword(_settings->getDBPwd());
@@ -81,7 +81,7 @@ QString PlayListManager::getPlayList(QJsonObject playList)
     info << "getPlayList Web" << playList.value("playlistName").toString().toStdString().c_str();;
     _logger->logInfo(info.str());
 
-    QSqlDatabase database = QSqlDatabase().addDatabase("QMYSQL","playListManager");
+    QSqlDatabase database = QSqlDatabase::addDatabase("QMYSQL","playListManager");
     database.setHostName(_settings->getDBServer());
     database.setUserName(_settings->getDBUser());
     database.setPassword(_settings->getDBPwd());
@@ -126,7 +126,7 @@ QString PlayListManager::getPlayList(int32_t playlistID)
     _logger->logInfo(info.str());
 
 
-    QSqlDatabase database = QSqlDatabase().addDatabase("QMYSQL","playListManager");
+    QSqlDatabase database = QSqlDatabase::addDatabase("QMYSQL","playListManager");
     database.setHostName(_settings->getDBServer());
     database.setUserName(_settings->getDBUser());
     database.setPassword(_settings->getDBPwd());

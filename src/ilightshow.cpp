@@ -44,7 +44,7 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
                 _userId = jsonObject.value("UserID").toString().toInt();
 
             if(jsonObject.value("brightness").isString())
-                _ledWrapper->setBrightness(jsonObject.value("brightness").toString().toInt());
+                _brightness = jsonObject.value("brightness").toString().toInt();
 
             if(jsonObject.value("delay").isString())
                 _wait = jsonObject.value("delay").toString().toInt();

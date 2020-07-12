@@ -95,7 +95,7 @@ int SystemSettings::getSystemId() const
 void SystemSettings::loadSystemSettings()
 {
    
-    QSqlDatabase database = QSqlDatabase().addDatabase("QMYSQL","rpiLightSystem");
+    QSqlDatabase database = QSqlDatabase::addDatabase("QMYSQL","rpiLightSystem");
 
     database.setHostName(_server);
     database.setUserName(_user);

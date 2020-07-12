@@ -399,7 +399,7 @@ void LightSystem::logShow(ILightShow* show)
 {
     if(false == _settings->getLogShows()) return;
 
-    QSqlDatabase database = QSqlDatabase().addDatabase("QMYSQL","logShow");
+    QSqlDatabase database = QSqlDatabase::addDatabase("QMYSQL","logShow");
     database.setHostName(_settings->getDBServer());
     database.setUserName(_settings->getDBUser());
     database.setPassword(_settings->getDBPwd());
@@ -433,7 +433,6 @@ void LightSystem::logShow(ILightShow* show)
 
     }
 
-    QSqlDatabase::removeDatabase("logShow");
 
 }
 
@@ -463,12 +462,14 @@ void LightSystem::cleanUpShow(ILightShow* show)
 
     std::stringstream info;
 
-    info << "LightSystem::cleanUpShow Show(" <<  show->getShowName().toStdString().c_str() << ")";
-    _logger->logInfo(info.str());
     _runningShowsMutex.lock();
     if(show != nullptr) delete show;
 
     _runningShows.removeOne(show);
+
+    info << "LightSystem::cleanUpShow Show(" <<  show->getShowName().toStdString().c_str() << ") Queue(" << _runningShows.count() << ")";
+    _logger->logInfo(info.str());
+
     _runningShowsMutex.unlock();
 
 }
@@ -481,7 +482,7 @@ void LightSystem::showComplete(ILightShow* show)
     info << "LightSystem::showComplete Show(" <<  show->getShowName().toStdString().c_str() << ")";
     _logger->logInfo(info.str());
     show->stopShow();
-    logShow(show);
+
     cleanUpShow(show);
     runShow();
 
@@ -492,7 +493,7 @@ void LightSystem::loadFeatures()
 {
     _logger->logInfo("loadFeatures");
 
-    QSqlDatabase database = QSqlDatabase().addDatabase("QMYSQL","rpiLightFeatures");
+    QSqlDatabase database = QSqlDatabase::addDatabase("QMYSQL","rpiLightFeatures");
 
     database.setHostName(_settings->getInstance()->getDBServer());
     database.setUserName(_settings->getInstance()->getDBUser());
@@ -566,7 +567,7 @@ void LightSystem::loadFeatures()
         fprintf(stderr, "%s", database.lastError().text().toStdString().c_str());
     }
 
-     QSqlDatabase::removeDatabase("rpiLightFeatures");
+
 }
 
 bool LightSystem::startSystem()
@@ -782,6 +783,7 @@ LedLightShows LightSystem::getShowId(const QString& twitchId)
    return Nope;
 }
 
+/* Keeping forever as it was good work but with twitch extensions (panel) we no longer need
 
 QString LightSystem::parseTwitchCmd(const QStringList& showParms)
 {
@@ -921,14 +923,8 @@ QString LightSystem::parseTwitchCmd(const QStringList& showParms)
     return "";
 }
 
-void LightSystem::processMsgReceivedTwitch(QString msg)
-{
-    std::stringstream info;
-
-    info << "LightSystem::processMsgReceivedTwitch: " << msg.toStdString().c_str();
-    _logger->logInfo(info.str());
-
-    if(msg.split(' ')[0] == "!lumawin")
+//implment
+if(msg.split(' ')[0] == "!lumawin")
     {
          QString show(msg.split(' ')[1]);
 
@@ -939,6 +935,16 @@ void LightSystem::processMsgReceivedTwitch(QString msg)
             processMsgReceived(msg);
 
     }
+*/
+
+void LightSystem::processMsgReceivedTwitch(QString msg)
+{
+    std::stringstream info;
+
+    info << "LightSystem::processMsgReceivedTwitch: " << msg.toStdString().c_str();
+    _logger->logInfo(info.str());
+
+    processMsgReceived(msg);
 
 }
 

@@ -3,6 +3,9 @@
 
 #include "ilightshow.h"
 #include <QMap>
+#include <QList>
+#include <QPair>
+
 
 
 class ShowTwinkle : public ILightShow
@@ -22,6 +25,8 @@ private:
     
 private:
     QMap<unsigned int, unsigned int> _twinks;
+    QList<QPair<unsigned int, unsigned int> > _twinks2;
+
 
 
 };

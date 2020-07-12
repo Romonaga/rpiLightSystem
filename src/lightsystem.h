@@ -60,7 +60,7 @@ private:
     void logShow(ILightShow* show);
     void loadFeatures();
     void stopFeatures();
-    QString parseTwitchCmd(const QStringList &showParms);
+    //QString parseTwitchCmd(const QStringList &showParms);
 
     unsigned int random9();
     uint32_t Bow(int n);
