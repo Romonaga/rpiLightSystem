@@ -159,13 +159,16 @@ LedLightShows ILightShow::getLightShow() const
 void ILightShow::gammaCorrection()
 {
 
-    for(int  counter = 0; counter <= 255; counter++)
+   /* for(int  counter = 0; counter <= 255; counter++)
     {
         _gammaCorrection[counter] = (!_useGammaCorrection) ? counter :
                 (int)(pow((float)counter / (float)255.00, _settings->getGamma()) * 255.00 + 0.5);
     }
-
-    _ledWrapper->setCustomGammaCorrection(_gammaCorrection);
+*/
+    if(true == _useGammaCorrection)
+        _ledWrapper->setCustomGammaCorrection(_settings->getGamma());
+      else
+        _ledWrapper->setCustomGammaCorrection(0);
 
 }
 
@@ -200,6 +203,16 @@ int ILightShow::getUserId() const
 {
     return _userId;
 }
+
+
+ws2811_led_t ILightShow::gamaColor(ws2811_led_t inColor)
+{
+    return (ws2811_led_t) ((inColor / 255) ^ (ws2811_led_t)(1 / _settings->getGamma())) * 255;
+}
+//encoded = ((original / 255) ^ (1 / gamma)) * 255
+//Gamma decoding is used to restore the original values, so the formula for that is:
+//original = ((encoded / 255) ^ gamma) * 255
+
 
 
 /*

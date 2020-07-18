@@ -78,6 +78,8 @@ public:
 
 private:
     virtual void startShow() = 0;
+    ws2811_led_t gamaColor(ws2811_led_t inColor);
+
 
 protected:
     SystemSettings* _settings;
