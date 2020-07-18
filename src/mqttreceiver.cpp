@@ -7,32 +7,31 @@
 MqttReceiver::MqttReceiver(const QString &broker, const QString &topic, int qos, QObject *parent) :
     QObject(parent), _broker(broker), _topic(topic), _qos(qos)
 {
-    _logger = DNRLogger::instance();
-    _data = new MQTTSubscriber(_broker.toStdString(), _topic.toStdString(), _qos, 200, 50);
-    _data->setDebugLogging(true);
     char hostname[32];
     hostname[31] = '\0';
     gethostname(hostname, sizeof(hostname));
+    init(hostname);
 
-    _data->setPersistance(hostname, _qos);
-
-    auto mqttSubCallBack = [](void *caller, mqtt::const_message_ptr msg)
-    {
-        ((MqttReceiver*)caller)->callbackFunction(msg);
-    };
-
-    _data->connectCallback(mqttSubCallBack, this);
-
-    _data->start();
 }
 
 
 MqttReceiver::MqttReceiver(const QString &broker, const QString &topic, int qos, const QString& clientID, QObject *parent)
     : QObject(parent), _broker(broker), _topic(topic), _qos(qos)
 {
+
+    init(clientID);
+
+}
+
+
+void MqttReceiver::init(const QString& clientID)
+{
     _logger = DNRLogger::instance();
-    _data = new MQTTSubscriber(_broker.toStdString(), _topic.toStdString(), _qos, 200, 50);
+    _settings = SystemSettings::getInstance();
+
+    _data = new MQTTSubscriber(_broker.toStdString(), _topic.toStdString(), _qos, _settings->getMqttRetryDelay(), _settings->getMqttRetries());
     _data->setDebugLogging(true);
+
 
     _data->setPersistance(clientID.toStdString().c_str(), _qos);
 
@@ -45,6 +44,7 @@ MqttReceiver::MqttReceiver(const QString &broker, const QString &topic, int qos,
 
     _data->start();
 }
+
 
 MqttReceiver::~MqttReceiver()
 {

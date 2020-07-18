@@ -12,7 +12,6 @@ public:
     // ILightShow interface
 public:
     void startShow();
-    void stopShow();
 
 private:
     unsigned int random9();

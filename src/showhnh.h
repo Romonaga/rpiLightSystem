@@ -11,9 +11,7 @@ public:
 
     // ILightShow interface
 public:
-    bool showParms(const QString &showParms);
     void startShow();
-    void stopShow();
 
 
 private:

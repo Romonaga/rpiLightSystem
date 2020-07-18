@@ -35,8 +35,10 @@
 #include "showcolor.h"
 #include "showcolorevery.h"
 #include "showtwinkle.h"
-#include "showPulse.h"
+#include "showpulse.h"
 #include "showscanner.h"
+#include "showfade.h"
+#include "showbouncingballs.h"
 
 
 
@@ -380,6 +382,13 @@ void LightSystem::queueShow(const LedLightShows& show, const QString& showParms)
             _runningShows.append(new ShowScanner(&_ledWrapper, show, showParms));
             break;
 
+        case BBalls:
+            _runningShows.append(new ShowBouncingBalls(&_ledWrapper, show, showParms));
+            break;
+
+        case Fade:
+            _runningShows.append(new ShowFade(&_ledWrapper, show, showParms));
+            break;
 
     default:
         _logger->logWarning("Unknown Show");
@@ -493,6 +502,8 @@ void LightSystem::loadFeatures()
 {
     _logger->logInfo("loadFeatures");
 
+    std::stringstream info;
+
     QSqlDatabase database = QSqlDatabase::addDatabase("QMYSQL","rpiLightFeatures");
 
     database.setHostName(_settings->getInstance()->getDBServer());
@@ -558,13 +569,16 @@ void LightSystem::loadFeatures()
         }
         else
         {
-            fprintf(stderr, "%s", qry.lastError().text().toStdString().c_str());
+            info << "loadFeatures error: " << qry.lastError().text().toStdString().c_str();
+            _logger->logWarning(info.str());
+
         }
         database.close();
     }
     else
     {
-        fprintf(stderr, "%s", database.lastError().text().toStdString().c_str());
+         info << "loadFeatures error: " << database.lastError().text().toStdString().c_str();
+         _logger->logWarning(info.str());
     }
 
 
@@ -603,7 +617,7 @@ bool LightSystem::startSystem()
         _mqq = new MqttReceiver(_settings->getMqttBroker(), _settings->getHostName(), 0);
         connect(_mqq, SIGNAL(msgReceived(QString)), this, SLOT(processMsgReceived(QString)));
 
-        if(_settings->getTwitchBotSupport())
+        if(_settings->getTwitchSupport())
         {
             _logger->logInfo("Setting Up Twitch Support");
             std::stringstream queue;

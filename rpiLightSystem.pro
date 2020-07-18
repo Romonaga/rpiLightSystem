@@ -16,8 +16,8 @@ SOURCES += src/ilightshow.cpp \
     src/motionlightsfeature.cpp \
     src/mqttreceiver.cpp \
     src/playlistmanager.cpp \
-    src/showPulse.cpp \
     src/showblink.cpp \
+    src/showbouncingballs.cpp \
     src/showchaser.cpp \
     src/showcolor.cpp \
     src/showcolor3.cpp \
@@ -26,9 +26,11 @@ SOURCES += src/ilightshow.cpp \
     src/showcolorevery.cpp \
     src/showcolorwipe.cpp \
     src/showcyclon.cpp \
+    src/showfade.cpp \
     src/showflame.cpp \
     src/showhnh.cpp \
     src/showneorand.cpp \
+    src/showpulse.cpp \
     src/showrainbow.cpp \
     src/showrainbowcycle.cpp \
     src/showscanner.cpp \
@@ -58,8 +60,8 @@ HEADERS += \
     src/motionlightsfeature.h \
     src/mqttreceiver.h \
     src/playlistmanager.h \
-    src/showPulse.h \
     src/showblink.h \
+    src/showbouncingballs.h \
     src/showchaser.h \
     src/showcolor.h \
     src/showcolor3.h \
@@ -68,9 +70,11 @@ HEADERS += \
     src/showcolorevery.h \
     src/showcolorwipe.h \
     src/showcyclon.h \
+    src/showfade.h \
     src/showflame.h \
     src/showhnh.h \
     src/showneorand.h \
+    src/showpulse.h \
     src/showrainbow.h \
     src/showrainbowcycle.h \
     src/showscanner.h \

@@ -18,14 +18,12 @@ public:
     // ILightShow interface
 public:
     void startShow();
-    void stopShow();
 
 private:
     void resetLeds();
     
 private:
-    QMap<unsigned int, unsigned int> _twinks;
-    QList<QPair<unsigned int, unsigned int> > _twinks2;
+    QList<QPair<unsigned int, unsigned int> > _twinks;
 
 
 

@@ -16,9 +16,19 @@ SystemSettings::SystemSettings()
 
 }
 
-bool SystemSettings::getTwitchBotSupport() const
+int SystemSettings::getMqttRetryDelay() const
 {
-    return _twitchBotSupport;
+    return _mqttRetryDelay;
+}
+
+int SystemSettings::getMqttRetries() const
+{
+    return _mqttRetries;
+}
+
+bool SystemSettings::getTwitchSupport() const
+{
+    return _twitchSupport;
 }
 
 double SystemSettings::getGamma() const
@@ -122,7 +132,9 @@ void SystemSettings::loadSystemSettings()
             _gpio = qry.value("gpio").toInt();
             _brightness = qry.value("brightness").toInt();
             _gamma = qry.value("gamma").toDouble();
-            _twitchBotSupport = qry.value("twitchBotSupport").toBool();
+            _twitchSupport = qry.value("twitchSupport").toBool();
+            _mqttRetries = qry.value("mqttRetries").toInt();
+            _mqttRetryDelay = qry.value("mqttRetryDelay").toInt();
 
 
         }
@@ -149,7 +161,7 @@ bool SystemSettings::loadSettings()
             _server = settings.value("DBServer","").toString();
             _user = settings.value("DBUserID","").toString();
             _pwd = settings.value("DBPassword","").toString();
-            _dataBase = settings.value("DataBase","").toString();
+            _dataBase = settings.value("DataBase","").toString();           
             settings.endGroup();
 
             settings.beginGroup("SETTINGS");
@@ -157,6 +169,7 @@ bool SystemSettings::loadSettings()
             _mqttBroker = settings.value("MQTTBroker","").toString();
             _dbgLog = settings.value("DBGLOG",false).toBool();
             _logShows = settings.value("LOGSHOWS", false).toBool();
+            _mqttRetries =  settings.value("MQTTReconnect", 1000).toInt();
             settings.endGroup();
 
             loadSystemSettings();

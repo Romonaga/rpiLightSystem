@@ -37,7 +37,9 @@
             X(17, ColorEvery, "Color Every X Led.","cx"),                   \
             X(18, TwinkleOverlay, "Twinkle Overlay.","to"),                   \
             X(19, PulseOverlay, "Pulse Overlay.","po"),                   \
-            X(20, Scanner, "Scanner.","scan")                   \
+            X(20, Scanner, "Scanner.","scan"),                   \
+            X(21, BBalls, "Bouncing Balls.","bb"),                   \
+            X(22, Fade, "Fade.","fade")                   \
 
 
 #define LIGHT_SHOWS_ENUM(type, name, txt, twitch) name = type

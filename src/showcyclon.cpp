@@ -3,7 +3,6 @@
 ShowCyclon::ShowCyclon(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
     ILightShow(ledWrapper, lightShow, showParms)
 {
-    _width = 20;
 
 }
 
@@ -26,7 +25,7 @@ void ShowCyclon::startShow()
         _ledWrapper->show();
 
         // now that we've shown the leds, reset to black for next loop
-        for(int j=0; j<5; j++)
+        for(int j=0; j < _width; j++)
         {
             _ledWrapper->setPixelColor(_settings->getStripHeight(), i + j, _ledWrapper->Color(0,0,0));
         }

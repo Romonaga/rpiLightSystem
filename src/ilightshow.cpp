@@ -201,3 +201,53 @@ int ILightShow::getUserId() const
     return _userId;
 }
 
+
+/*
+ *
+ *
+ * def bouncing_balls(strip, playtime, ball_count=2, wait_ms=200):
+    """Shows an accelerated pixel with physicslike a ball in a flipper game"""
+    import time, math
+    start_time = time.time()
+    ClockTimeSinceLastBounce = [0 for i in range(ball_count)]
+    StartHeight=1
+
+    for i in range(ball_count):
+        ClockTimeSinceLastBounce[i] = time.time()
+
+    Height = [0 for i in range(ball_count)]
+    Position = [0 for i in range(ball_count)]
+    ImpactVelocity = [0 for i in range(ball_count)]
+    ImpactVelocityStart= math.sqrt(-2 * -9.81 * 1)
+    Dampening = [0 for i in range(ball_count)]
+    TimeSinceLastBounce = [0 for i in range(ball_count)]
+
+    for i in range(0,ball_count,1):
+        last_ClockTimeSinceLastBounce = ClockTimeSinceLastBounce[i]
+        ClockTimeSinceLastBounce[i] = time.time() - last_ClockTimeSinceLastBounce
+
+        Height[i] = StartHeight
+        Position[i] = 0
+        ImpactVelocity[i] = math.sqrt(-2 * -9.81 * 1)
+        TimeSinceLastBounce[i] = 0
+        Dampening[i] = 0.90 - (float(i)/(ball_count**2))
+    act_time = time.time()
+    while ((act_time+ playtime)> time.time()):
+        for i in range(ball_count):
+            TimeSinceLastBounce[i] = time.time() - ClockTimeSinceLastBounce[i]
+            Height[i] = 0.5 * (-9.81) * (TimeSinceLastBounce[i]**2) + ImpactVelocity[i] * TimeSinceLastBounce[i]
+            if (Height[i] < 0):
+                Height[i] = 0
+                ImpactVelocity[i] = Dampening[i] * ImpactVelocity[i]
+                ClockTimeSinceLastBounce[i] = time.time()
+                if (ImpactVelocity[i] < 0.01):
+                    ImpactVelocity[i] = ImpactVelocityStart
+
+            Position[i] = round(Height[i] * (strip.numPixels()-1)/StartHeight)
+        for i in range(ball_count):
+            strip.setPixelColorRGB(Position[i], 0, 0,255)
+        strip.show()
+        for i in range(strip.numPixels()):
+            strip.setPixelColorRGB(i, 0,0,0)
+ *
+ * */

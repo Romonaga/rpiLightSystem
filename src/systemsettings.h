@@ -52,7 +52,11 @@ public:
 
     double getGamma() const;
 
-    bool getTwitchBotSupport() const;
+    bool getTwitchSupport() const;
+
+    int getMqttRetries() const;
+
+    int getMqttRetryDelay() const;
 
 private:
     SystemSettings();
@@ -77,8 +81,9 @@ private:
     bool _dbgLog;
     bool _logShows;
     double _gamma;
-    bool _twitchBotSupport;
-
+    bool _twitchSupport;
+    int _mqttRetries;
+    int _mqttRetryDelay;
 
 
 

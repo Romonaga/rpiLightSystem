@@ -1,13 +1,13 @@
-#ifndef ShowPulse_H
+#ifndef ShowFade_H
 #define ShowPulse_H
 
 #include "ilightshow.h"
 
-class ShowPulse : public ILightShow
+class ShowFade : public ILightShow
 {
     Q_OBJECT
 public:
-    ShowPulse(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
+    ShowFade(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
 
     // ILightShow interface
 public:
