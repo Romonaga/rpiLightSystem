@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `LedLightSystem` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `LedLightSystem`;
 -- MySQL dump 10.13  Distrib 8.0.20, for Linux (x86_64)
 --
 -- Host: 127.0.0.1    Database: LedLightSystem
@@ -104,55 +106,22 @@ CREATE TABLE `lightSystems` (
   `enabled` int DEFAULT NULL,
   `userId` int DEFAULT NULL,
   `gamma` double DEFAULT NULL,
+  `twitchSupport` tinyint DEFAULT '0',
+  `mqttRetries` int DEFAULT '2000',
+  `mqttRetryDelay` int DEFAULT '2500',
+  `twitchMqttQueue` varchar(45) DEFAULT '',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `productMedia`
+-- Table structure for table `lumaUsers`
 --
 
-DROP TABLE IF EXISTS `productMedia`;
+DROP TABLE IF EXISTS `lumaUsers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `productMedia` (
-  `ID` int NOT NULL AUTO_INCREMENT,
-  `description` varchar(255) DEFAULT NULL,
-  `path` varchar(255) DEFAULT NULL,
-  `text` text,
-  `isVideo` tinyint DEFAULT '0',
-  `enabled` tinyint DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `products`
---
-
-DROP TABLE IF EXISTS `products`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `products` (
-  `ID` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(250) NOT NULL,
-  `code` varchar(100) NOT NULL,
-  `price` double(9,2) NOT NULL,
-  `image` varchar(250) NOT NULL,
-  `description` varchar(255) NOT NULL,
-  PRIMARY KEY (`ID`),
-  UNIQUE KEY `code_UNIQUE` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `registrationTable`
---
-
-DROP TABLE IF EXISTS `registrationTable`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `registrationTable` (
+CREATE TABLE `lumaUsers` (
   `username` varchar(50) NOT NULL,
   `ID` int NOT NULL AUTO_INCREMENT,
   `password` varchar(50) DEFAULT NULL,
@@ -182,7 +151,39 @@ CREATE TABLE `showsRan` (
   `showParms` json DEFAULT NULL,
   `timeStamp` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=601 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `twitchChannels`
+--
+
+DROP TABLE IF EXISTS `twitchChannels`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `twitchChannels` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `channel` varchar(45) DEFAULT NULL,
+  `mqttQueue` varchar(45) DEFAULT NULL,
+  `enabled` tinyint DEFAULT NULL,
+  `allowAllTwitchUsers` tinyint DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `twitchUsers`
+--
+
+DROP TABLE IF EXISTS `twitchUsers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `twitchUsers` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `twitchUser` varchar(45) DEFAULT NULL,
+  `enabled` tinyint DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -198,7 +199,7 @@ CREATE TABLE `userPlaylist` (
   `playlistName` varchar(50) DEFAULT NULL,
   `showParms` json DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -210,4 +211,4 @@ CREATE TABLE `userPlaylist` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-07-04  6:32:44
+-- Dump completed on 2020-07-19 14:15:38
