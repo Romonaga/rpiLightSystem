@@ -91,11 +91,8 @@ void LightSystem::stopFeatures()
 LightSystem::~LightSystem()
 {
 
-    if(_mqq != nullptr)
-        stopSystem();
 
-    stopFeatures();
-
+    stopSystem();
     _ledWrapper.clearLeds();
 
     _logger->logInfo("~LightSystem Offline");
@@ -124,13 +121,14 @@ void LightSystem::stopShows()
 {
     if(false == _running) return;
 
+     _logger->logInfo("LightSystem::stopShows Stopping shows");
    _running = false;
 
-    if(_runningShows.count() > 0)
+   if(_runningShows.count() > 0 && _runningShows[0] != nullptr)
         _runningShows[0]->stopShow();
 
    _ledWrapper.clearLeds();
-   _logger->logInfo("LightSystem::stopShows Stopped");
+   _logger->logInfo("LightSystem::stopShows Stopped shows");
 }
 
 void LightSystem::playPlayList(QString playList)
@@ -260,9 +258,11 @@ void LightSystem::processMsgReceived(QString msg)
             }
             else if(jsonObject.value("systemConfigChange").toInt())
             {
-                _logger->logInfo("System Configuration Changes detected.");
-                stopFeatures();
-                loadFeatures();
+                _logger->logInfo("System Configuration Changes detected. Resetting System.");
+               stopSystem();
+
+               startSystem();
+
             }
             else if(jsonObject.value("clearQueue").toInt())
             {
@@ -647,15 +647,23 @@ bool LightSystem::startSystem()
 void LightSystem::stopSystem()
 {
     if(false == _started) return;
-    _logger->logInfo("LightSystem::stopSystem Stopping");
+    _logger->logInfo("**LightSystem::stopSystem Stopping");
     _started = false;
-    stopShows();
     _mqq->stop();
+    delete _mqq;
+    _mqq = nullptr;
 
     if(nullptr != _twitch)
+    {
         _twitch->stop();
+        delete _twitch;
+        _twitch = nullptr;
+    }
 
-    _logger->logInfo("LightSystem::stopSystem Stopped");
+    stopFeatures();
+    clearQueue();
+
+    _logger->logInfo("**LightSystem::stopSystem Stopped");
 }
 
 
@@ -782,6 +790,7 @@ void LightSystem::lightLuxStateChange(LightLuxFeature *feature, quint32 lux)
 
 
 //TWTICH
+/*
 LedLightShows LightSystem::getShowId(const QString& twitchId)
 {
 
@@ -796,6 +805,7 @@ LedLightShows LightSystem::getShowId(const QString& twitchId)
 
    return Nope;
 }
+*/
 
 /* Keeping forever as it was good work but with twitch extensions (panel) we no longer need
 
