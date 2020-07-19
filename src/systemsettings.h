@@ -2,7 +2,7 @@
 #define SYSTEMSETTINGS_H
 
 #include <QString>
-
+#include <dnrlogger.h>
 
 
 class SystemSettings
@@ -28,7 +28,7 @@ public:
 
 
 
-    void loadSystemSettings();
+    bool loadSystemSettings();
     
     QString getSystemName() const;
     int getStripType() const;
@@ -58,6 +58,8 @@ public:
 
     int getMqttRetryDelay() const;
 
+    QString getMqttTwitchQueue() const;
+
 private:
     SystemSettings();
     static SystemSettings* _instance;
@@ -68,6 +70,7 @@ private:
     QString  _mmConfFile;
     QString _hostName;
     QString _mqttBroker;
+    QString _mqttTwitchQueue;
 
     //System Setings From DB
     QString _systemName;
@@ -86,6 +89,7 @@ private:
     int _mqttRetryDelay;
 
 
+    DNRLogger* _logger;
 
 };
 

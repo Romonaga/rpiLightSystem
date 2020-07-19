@@ -10,7 +10,6 @@ ShowColor4::ShowColor4(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
 void ShowColor4::startShow()
 {
 
-    ws2811_return_t renderResults = WS2811_SUCCESS;
     ws2811_led_t colors[] = {_color1, _color2, _color3, _color4};
 
     u_int32_t forths = _ledWrapper->getNumberLeds() / 4;
@@ -33,16 +32,14 @@ void ShowColor4::startShow()
             if(counter >= currentDivision)
             {
                 ++colorNumber;
+                colorNumber = (colorNumber > 4) ? 4 : colorNumber;
+
                 currentDivision = forths * colorNumber;
-                currentColor = colors[colorNumber];
+                currentColor = colors[colorNumber - 1];
             }
 
             _ledWrapper->setPixelColor(_settings->getStripHeight(), counter, currentColor);
-            if( (renderResults = _ledWrapper->show()) != WS2811_SUCCESS)
-            {
-                _logger->logWarning("ShowColor4 Render Failed");
-                return;
-            }
+           _ledWrapper->show();
             Ws2811Wrapper::waitMillSec(_wait);
 
         }

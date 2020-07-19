@@ -6,7 +6,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
-
+#include <sstream>
 
 SystemSettings* SystemSettings::_instance = nullptr;
 
@@ -14,6 +14,15 @@ SystemSettings::SystemSettings()
 {
     _mmConfFile =  "/etc/rpilightsystem.conf";
 
+    _logger = DNRLogger::instance();
+    _logger->setDebugOut(true);
+
+
+}
+
+QString SystemSettings::getMqttTwitchQueue() const
+{
+    return _mqttTwitchQueue;
 }
 
 int SystemSettings::getMqttRetryDelay() const
@@ -102,10 +111,13 @@ int SystemSettings::getSystemId() const
 }
 
 
-void SystemSettings::loadSystemSettings()
+bool SystemSettings::loadSystemSettings()
 {
    
     QSqlDatabase database = QSqlDatabase::addDatabase("QMYSQL","rpiLightSystem");
+    bool retVal =  false;
+    std::stringstream info;
+
 
     database.setHostName(_server);
     database.setUserName(_user);
@@ -120,7 +132,8 @@ void SystemSettings::loadSystemSettings()
         sql.append(_hostName);
         sql.append("'");
         QSqlQuery qry = database.exec(sql);
-        if(qry.lastError().type() == QSqlError::NoError)
+
+        if(qry.lastError().type() == QSqlError::NoError && qry.numRowsAffected() > 0)
         {
             qry.next();
             _systemId = qry.value("ID").toInt();
@@ -135,23 +148,32 @@ void SystemSettings::loadSystemSettings()
             _twitchSupport = qry.value("twitchSupport").toBool();
             _mqttRetries = qry.value("mqttRetries").toInt();
             _mqttRetryDelay = qry.value("mqttRetryDelay").toInt();
+            _mqttTwitchQueue = qry.value("twitchMqttQueue").toString();
 
-
+            retVal = true;
         }
         else
         {
-            fprintf(stderr, "%s", qry.lastError().text().toStdString().c_str());
+           info << "loadSystemSettings Cant Load Settings: " << qry.lastError().text().toStdString().c_str();
+           _logger->logInfo(info.str());
         }
         database.close();
     }
     else
     {
-        fprintf(stderr, "%s", database.lastError().text().toStdString().c_str());
+        info << "loadSystemSettings Cant Load Settings: " << database.lastError().text().toStdString().c_str();
+        _logger->logInfo(info.str());
+
     }
+
+    return retVal;
 }
 
 bool SystemSettings::loadSettings()
 {
+    bool retVal = false;
+    std::stringstream info;
+
     if(settingsExists())
     {
         QSettings settings(_mmConfFile, QSettings::IniFormat);
@@ -169,20 +191,19 @@ bool SystemSettings::loadSettings()
             _mqttBroker = settings.value("MQTTBroker","").toString();
             _dbgLog = settings.value("DBGLOG",false).toBool();
             _logShows = settings.value("LOGSHOWS", false).toBool();
-            _mqttRetries =  settings.value("MQTTReconnect", 1000).toInt();
             settings.endGroup();
 
-            loadSystemSettings();
+            retVal = loadSystemSettings();
 
-            return true;
         }
     }
     else
     {
-        fprintf(stderr,"File Does Not Exists");
+        info << "loadSystemSettings configuration file does not exist: " << _mmConfFile.toStdString().c_str() << "!";
+        _logger->logInfo(info.str());
     }
 
-    return false;
+    return retVal;
 }
 
 QString SystemSettings::getDBPwd() const

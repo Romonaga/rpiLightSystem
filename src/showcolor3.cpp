@@ -24,32 +24,31 @@ void ShowColor3::startShow()
         u_int8_t colorNumber = 1;
         ws2811_led_t currentColor = _color1;
         _ledWrapper->clearLeds();
-        if (  (renderResults = _ledWrapper->clearLeds() ) == WS2811_SUCCESS)
+        for(counter = 0; counter < _ledWrapper->getNumberLeds(); counter++)
         {
-            for(counter = 0; counter < _ledWrapper->getNumberLeds(); counter++)
+            if(_running == false)
+                return;
+
+            if(counter >= currentDivision)
             {
-                if(_running == false)
-                    return;
-
-                if(counter >= currentDivision)
-                {
-                    ++colorNumber;
-                    currentDivision = third * colorNumber;
-                    currentColor = colors[colorNumber];
-                }
-
-                _ledWrapper->setPixelColor(_settings->getStripHeight(), counter, currentColor);
-                if( (renderResults = _ledWrapper->show()) != WS2811_SUCCESS)
-                {
-                    _logger->logWarning("LightSystem::ShowColor3 Render Failed");
-                    return;
-                }
-
-                Ws2811Wrapper::waitMillSec(_wait);
-
+                ++colorNumber;
+                colorNumber = (colorNumber > 3) ? 3 : colorNumber;
+                currentDivision = third * colorNumber;
+                currentColor = colors[colorNumber-1];
             }
 
+            _ledWrapper->setPixelColor(_settings->getStripHeight(), counter, currentColor);
+            if( (renderResults = _ledWrapper->show()) != WS2811_SUCCESS)
+            {
+                _logger->logWarning("LightSystem::ShowColor3 Render Failed");
+                return;
+            }
+
+            Ws2811Wrapper::waitMillSec(_wait);
+
         }
+
+
     }
     
 }

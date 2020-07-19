@@ -31,6 +31,7 @@ void ShowColor3R::startShow()
         if (counter <= currentDivision)
         {
           ++colorNumber;
+          colorNumber = (colorNumber > 3) ? 3 : colorNumber;
           currentDivision = (currentDivision - third);
           currentColor = colors[colorNumber - 1];
         }

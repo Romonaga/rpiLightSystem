@@ -291,6 +291,16 @@ void LightSystem::processMsgReceived(QString msg)
 }
 
 
+void LightSystem::processMsgReceivedTwitch(QString msg)
+{
+    std::stringstream info;
+
+    info << "LightSystem::processMsgReceivedTwitch: " << msg.toStdString().c_str();
+    _logger->logInfo(info.str());
+
+    processMsgReceived(msg);
+
+}
 
 
 void LightSystem::queueShow(const LedLightShows& show, const QString& showParms)
@@ -589,12 +599,12 @@ bool LightSystem::startSystem()
     std::stringstream info;
     if(_started ) return true;
 
+    _logger->logInfo("** Start System **");
     ws2811_return_t renderResults = WS2811_SUCCESS;
     _started = _settings->loadSettings();
     if(_started)
     {
         _logger->logInfo("Setting Up Led Strip");
-        info.str("");
         info << "start() Settings Host(" << _settings->getHostName().toStdString().c_str() << ") DMA(" << _settings->getDma() << ") GPIO(" <<
                 _settings->getGpio() << ") sType(" << _settings->getStripType() << ") Width(" <<
                 _settings->getStripWidth() << ") Height(" << _settings->getStripHeight() << ") Brightness(" <<
@@ -621,7 +631,7 @@ bool LightSystem::startSystem()
         {
             _logger->logInfo("Setting Up Twitch Support");
             std::stringstream queue;
-            queue << _settings->getHostName().toStdString().c_str() << "/TwitchBot";
+             queue << _settings->getHostName().toStdString().c_str() << "/" << _settings->getMqttTwitchQueue().toStdString().c_str();
             _twitch  = new MqttReceiver(_settings->getMqttBroker(), queue.str().c_str(), 0,queue.str().c_str());
             connect(_twitch, SIGNAL(msgReceived(QString)), this, SLOT(processMsgReceivedTwitch(QString)));
 
@@ -639,8 +649,9 @@ bool LightSystem::startSystem()
     }
     else
     {
-        _logger->logWarning("Problem Loadng Config File.");
+        _logger->logWarning("Problem Loading Config File.");
     }
+
     return _started;
 }
 
@@ -698,7 +709,7 @@ void LightSystem::lightStateChange(LightSensorFeature *feature, int state)
 {
     std::stringstream info;
 
-    info << "LightSystem::lightStateChange: " << state;
+    info << "lightStateChange: " << state;
     _logger->logInfo(info.str());
 
     if(state == 0 && _runningShows.count() == 0)
@@ -728,7 +739,7 @@ void LightSystem::timeStateChange(TimeFeature *feature, int state)
 {
     std::stringstream info;
 
-    info << "LightSystem::timeStateChange: " << state;
+    info << "timeStateChange: " << state;
     _logger->logInfo(info.str());
 
     if(state == 1 && _runningShows.count() == 0)
@@ -961,16 +972,6 @@ if(msg.split(' ')[0] == "!lumawin")
     }
 */
 
-void LightSystem::processMsgReceivedTwitch(QString msg)
-{
-    std::stringstream info;
-
-    info << "LightSystem::processMsgReceivedTwitch: " << msg.toStdString().c_str();
-    _logger->logInfo(info.str());
-
-    processMsgReceived(msg);
-
-}
 
 
 //'#'+(Math.random()*0xFFFFFF<<0).toString(16);
