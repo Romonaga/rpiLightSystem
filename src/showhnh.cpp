@@ -16,23 +16,15 @@ void ShowHnH::startShow()
     for(counter = 0; counter < half; counter++)
     {
         _ledWrapper->setPixelColor(_settings->getStripHeight(), counter, _color1);
-        _ledWrapper->show();
-
-        Ws2811Wrapper::waitMillSec(_wait);
-        if(_running == false)
-            return;
 
     }
 
     for(; counter < _ledWrapper->getNumberLeds(); counter++)
     {
         _ledWrapper->setPixelColor(_settings->getStripHeight(), counter, _color2);
-        _ledWrapper->show();
-        Ws2811Wrapper::waitMillSec(_wait);
-        if(_running == false)
-            return;
-    }
 
+    }
+    _ledWrapper->show();
 }
 
 

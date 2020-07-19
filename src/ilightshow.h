@@ -47,6 +47,7 @@
 #define LIGHT_SHOWS_TWITCH(type, name, txt, twitch) twitch
 
 //{"UserID":"2","brightness":"127","show":"8","colors":{"color1":{"r":234,"g":10,"b":34},"color2":{"r":14,"g":64,"b":239}},"gammaCorrection":1}
+//[{"show": "8", "UserID": "2",               "colors": {"color1": {"b": 255, "g": 0, "r": 18}, "color2": {"b": 250, "g": 107, "r": 144}}, "powerOn": 0, "brightness": "70", "clearStart": 0, "clearFinish": 0, "gammaCorrection": 1}]
 
 typedef enum {
     LIGHT_SHOWS(LIGHT_SHOWS_ENUM),
