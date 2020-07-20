@@ -13,6 +13,8 @@ public:
 public:
     void startShow();
 
+private:
+    ws2811_led_t dimColor(ws2811_led_t color, int width) ;
 
 
 };
