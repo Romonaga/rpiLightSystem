@@ -17,6 +17,10 @@
 #include "lightsensorfeature.h"
 #include "timefeature.h"
 #include "lightluxfeature.h"
+#include "mqttpublisher.h"
+
+
+
 
 
 //broker = "RomoServer.local";
@@ -88,6 +92,9 @@ private: //shows
 
     //TWITCH
     LedLightShows getShowId(const QString& twitchId);
+    double getSystemTemp();
+
+    void sendSystemInfo();
 
 
 private:
@@ -96,6 +103,7 @@ private:
     bool _running;
     MqttReceiver* _mqq;
     MqttReceiver* _twitch;
+    MQTTPublisher* _statusPipe;
     DNRLogger* _logger;
     QVector<ILightShow*> _runningShows;
     QMutex _runningShowsMutex;
@@ -103,11 +111,6 @@ private:
     LightSensorFeature* _lightSensorFeature;
     TimeFeature* _timeFeature;
     LightLuxFeature* _luxFeature;
-
-
-
-    
-
 
 public slots:
     void processMsgReceived(QString msg);

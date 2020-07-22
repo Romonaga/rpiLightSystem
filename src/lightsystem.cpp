@@ -57,6 +57,8 @@ LightSystem::LightSystem(QObject *parent) : QObject(parent)
     _lightSensorFeature = nullptr;
     _timeFeature = nullptr;
     _luxFeature = nullptr;
+    _statusPipe = nullptr;
+
 
 }
 
@@ -129,6 +131,7 @@ void LightSystem::stopShows()
 
    _ledWrapper.clearLeds();
    _logger->logInfo("LightSystem::stopShows Stopped shows");
+
 }
 
 void LightSystem::playPlayList(QString playList)
@@ -227,6 +230,26 @@ void LightSystem::chgBrightness(QJsonObject jsonObject)
 
 }
 
+void LightSystem::sendSystemInfo()
+{
+    QJsonObject statusObject;
+    QString payload;
+
+    _runningShowsMutex.lock();
+    statusObject.insert("hostname", _settings->getHostName());
+    statusObject.insert("systemTemp", getSystemTemp());
+    statusObject.insert("showsInQueue", _runningShows.count());
+
+    if(_runningShows.count() > 0)
+        statusObject.insert("runningShow",_runningShows[0]->getShowName());
+
+    _runningShowsMutex.unlock();
+    QJsonDocument doc(statusObject);
+    payload =  doc.toJson(QJsonDocument::Compact);
+    _statusPipe->SendMessage((void*)payload.toStdString().c_str(), payload.length());
+
+
+}
 
 void LightSystem::processMsgReceived(QString msg)
 {
@@ -267,6 +290,10 @@ void LightSystem::processMsgReceived(QString msg)
             else if(jsonObject.value("clearQueue").toInt())
             {
                 clearQueue();
+            }
+            else if(jsonObject.value("systemInfo").toInt())
+            {
+                sendSystemInfo();
             }
             else
             {
@@ -597,6 +624,8 @@ void LightSystem::loadFeatures()
 bool LightSystem::startSystem()
 {
     std::stringstream info;
+    std::stringstream queue;
+
     if(_started ) return true;
 
     _logger->logInfo("** Start System **");
@@ -627,10 +656,16 @@ bool LightSystem::startSystem()
         _mqq = new MqttReceiver(_settings->getMqttBroker(), _settings->getHostName(), 0);
         connect(_mqq, SIGNAL(msgReceived(QString)), this, SLOT(processMsgReceived(QString)));
 
+
+        _logger->logInfo("Setting Up MQTT System Status");
+         queue << _settings->getHostName().toStdString().c_str() << "/SystemStatus";
+        _statusPipe = new MQTTPublisher(_settings->getMqttBroker().toStdString(),queue.str(),0, _settings->getMqttRetryDelay(), _settings->getMqttRetries());
+        _statusPipe->Start();
+
         if(_settings->getTwitchSupport())
         {
             _logger->logInfo("Setting Up Twitch Support");
-            std::stringstream queue;
+            queue.str("");
              queue << _settings->getHostName().toStdString().c_str() << "/" << _settings->getMqttTwitchQueue().toStdString().c_str();
             _twitch  = new MqttReceiver(_settings->getMqttBroker(), queue.str().c_str(), 0,queue.str().c_str());
             connect(_twitch, SIGNAL(msgReceived(QString)), this, SLOT(processMsgReceivedTwitch(QString)));
@@ -663,6 +698,9 @@ void LightSystem::stopSystem()
     _mqq->stop();
     delete _mqq;
     _mqq = nullptr;
+
+    _statusPipe->Stop();
+    _statusPipe = nullptr;
 
     if(nullptr != _twitch)
     {
@@ -799,6 +837,19 @@ void LightSystem::lightLuxStateChange(LightLuxFeature *feature, quint32 lux)
 
 }
 
+double LightSystem::getSystemTemp()
+{
+    FILE *temperatureFile;
+    double temp = 0.00;
+
+    temperatureFile = fopen ("/sys/class/thermal/thermal_zone0/temp", "r");
+    if (temperatureFile != NULL)
+    {
+        fscanf (temperatureFile, "%lf", &temp);
+    }
+
+    return  temp /= 1000;
+}
 
 //TWTICH
 /*
