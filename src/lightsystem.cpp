@@ -236,7 +236,7 @@ void LightSystem::sendSystemInfo()
     QString payload;
 
     _runningShowsMutex.lock();
-    statusObject.insert("hostname", _settings->getHostName());
+    statusObject.insert("systemName", _settings->getSystemName());
     statusObject.insert("systemTemp", getSystemTemp());
     statusObject.insert("showsInQueue", _runningShows.count());
 
