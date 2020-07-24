@@ -1,4 +1,6 @@
 #include <unistd.h>
+#include <linux/kernel.h>       /* for struct sysinfo */
+#include <sys/sysinfo.h>
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -235,15 +237,16 @@ void LightSystem::sendSystemInfo()
     QJsonObject statusObject;
     QString payload;
 
-    _runningShowsMutex.lock();
     statusObject.insert("systemName", _settings->getSystemName());
     statusObject.insert("systemTemp", getSystemTemp());
-    statusObject.insert("showsInQueue", _runningShows.count());
 
+    _runningShowsMutex.lock();
+    statusObject.insert("showsInQueue", _runningShows.count());
     if(_runningShows.count() > 0)
         statusObject.insert("runningShow",_runningShows[0]->getShowName());
-
     _runningShowsMutex.unlock();
+
+    getSysInfo(&statusObject);
     QJsonDocument doc(statusObject);
     payload =  doc.toJson(QJsonDocument::Compact);
     _statusPipe->SendMessage((void*)payload.toStdString().c_str(), payload.length());
@@ -849,6 +852,54 @@ double LightSystem::getSystemTemp()
     }
 
     return  temp /= 1000;
+}
+
+
+
+
+
+void LightSystem::getSysInfo(QJsonObject *statusObject)
+{
+
+   //struct sysinfo {
+    //    long uptime;             /* Seconds since boot */
+     //   unsigned long loads[3];  /* 1, 5, and 15 minute load averages */
+    //    unsigned long totalram;  /* Total usable main memory size */
+    //    unsigned long freeram;   /* Available memory size */
+    //    unsigned long sharedram; /* Amount of shared memory */
+   //     unsigned long bufferram; /* Memory used by buffers */
+   //     unsigned long totalswap; /* Total swap space size */
+   //     unsigned long freeswap;  /* swap space still available */
+    //    unsigned short procs;    /* Number of current processes */
+    //    unsigned long totalhigh; /* Total high memory size */
+    //    unsigned long freehigh;  /* Available high memory size */
+    //    unsigned int mem_unit;   /* Memory unit size in bytes */
+    //    char _f[20-2*sizeof(long)-sizeof(int)]; /* Padding for libc5 */
+    //};
+
+    struct sysinfo s_info;
+    std::stringstream info;
+    const double megabyte = 1024 * 1024;
+
+    int error = sysinfo(&s_info);
+    if(error != 0)
+    {
+        info << "getSysInfo Could not get SysInfo! Error: " << error;
+       _logger->logWarning(info.str());
+        return;
+    }
+
+    long uptime = s_info.uptime;
+    int days = uptime / 86400;
+    int hours = (uptime / 3600) - (days * 24);
+    int mins = (uptime / 60) - (days * 1440) - (hours * 60);
+    info << "Days: " << days << " Hours: " << hours << " Min: " << mins << " Sec: " << s_info.uptime % 60;
+    statusObject->insert("uptime", info.str().c_str());
+
+    statusObject->insert("totalRam", QString::number(s_info.totalram / megabyte));
+    statusObject->insert("freeRam", QString::number(s_info.freeram / megabyte));
+    statusObject->insert("load", QString::number( s_info.loads[2] / 100));
+
 }
 
 //TWTICH

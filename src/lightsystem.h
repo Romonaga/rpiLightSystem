@@ -93,6 +93,7 @@ private: //shows
     //TWITCH
     LedLightShows getShowId(const QString& twitchId);
     double getSystemTemp();
+    void getSysInfo(QJsonObject* statusObject);
 
     void sendSystemInfo();
 
