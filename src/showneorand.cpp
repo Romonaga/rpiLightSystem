@@ -36,8 +36,8 @@ void ShowNeoRand::startShow()
      for (u_int32_t i = 0; i < _ledWrapper->getNumberLeds(); i++)
      {
 
-       if (_ledWrapper->getPixelColor(_settings->getStripHeight(), i) == _ledWrapper->Color(255,255,255))
-           _ledWrapper->setPixelColor(_settings->getStripHeight(), i, saved); // return colour after sparkle
+       if (_ledWrapper->getPixelColor(i) == _ledWrapper->Color(255,255,255))
+           _ledWrapper->setPixelColor(i, saved); // return colour after sparkle
 
 
        int c = i % 7;          // c=c nominal colour 0-red, 1-orange, etc
@@ -165,7 +165,7 @@ void ShowNeoRand::startShow()
            _blue = 0;
        }
 
-       _ledWrapper->setPixelColor(_settings->getStripHeight(), i, _ledWrapper->Color(_red, _green, _blue)); // set colour
+       _ledWrapper->setPixelColor(i, _ledWrapper->Color(_red, _green, _blue)); // set colour
 
      }  //  for(int i=0;i<NUMPIXELS;i++){
 
@@ -177,7 +177,7 @@ void ShowNeoRand::startShow()
 
      if (tw < (int)_ledWrapper->getNumberLeds() && tw == 0 )
      {
-       _ledWrapper->setPixelColor(_settings->getStripHeight(), tw, _ledWrapper->Color(255,255,255));
+       _ledWrapper->setPixelColor(tw, _ledWrapper->Color(255,255,255));
      }
 
 

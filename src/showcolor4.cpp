@@ -32,7 +32,7 @@ void ShowColor4::startShow()
             currentColor = colors[colorNumber - 1];
         }
 
-        _ledWrapper->setPixelColor(_settings->getStripHeight(), counter, currentColor);
+        _ledWrapper->setPixelColor(counter, currentColor);
 
     }
     _ledWrapper->show();

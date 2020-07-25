@@ -15,7 +15,7 @@ void ShowRainbow::startShow()
         for(uint16_t wheel = 0; wheel < 256; wheel ++)
         {
             for(uint16_t ledCount = 0; ledCount <_ledWrapper->getNumberLeds(); ledCount++)
-                _ledWrapper->setPixelColor(_settings->getStripHeight(), ledCount,  Ws2811Wrapper::Wheel((ledCount + wheel) & 255));
+                _ledWrapper->setPixelColor(ledCount,  Ws2811Wrapper::Wheel((ledCount + wheel) & 255));
 
             _ledWrapper->show();
             if(_running == false || _endTime < time(nullptr))

@@ -26,7 +26,7 @@ void ShowTriChaser::startShow()
             else
                 curcolor = _color1;
 
-            _ledWrapper->setPixelColor(_settings->getStripHeight(), i, curcolor);
+            _ledWrapper->setPixelColor(i, curcolor);
 
             if( (renderResults = _ledWrapper->show()) != WS2811_SUCCESS)
             {

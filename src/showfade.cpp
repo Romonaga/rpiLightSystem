@@ -20,8 +20,8 @@ void ShowFade::startShow()
            for(uint16_t ledCount = 0; ledCount <_ledWrapper->getNumberLeds(); ledCount++)
            {
 
-               ws2811_led_t color =  _ledWrapper->getPixelColor(_settings->getStripHeight(), ledCount);
-               _ledWrapper->setPixelColor(_settings->getStripHeight(), ledCount,  _ledWrapper->DimColor(color));
+               ws2811_led_t color =  _ledWrapper->getPixelColor(1, ledCount);
+               _ledWrapper->setPixelColor(1, ledCount,  _ledWrapper->DimColor(color));
 
            }
            _ledWrapper->show();
@@ -36,9 +36,9 @@ void ShowFade::startShow()
        {
            for(uint16_t ledCount = 0; ledCount <_ledWrapper->getNumberLeds(); ledCount++)
            {
-                ws2811_led_t color =  _ledWrapper->getPixelColor(_settings->getStripHeight(), ledCount);
+                ws2811_led_t color =  _ledWrapper->getPixelColor(1, ledCount);
 
-                _ledWrapper->setPixelColor(_settings->getStripHeight(), ledCount,  _ledWrapper->BrightenColor(color));
+                _ledWrapper->setPixelColor(ledCount,  _ledWrapper->BrightenColor(color));
 
            }
            _ledWrapper->show();

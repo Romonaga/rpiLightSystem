@@ -32,8 +32,8 @@ public:
     
     QString getSystemName() const;
     int getStripType() const;
-    uint16_t getStripHeight() const;
-    uint16_t getStripWidth() const;
+    uint16_t getStripRows() const;
+    uint16_t getStripColumns() const;
     short getDma() const;
     short getGpio() const;
 
@@ -76,8 +76,8 @@ private:
     QString _systemName;
     int _stripType;
     int _systemId;
-    uint16_t _stripHeight;
-    uint16_t _stripWidth;
+    uint16_t _stripColumns;
+    uint16_t _stripRows;
     short _dma;
     short _gpio;
     int _brightness;

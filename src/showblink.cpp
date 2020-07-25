@@ -14,7 +14,7 @@ void ShowBlink::startShow()
     while(_endTime > time(nullptr))
     {
        if(_running == false) return;
-      _ledWrapper->setBrightness(10);
+      _ledWrapper->setBrightness(5);
       _ledWrapper->show();
       if(_running == false)
           return;

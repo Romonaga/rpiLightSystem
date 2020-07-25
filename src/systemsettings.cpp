@@ -80,14 +80,14 @@ short SystemSettings::getDma() const
     return _dma;
 }
 
-uint16_t SystemSettings::getStripWidth() const
+uint16_t SystemSettings::getStripRows() const
 {
-    return _stripWidth;
+    return _stripRows;
 }
 
-uint16_t SystemSettings::getStripHeight() const
+uint16_t SystemSettings::getStripColumns() const
 {
-    return _stripHeight;
+    return _stripColumns;
 }
 
 int SystemSettings::getStripType() const
@@ -139,8 +139,8 @@ bool SystemSettings::loadSystemSettings()
             _systemId = qry.value("ID").toInt();
             _systemName = qry.value("systemName").toString();
             _stripType = qry.value("stripType").toUInt();
-            _stripHeight = qry.value("stripHeight").toUInt();
-            _stripWidth = qry.value("stripWidth").toUInt();
+            _stripColumns = qry.value("stripColumns").toUInt();
+            _stripRows = qry.value("stripRows").toUInt();
             _dma = qry.value("dma").toInt();
             _gpio = qry.value("gpio").toInt();
             _brightness = qry.value("brightness").toInt();

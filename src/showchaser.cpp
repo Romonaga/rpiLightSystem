@@ -16,9 +16,9 @@ void ShowChaser::startShow()
     while(_endTime > time(nullptr))
     {
         
-        for(u_int32_t row = 1; row <= _ledWrapper->getHight(); row++)
+        for(u_int32_t row = 1; row <= _ledWrapper->getRows(); row++)
         {
-           for (u_int32_t led = 0; led < _ledWrapper->getWidth(); led++)
+           for (u_int32_t led = 0; led < _ledWrapper->getColumns(); led++)
            {
                _ledWrapper->setPixelColor(row, led, _color1);
                renderResults = _ledWrapper->show();

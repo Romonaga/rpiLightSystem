@@ -19,6 +19,7 @@ void ShowColor3::startShow()
     u_int8_t colorNumber = 1;
     ws2811_led_t currentColor = _color1;
 
+
     for(u_int32_t counter = 0; counter < _ledWrapper->getNumberLeds(); counter++)
     {
 
@@ -30,7 +31,7 @@ void ShowColor3::startShow()
             currentColor = colors[colorNumber-1];
         }
 
-        _ledWrapper->setPixelColor(_settings->getStripHeight(), counter, currentColor);
+        _ledWrapper->setPixelColor(counter, currentColor);
 
     }
 

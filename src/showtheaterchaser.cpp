@@ -22,14 +22,14 @@ void ShowTheaterChaser::startShow()
         {
             for (u_int32_t i=0; i < _ledWrapper->getNumberLeds(); i=i+3)
             {
-               _ledWrapper->setPixelColor(_settings->getStripHeight(), i+q, Ws2811Wrapper::Wheel( (i+j) % 255));    //turn every third pixel on
+               _ledWrapper->setPixelColor(i+q, Ws2811Wrapper::Wheel( (i+j) % 255));    //turn every third pixel on
             }
             _ledWrapper->show();
 
           Ws2811Wrapper::waitMillSec(_wait);
           for (u_int32_t i=0; i < _ledWrapper->getNumberLeds(); i=i+3)
           {
-            _ledWrapper->setPixelColor(_settings->getStripHeight(), i+q, 0);        //turn every third pixel off
+            _ledWrapper->setPixelColor(i+q, 0);        //turn every third pixel off
           }
 
           j++;

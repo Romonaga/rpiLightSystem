@@ -60,7 +60,7 @@ void ShowBouncingBalls::startShow()
     for (int i = 0 ; i < _width ; i++)
     {
         //qDebug() << Position[i];
-       _ledWrapper->setPixelColor(_settings->getStripHeight(),Position[i],_color1);
+       _ledWrapper->setPixelColor(_settings->getStripRows(),Position[i],_color1);
     }
     _ledWrapper->show();
 

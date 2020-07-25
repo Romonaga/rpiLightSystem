@@ -61,13 +61,13 @@ void ShowScanner::startShow()
 
           for (unsigned int count = 1; count < _ledWrapper->getNumberLeds(); count++)
           {
-            _ledWrapper->setPixelColor(_settings->getStripHeight(), count, _color1);
+            _ledWrapper->setPixelColor(count, _color1);
             old_val[count] = _color1;
 
             for(int x = count; x>0; x--)
             {
               old_val[x-1] = dimColor(old_val[x-1], _width);
-             _ledWrapper->setPixelColor(_settings->getStripHeight(),x-1, old_val[x-1]);
+             _ledWrapper->setPixelColor(x-1, old_val[x-1]);
             }
             _ledWrapper->show();
 
@@ -76,13 +76,13 @@ void ShowScanner::startShow()
 
           for (unsigned int count = _ledWrapper->getNumberLeds()-1; count == 0; count--)
           {
-            _ledWrapper->setPixelColor(_settings->getStripHeight(),count, _color1);
+            _ledWrapper->setPixelColor(count, _color1);
             old_val[count] = _color1;
 
             for(unsigned int x = count; x<=_ledWrapper->getNumberLeds() ;x++)
             {
               old_val[x-1] = dimColor(old_val[x-1], _width);
-              _ledWrapper->setPixelColor(_settings->getStripHeight(),x+1, old_val[x+1]);
+              _ledWrapper->setPixelColor(x+1, old_val[x+1]);
             }
             _ledWrapper->show();
 

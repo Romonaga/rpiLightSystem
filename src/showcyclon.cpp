@@ -19,7 +19,7 @@ void ShowCyclon::startShow()
       {
         for(int j=0; j< _width; j++)
         {
-            _ledWrapper->setPixelColor(_settings->getStripHeight(), i + j, _color1);
+            _ledWrapper->setPixelColor(i + j, _color1);
         }
 
         _ledWrapper->show();
@@ -27,7 +27,7 @@ void ShowCyclon::startShow()
         // now that we've shown the leds, reset to black for next loop
         for(int j=0; j < _width; j++)
         {
-            _ledWrapper->setPixelColor(_settings->getStripHeight(), i + j, _ledWrapper->Color(0,0,0));
+            _ledWrapper->setPixelColor(i + j, _ledWrapper->Color(0,0,0));
         }
         if(_running == false)
             return;
@@ -40,14 +40,14 @@ void ShowCyclon::startShow()
       {
         for(int j=0; j< _width; j++)
         {
-        _ledWrapper->setPixelColor(_settings->getStripHeight(), i + j, _color1);
+        _ledWrapper->setPixelColor(i + j, _color1);
         }
         if(_running == false)
             return;
         _ledWrapper->show();
         for(int j=0; j< _width; j++)
         {
-           _ledWrapper->setPixelColor(_settings->getStripHeight(), i + j, _ledWrapper->Color(0,0,0));
+           _ledWrapper->setPixelColor(i + j, _ledWrapper->Color(0,0,0));
         }
         if(_running == false)
             return;

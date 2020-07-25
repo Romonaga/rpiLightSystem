@@ -15,13 +15,13 @@ void ShowHnH::startShow()
 
     for(counter = 0; counter < half; counter++)
     {
-        _ledWrapper->setPixelColor(_settings->getStripHeight(), counter, _color1);
+        _ledWrapper->setPixelColor(counter, _color1);
 
     }
 
     for(; counter < _ledWrapper->getNumberLeds(); counter++)
     {
-        _ledWrapper->setPixelColor(_settings->getStripHeight(), counter, _color2);
+        _ledWrapper->setPixelColor(counter, _color2);
 
     }
     _ledWrapper->show();

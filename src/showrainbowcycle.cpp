@@ -17,7 +17,7 @@ void ShowRainbowCycle::startShow()
                 return ;
 
             for(uint16_t led =0; led < _ledWrapper->getNumberLeds() ; led++)
-               _ledWrapper->setPixelColor(_settings->getStripHeight(), led, Ws2811Wrapper::Wheel(((led * 256 / _ledWrapper->getNumberLeds()) + cycle) & 255));
+               _ledWrapper->setPixelColor(led, Ws2811Wrapper::Wheel(((led * 256 / _ledWrapper->getNumberLeds()) + cycle) & 255));
 
              _ledWrapper->show();
 

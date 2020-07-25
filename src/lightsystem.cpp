@@ -648,13 +648,14 @@ bool LightSystem::startSystem()
     {
         _logger->logInfo("Setting Up Led Strip");
         info << "start() Settings Host(" << _settings->getHostName().toStdString().c_str() << ") DMA(" << _settings->getDma() << ") GPIO(" <<
-                _settings->getGpio() << ") sType(" << _settings->getStripType() << ") Width(" <<
-                _settings->getStripWidth() << ") Height(" << _settings->getStripHeight() << ") Brightness(" <<
+                _settings->getGpio() << ") sType(" << _settings->getStripType() << ") Rows(" <<
+                _settings->getStripRows() << ") Columns(" << _settings->getStripColumns() << ") Brightness(" <<
                 _settings->getBrightness() << ") MQTTBroker(" << _settings->getMqttBroker().toStdString().c_str() << ") DebugLog(" <<
                 _settings->getDbgLog() << ")";
 
        _logger->logInfo(info.str());
-       renderResults = _ledWrapper.initStrip(_settings->getStripWidth(), _settings->getStripHeight(), (LedStripType)_settings->getStripType(), _settings->getDma(), _settings->getGpio());
+
+       renderResults = _ledWrapper.initStrip(_settings->getStripRows(), _settings->getStripColumns(), (LedStripType)_settings->getStripType(), _settings->getDma(), _settings->getGpio());
        if(renderResults != WS2811_SUCCESS)
        {
            info.str("");
@@ -858,7 +859,7 @@ double LightSystem::getSystemTemp()
     temperatureFile = fopen ("/sys/class/thermal/thermal_zone0/temp", "r");
     if (temperatureFile != nullptr)
     {
-        fscanf (temperatureFile, "%lf", &temp);
+        fscanf (temperatureFile, "%lf C", &temp);
     }
 
     return  temp /= 1000;
@@ -933,8 +934,7 @@ void LightSystem::getSysInfo(QJsonObject *statusObject)
 
     float f_load = 1.f / (1 << SI_LOAD_SHIFT);
     info.str("");
-    info << "(1 min): " << std::setprecision(2) << s_info.loads[0] * f_load << " (%" << std::setprecision(2) << s_info.loads[0] * f_load * 100/get_nprocs() << " CPU)";
-    _logger->logInfo(info.str());
+    info << "(1 min): " << std::setprecision(2) << s_info.loads[0] * f_load << " (%" << std::setprecision(2) << s_info.loads[0] * f_load * 100/get_nprocs() << " CPU)";    
     statusObject->insert("load", info.str().c_str());
 
 }

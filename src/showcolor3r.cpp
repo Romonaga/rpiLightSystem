@@ -30,7 +30,7 @@ void ShowColor3R::startShow()
         }
 
 
-        _ledWrapper->setPixelColor(_settings->getStripHeight(), counter, currentColor);
+        _ledWrapper->setPixelColor(counter, currentColor);
     }
 
     _ledWrapper->show();
