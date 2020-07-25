@@ -11,6 +11,53 @@ ShowBouncingBalls::ShowBouncingBalls(Ws2811Wrapper* ledWrapper, const LedLightSh
 
 void ShowBouncingBalls::startShow()
 {
+    _ledWrapper->clearLeds();
+    _ledWrapper->setPixelColor(0,0, _color2);
+    _ledWrapper->setPixelColor(0,1, _color1);
+    _ledWrapper->setPixelColor(0,2, _color1);
+    _ledWrapper->setPixelColor(0,3, _color1);
+    _ledWrapper->setPixelColor(0,4, _color1);
+    _ledWrapper->setPixelColor(0,5, _color1);
+
+
+     _ledWrapper->setPixelColor(1,0, _color2);
+     _ledWrapper->setPixelColor(1,1, _color1);
+     _ledWrapper->setPixelColor(1,2, _color1);
+     _ledWrapper->setPixelColor(1,3, _color1);
+     _ledWrapper->setPixelColor(1,4, _color1);
+     _ledWrapper->setPixelColor(1,5, _color1);
+
+
+     _ledWrapper->setPixelColor(2,0, _color2);
+     _ledWrapper->setPixelColor(2,1, _color1);
+     _ledWrapper->setPixelColor(2,2, _color1);
+     _ledWrapper->setPixelColor(2,3, _color1);
+     _ledWrapper->setPixelColor(2,4, _color1);
+     _ledWrapper->setPixelColor(2,5, _color1);
+
+
+     _ledWrapper->setPixelColor(3,0, _color2);
+     _ledWrapper->setPixelColor(3,1, _color1);
+     _ledWrapper->setPixelColor(3,2, _color1);
+     _ledWrapper->setPixelColor(3,3, _color1);
+     _ledWrapper->setPixelColor(3,4, _color1);
+     _ledWrapper->setPixelColor(3,5, _color1);
+
+
+     _ledWrapper->setPixelColor(4,0, _color2);
+     _ledWrapper->setPixelColor(4,1, _color1);
+     _ledWrapper->setPixelColor(4,2, _color1);
+     _ledWrapper->setPixelColor(4,3, _color1);
+     _ledWrapper->setPixelColor(4,4, _color1);
+     _ledWrapper->setPixelColor(4,5, _color1);
+
+
+     _ledWrapper->show();
+}
+
+/*
+void ShowBouncingBalls::startShow()
+{
     float Gravity = -9.81;
   int StartHeight = 1;
 
@@ -60,14 +107,14 @@ void ShowBouncingBalls::startShow()
     for (int i = 0 ; i < _width ; i++)
     {
         //qDebug() << Position[i];
-       _ledWrapper->setPixelColor(_settings->getStripRows(),Position[i],_color1);
+       _ledWrapper->setPixelColor(Position[i],_color1);
     }
     _ledWrapper->show();
 
     _ledWrapper->clearLeds();
   }
 }
-/*
+
 void ShowBouncingBalls::startShow()
 {
 
