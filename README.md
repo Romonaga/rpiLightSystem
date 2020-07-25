@@ -16,6 +16,7 @@ Features.
 * Precanned shows. (always a work in progress)
 * Ability to save playlists. (done)
 * Ability to edit saved playlists. (done)
+* Ability to Get Status From lightSystem (done)
 * Control as many LightSystems/Lightshows as pi Memory allows. (not hit my limit yet)
 * Fully open source. (yep, it is)
 * Grouped Light Systems, control Light systems as a group. (not Started Yet)
