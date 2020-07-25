@@ -1,6 +1,8 @@
 #include <unistd.h>
 #include <linux/kernel.h>       /* for struct sysinfo */
 #include <sys/sysinfo.h>
+#include <iomanip>
+#include <stdio.h>
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -247,6 +249,7 @@ void LightSystem::sendSystemInfo()
     _runningShowsMutex.unlock();
 
     getSysInfo(&statusObject);
+    getVoltageInfo(&statusObject);
     QJsonDocument doc(statusObject);
     payload =  doc.toJson(QJsonDocument::Compact);
     _statusPipe->SendMessage((void*)payload.toStdString().c_str(), payload.length());
@@ -563,9 +566,9 @@ void LightSystem::loadFeatures()
             {
 
                 int lightfeatureId = qry.value("featureId").toInt();
-                switch(lightfeatureId)
+                switch((lightFeatures) lightfeatureId)
                 {
-                    case 1:
+                    case MotionSensor:
                     {
                         _logger->logInfo("Starting MotionLights Feature");
                         _motionFeature = new MotionLightsFeature(qry);
@@ -574,7 +577,7 @@ void LightSystem::loadFeatures()
                     }
                     break;
 
-                    case 2:
+                    case LightSensor:
                     {
                         _logger->logInfo("Starting LightSensor Feature");
                         _lightSensorFeature = new LightSensorFeature(qry);
@@ -583,7 +586,7 @@ void LightSystem::loadFeatures()
                     }
                     break;
 
-                    case 3:
+                    case TimeBased:
                     {
                         _logger->logInfo("Starting Time Feature");
                         _timeFeature = new TimeFeature(qry);
@@ -592,7 +595,7 @@ void LightSystem::loadFeatures()
                     }
                     break;
 
-                    case 4:
+                    case LuxSensor:
                     {
                         _logger->logInfo("Starting LightLux Feature");
                         _luxFeature = new LightLuxFeature(qry, ContinueHigh);
@@ -600,6 +603,13 @@ void LightSystem::loadFeatures()
                         _luxFeature->start();
                     }
                     break;
+
+
+                    default:
+                      _logger->logInfo("Starting LightLux We should Not Be here, ever.");
+                    break;
+
+
 
                 }
 
@@ -846,7 +856,7 @@ double LightSystem::getSystemTemp()
     double temp = 0.00;
 
     temperatureFile = fopen ("/sys/class/thermal/thermal_zone0/temp", "r");
-    if (temperatureFile != NULL)
+    if (temperatureFile != nullptr)
     {
         fscanf (temperatureFile, "%lf", &temp);
     }
@@ -857,25 +867,47 @@ double LightSystem::getSystemTemp()
 
 
 
+void LightSystem::getVoltageInfo(QJsonObject *statusObject)
+{
+    int th;
+    FILE *f;
+    char buf[256];
+
+    std::stringstream info;
+
+    char tmpFile[] = "/tmp/rpiL_XXXXXX";
+
+    int tmp = mkstemp(tmpFile);
+    close(tmp);
+
+    sprintf(buf,"vcgencmd get_throttled > %s",tmpFile);
+        system(buf);
+
+    if ((f = fopen(tmpFile,"r")) != nullptr)
+    {
+        fscanf(f,"throttled=%x", &th);
+        fclose(f);
+
+        if (th & 1<<0) info << "Under-voltage detected<br>";
+        if (th & 1<<1) info << "Frequency capped<br>";
+        if (th & 1<<2) info << "Currently throttled<br>";
+        if (th & 1<<3) info << "Temperature limit active<br>";
+        if (th & 1<<16) info << "Under-voltage occurred<br>";
+        if (th & 1<<17) info << "Frequency cap occurred<br>";
+        if (th & 1<<18) info << "Throttling occurred<br>";
+        if (th & 1<<19) info << "Temperature limit occurred<br>";
+
+    }
+
+    if(info.str().length() > 0)
+        statusObject->insert("alerts", info.str().c_str());
+    else
+        statusObject->insert("alerts", "None");
+    unlink(tmpFile);
+}
 
 void LightSystem::getSysInfo(QJsonObject *statusObject)
 {
-
-   //struct sysinfo {
-    //    long uptime;             /* Seconds since boot */
-     //   unsigned long loads[3];  /* 1, 5, and 15 minute load averages */
-    //    unsigned long totalram;  /* Total usable main memory size */
-    //    unsigned long freeram;   /* Available memory size */
-    //    unsigned long sharedram; /* Amount of shared memory */
-   //     unsigned long bufferram; /* Memory used by buffers */
-   //     unsigned long totalswap; /* Total swap space size */
-   //     unsigned long freeswap;  /* swap space still available */
-    //    unsigned short procs;    /* Number of current processes */
-    //    unsigned long totalhigh; /* Total high memory size */
-    //    unsigned long freehigh;  /* Available high memory size */
-    //    unsigned int mem_unit;   /* Memory unit size in bytes */
-    //    char _f[20-2*sizeof(long)-sizeof(int)]; /* Padding for libc5 */
-    //};
 
     struct sysinfo s_info;
     std::stringstream info;
@@ -893,12 +925,17 @@ void LightSystem::getSysInfo(QJsonObject *statusObject)
     int days = uptime / 86400;
     int hours = (uptime / 3600) - (days * 24);
     int mins = (uptime / 60) - (days * 1440) - (hours * 60);
-    info << "Days: " << days << " Hours: " << hours << " Min: " << mins << " Sec: " << s_info.uptime % 60;
+    info << "D: " << days << " H: " << hours << " M: " << mins << " S: " << s_info.uptime % 60;
     statusObject->insert("uptime", info.str().c_str());
 
     statusObject->insert("totalRam", QString::number(s_info.totalram / megabyte));
     statusObject->insert("freeRam", QString::number(s_info.freeram / megabyte));
-    statusObject->insert("load", QString::number( s_info.loads[2] / 100));
+
+    float f_load = 1.f / (1 << SI_LOAD_SHIFT);
+    info.str("");
+    info << "(1 min): " << std::setprecision(2) << s_info.loads[0] * f_load << " (%" << std::setprecision(2) << s_info.loads[0] * f_load * 100/get_nprocs() << " CPU)";
+    _logger->logInfo(info.str());
+    statusObject->insert("load", info.str().c_str());
 
 }
 

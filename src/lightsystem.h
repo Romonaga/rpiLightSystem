@@ -19,13 +19,21 @@
 #include "lightluxfeature.h"
 #include "mqttpublisher.h"
 
+#define LIGHT_FEATURES(X)                                                  \
+            X(0, None, "Why Are We Here?"),                           \
+            X(1, MotionSensor, "Motion Sensor"),                           \
+            X(2, LightSensor, "Light Sensor"),                              \
+            X(3, TimeBased, "Lux Sensor"),                   \
+            X(4, LuxSensor, "Lux Sensor")                   \
 
 
+#define LIGHT_FEATURES_ENUM(type, name, txt) name = type
+#define LIGHT_FEATURES_SHOW(type, name, txt) txt
 
-
-//broker = "RomoServer.local";
-//topic = "MotionDetect/#";
-//qos = 1;
+typedef enum {
+    LIGHT_FEATURES(LIGHT_FEATURES_ENUM),
+    LIGHT_FEATURES_ENUM_COUNT
+} lightFeatures;
 
 
 
@@ -94,6 +102,7 @@ private: //shows
     LedLightShows getShowId(const QString& twitchId);
     double getSystemTemp();
     void getSysInfo(QJsonObject* statusObject);
+    void getVoltageInfo(QJsonObject *statusObject);
 
     void sendSystemInfo();
 
