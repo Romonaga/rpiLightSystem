@@ -12,48 +12,54 @@ ShowBouncingBalls::ShowBouncingBalls(Ws2811Wrapper* ledWrapper, const LedLightSh
 void ShowBouncingBalls::startShow()
 {
     _ledWrapper->clearLeds();
-    _ledWrapper->setPixelColor(0,0, _color2);
-    _ledWrapper->setPixelColor(0,1, _color1);
-    _ledWrapper->setPixelColor(0,2, _color1);
-    _ledWrapper->setPixelColor(0,3, _color1);
-    _ledWrapper->setPixelColor(0,4, _color1);
-    _ledWrapper->setPixelColor(0,5, _color1);
 
+   // Draw our box
+    _ledWrapper->setPixelColor(6,0, _color2);
+    _ledWrapper->setPixelColor(6,1, _color1);
+    _ledWrapper->setPixelColor(6,2, _color1);
+    _ledWrapper->setPixelColor(6,3, _color1);
+    _ledWrapper->setPixelColor(6,4, _color1);
+    _ledWrapper->setPixelColor(6,5, _color1);
 
-     _ledWrapper->setPixelColor(1,0, _color2);
-     _ledWrapper->setPixelColor(1,1, _color1);
-     _ledWrapper->setPixelColor(1,2, _color1);
-     _ledWrapper->setPixelColor(1,3, _color1);
-     _ledWrapper->setPixelColor(1,4, _color1);
-     _ledWrapper->setPixelColor(1,5, _color1);
+    _ledWrapper->setPixelColor(6,6, _color4);
+    _ledWrapper->setPixelColor(6,7, _color4);
+    _ledWrapper->setPixelColor(6,8, _color4);
 
+     _ledWrapper->setPixelColor(7,6, _color4);
+     _ledWrapper->setPixelColor(7,7, _color3);
+     _ledWrapper->setPixelColor(7,8, _color4);
 
-     _ledWrapper->setPixelColor(2,0, _color2);
-     _ledWrapper->setPixelColor(2,1, _color1);
-     _ledWrapper->setPixelColor(2,2, _color1);
-     _ledWrapper->setPixelColor(2,3, _color1);
-     _ledWrapper->setPixelColor(2,4, _color1);
-     _ledWrapper->setPixelColor(2,5, _color1);
+     _ledWrapper->setPixelColor(8,6, _color4);
+     _ledWrapper->setPixelColor(8,7, _color4);
+     _ledWrapper->setPixelColor(8,8, _color4);
 
+     //lets fill around it programaticly;
+    for(u_int32_t row = 0; row < _ledWrapper->getRows(); row++)
+    {
+        _ledWrapper->setPixelColor(row, 0, _color2);
+        _ledWrapper->setPixelColor(row, _ledWrapper->getColumns() -1 , _color2);
 
-     _ledWrapper->setPixelColor(3,0, _color2);
-     _ledWrapper->setPixelColor(3,1, _color1);
-     _ledWrapper->setPixelColor(3,2, _color1);
-     _ledWrapper->setPixelColor(3,3, _color1);
-     _ledWrapper->setPixelColor(3,4, _color1);
-     _ledWrapper->setPixelColor(3,5, _color1);
+        for(u_int32_t column = 1; column < _ledWrapper->getColumns() - 1; column++)
+        {
+            if(row >= 6 && row <= 8)
+            {
+                if(column >= 6 && column <= 8)
+                    continue;
+            }
 
+            if(row == 0 || row == _ledWrapper->getRows() - 1)
+                _ledWrapper->setPixelColor(row, column, _color2);
+           else
+            _ledWrapper->setPixelColor(row, column, _color1);
+        }
+    }
 
-     _ledWrapper->setPixelColor(4,0, _color2);
-     _ledWrapper->setPixelColor(4,1, _color1);
-     _ledWrapper->setPixelColor(4,2, _color1);
-     _ledWrapper->setPixelColor(4,3, _color1);
-     _ledWrapper->setPixelColor(4,4, _color1);
-     _ledWrapper->setPixelColor(4,5, _color1);
 
 
      _ledWrapper->show();
 }
+
+
 
 /*
 void ShowBouncingBalls::startShow()
