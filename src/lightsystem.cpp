@@ -260,10 +260,10 @@ void LightSystem::sendSystemInfo()
 
 void LightSystem::processMsgReceived(QString msg)
 {
-   std::stringstream info;
+   //std::stringstream info;
 
-   info << "LightSystem::processMsgReceived: " << msg.toStdString().c_str();
-   _logger->logInfo(info.str());
+//   info << "LightSystem::processMsgReceived: " << msg.toStdString().c_str();
+ //  _logger->logInfo(info.str());
 
     QJsonObject jsonObject;
 
@@ -660,7 +660,7 @@ bool LightSystem::startSystem()
 
        _logger->logInfo(info.str());
 
-       renderResults = _ledWrapper.initStrip(0, _settings->getStripRows(), _settings->getStripColumns(), (LedStripType)_settings->getStripType(), _settings->getDma(), _settings->getGpio());
+       renderResults = _ledWrapper.initStrip(Channel1, _settings->getStripRows(), _settings->getStripColumns(), (LedStripType)_settings->getStripType(), _settings->getDma(), _settings->getGpio());
        if(renderResults != WS2811_SUCCESS)
        {
            info.str("");
