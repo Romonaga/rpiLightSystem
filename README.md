@@ -9,6 +9,7 @@ While we have provided source code, as well as instructions for building system.
 
 Features.
 * Customizable Lightshows (done)
+* Led Matrix Support (done)
 * Lights By Motion. (done)
 * Lights By Light Sensor. (done)
 * Lights By Timer. (done)
@@ -23,7 +24,7 @@ Features.
 * Simple to use, easy to setup.  
 * Website for controling the Lightshows is work produced by Myrana. (always a work in progress)
 * Twitch Support, yes that is correct, (https://www.twitch.tv/lumawin) you will be able to run a Twitch Bot to control and let others control Light Systems. (done/deprecated in favor of panel support)
-* Twitch Pannel Support (Phase 1 in testing)
+* Twitch Pannel Support (Phase 1 Released and Live)
 
 </b>
 
