@@ -12,7 +12,7 @@ ShowBouncingBalls::ShowBouncingBalls(Ws2811Wrapper* ledWrapper, const LedLightSh
 void ShowBouncingBalls::startShow()
 {
     _ledWrapper->clearLeds();
-
+/*
    // Draw our box
     _ledWrapper->setPixelColor(6,0, _color2);
     _ledWrapper->setPixelColor(6,1, _color1);
@@ -54,7 +54,13 @@ void ShowBouncingBalls::startShow()
         }
     }
 
+*/
+      qDebug() << "Color1: " << _color1;
+     _ledWrapper->setPixelColor(0,0, _color1);
+     _ledWrapper->setPixelColor(1,0, _color2);
 
+     _ledWrapper->setPixelColor(0,15, _color1);
+     _ledWrapper->setPixelColor(1,15, _color2);
 
      _ledWrapper->show();
 }

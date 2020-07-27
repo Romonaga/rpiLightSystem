@@ -29,6 +29,7 @@ SOURCES += src/ilightshow.cpp \
     src/showfade.cpp \
     src/showflame.cpp \
     src/showhnh.cpp \
+    src/showmatrix.cpp \
     src/showneorand.cpp \
     src/showpulse.cpp \
     src/showrainbow.cpp \
@@ -73,6 +74,7 @@ HEADERS += \
     src/showfade.h \
     src/showflame.h \
     src/showhnh.h \
+    src/showmatrix.h \
     src/showneorand.h \
     src/showpulse.h \
     src/showrainbow.h \

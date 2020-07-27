@@ -112,12 +112,12 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
        }
        else
        {
-           _logger->logWarning("ShowFire::ShowFire Invalid JSON");
+           _logger->logWarning("ILightShow::ShowFire Invalid JSON");
        }
    }
    else
    {
-       _logger->logWarning("ShowFire::ShowFire Document is not an object");
+       _logger->logWarning("ILightShow::ShowFire Document is not an object");
    }
 
 }

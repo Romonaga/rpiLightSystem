@@ -43,6 +43,7 @@
 #include "showscanner.h"
 #include "showfade.h"
 #include "showbouncingballs.h"
+#include "showmatrix.h"
 
 
 
@@ -431,6 +432,10 @@ void LightSystem::queueShow(const LedLightShows& show, const QString& showParms)
 
         case Fade:
             _runningShows.append(new ShowFade(&_ledWrapper, show, showParms));
+            break;
+
+        case DisplayArt:
+            _runningShows.append(new ShowMatrix(&_ledWrapper, show, showParms));
             break;
 
     default:
