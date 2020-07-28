@@ -13,7 +13,7 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
     _settings = SystemSettings::getInstance();
 
     srand(time(nullptr));
-
+    _userId = 1;
     _running = false;
     _wait = 100;
     _clearOnStart = false;

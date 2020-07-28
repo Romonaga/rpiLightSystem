@@ -128,7 +128,9 @@ bool SystemSettings::loadSystemSettings()
         char name[100];
         gethostname( name, sizeof(name));
         _hostName = name;
-        QString sql("select * from lightSystems where serverHostName = '");
+
+
+        QString sql("SELECT ID, systemName,serverHostName,userID,TwitchSupport,mqttRetries,mqttRetryDelay,twitchMqttQueue,lc.* FROM LedLightSystem.lightSystems as ls, LedLightSystem.lightSystemChannels as lc where ls.id = lc.lightSystemId and lc.channelId = 1 and lc.enabled = 1 and ls.enabled = 1 and serverHostName = '");
         sql.append(_hostName);
         sql.append("'");
         QSqlQuery qry = database.exec(sql);
