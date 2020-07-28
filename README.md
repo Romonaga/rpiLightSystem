@@ -10,6 +10,7 @@ While we have provided source code, as well as instructions for building system.
 Features.
 * Customizable Lightshows (done)
 * Led Matrix Support (done)
+* Support for 2 channels (In Testing)
 * Lights By Motion. (done)
 * Lights By Light Sensor. (done)
 * Lights By Timer. (done)
