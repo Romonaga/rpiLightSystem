@@ -3,16 +3,51 @@
 #include <math.h>
 #include <QDebug>
 
+#include "font5x7ext.h"
+
+
+
 ShowBouncingBalls::ShowBouncingBalls(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
     ILightShow(ledWrapper, lightShow, showParms)
 {
 
 }
 
+
 void ShowBouncingBalls::startShow()
 {
     _ledWrapper->clearLeds();
-/*
+    FILE* fileIn;
+    unsigned char r[2];
+    unsigned char g[2];
+    unsigned char b[2];
+    int counter = 0;
+
+    fileIn = fopen("/home/hellweek/code/frog.rgb","r+");
+    if(fileIn)
+    {
+        while(!feof(fileIn))
+        {
+            fread(r, sizeof(unsigned char), 1, fileIn);
+            fread(g, sizeof(unsigned char), 1, fileIn);
+            fread(b, sizeof(unsigned char), 1, fileIn);
+
+            ws2811_led_t color = _ledWrapper->Color((u_int8_t)r[0],(u_int8_t)g[0],(u_int8_t)b[0]);
+            _ledWrapper->setPixelColor(counter, color);
+
+
+
+            counter++;
+        }
+        fclose(fileIn);
+        _ledWrapper->show();
+    }
+    else
+    {
+        _logger->logInfo("Nope");
+    }
+
+
    // Draw our box
     _ledWrapper->setPixelColor(6,0, _color2);
     _ledWrapper->setPixelColor(6,1, _color1);
@@ -54,20 +89,16 @@ void ShowBouncingBalls::startShow()
         }
     }
 
-*/
-      qDebug() << "Color1: " << _color1;
-     _ledWrapper->setPixelColor(0,0, _color1);
-     _ledWrapper->setPixelColor(1,0, _color2);
 
-     _ledWrapper->setPixelColor(0,15, _color1);
-     _ledWrapper->setPixelColor(1,15, _color2);
 
      _ledWrapper->show();
+
+
+
 }
 
-
-
 /*
+
 void ShowBouncingBalls::startShow()
 {
     float Gravity = -9.81;
@@ -199,10 +230,6 @@ void ShowBouncingBalls::startShow()
     }
 }
 
-*/
-/*
- *
- *
  * def bouncing_balls(strip, playtime, ball_count=2, wait_ms=200):
     """Shows an accelerated pixel with physicslike a ball in a flipper game"""
     import time, math
@@ -249,3 +276,4 @@ void ShowBouncingBalls::startShow()
             strip.setPixelColorRGB(i, 0,0,0)
  *
  * */
+

@@ -13,6 +13,8 @@ SOURCES += src/ilightshow.cpp \
     src/lightsensorfeature.cpp \
     src/lightsystem.cpp \
     src/main.cpp \
+    src/matrixart.cpp \
+    src/matrixscrolltext.cpp \
     src/motionlightsfeature.cpp \
     src/mqttreceiver.cpp \
     src/playlistmanager.cpp \
@@ -29,7 +31,6 @@ SOURCES += src/ilightshow.cpp \
     src/showfade.cpp \
     src/showflame.cpp \
     src/showhnh.cpp \
-    src/showmatrix.cpp \
     src/showneorand.cpp \
     src/showpulse.cpp \
     src/showrainbow.cpp \
@@ -54,10 +55,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
+    src/font5x7ext.h \
     src/ilightshow.h \
     src/lightluxfeature.h \
     src/lightsensorfeature.h \
     src/lightsystem.h \
+    src/matrixart.h \
+    src/matrixscrolltext.h \
     src/motionlightsfeature.h \
     src/mqttreceiver.h \
     src/playlistmanager.h \
@@ -74,7 +78,6 @@ HEADERS += \
     src/showfade.h \
     src/showflame.h \
     src/showhnh.h \
-    src/showmatrix.h \
     src/showneorand.h \
     src/showpulse.h \
     src/showrainbow.h \

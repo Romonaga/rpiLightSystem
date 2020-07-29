@@ -43,7 +43,8 @@
 #include "showscanner.h"
 #include "showfade.h"
 #include "showbouncingballs.h"
-#include "showmatrix.h"
+#include "matrixart.h"
+#include "matrixscrolltext.h"
 
 
 
@@ -434,8 +435,12 @@ void LightSystem::queueShow(const LedLightShows& show, const QString& showParms)
             _runningShows.append(new ShowFade(&_ledWrapper, show, showParms));
             break;
 
-        case DisplayArt:
-            _runningShows.append(new ShowMatrix(&_ledWrapper, show, showParms));
+        case MatrixArtShow:
+            _runningShows.append(new MatrixArt(&_ledWrapper, show, showParms));
+            break;
+
+        case MatrixText:
+            _runningShows.append(new MatrixScrollText(&_ledWrapper, show, showParms));
             break;
 
     default:

@@ -41,7 +41,8 @@
             X(20, Scanner, "Scanner.","scan"),                   \
             X(21, BBalls, "Bouncing Balls.","bb"),                   \
             X(22, Fade, "Fade.","fade"),                   \
-            X(23, DisplayArt, "Display Art","art")                   \
+            X(23, MatrixArtShow, "Display Art","art"),                   \
+            X(24, MatrixText, "Scroll Text","mt")                   \
 
 
 #define LIGHT_SHOWS_ENUM(type, name, txt, twitch) name = type
@@ -88,6 +89,7 @@ protected:
     Ws2811Wrapper* _ledWrapper;
     LedLightShows _lightShow;
     QString _showParms;
+    QString _matrixText;
     int _userId;
 
 

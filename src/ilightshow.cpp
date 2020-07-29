@@ -21,10 +21,10 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
     _numMins = 1;
     _width = 5;
     _colorEvery = 2;
-    _color1 = Ws2811Wrapper::Color(125, 125, 125);
-    _color2 = Ws2811Wrapper::Color(0, 125, 125);
-    _color3 = Ws2811Wrapper::Color(125, 0, 125);
-    _color4 = Ws2811Wrapper::Color(125, 125, 0);
+    _color1 = _ledWrapper->Color(125, 125, 125);
+    _color2 = _ledWrapper->Color(0, 125, 125);
+    _color3 = _ledWrapper->Color(125, 125, 0);
+    _color4 = _ledWrapper->Color(125, 0, 125);
 
     QJsonObject jsonObject;
     QJsonObject jsonColors;
@@ -62,6 +62,9 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
             if(jsonObject.value("colorEvery").isString())
                 _colorEvery = jsonObject.value("colorEvery").toString().toInt();
 
+            if(jsonObject.value("matrixText").isString())
+                _matrixText = jsonObject.value("matrixText").toString();
+
            if(jsonObject["colors"].isObject())
            {
                jsonColors = jsonObject["colors"].toObject();
@@ -72,7 +75,8 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
                    _r = jsonColor.value("r").toInt();
                    _g = jsonColor.value("g").toInt();
                    _b = jsonColor.value("b").toInt();
-                  _color4 = Ws2811Wrapper::Color(_r, _g, _b);
+
+                  _color4 = _ledWrapper->Color(_r, _g, _b);
 
                }
 
@@ -82,7 +86,7 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
                    _r = jsonColor.value("r").toInt();
                    _g = jsonColor.value("g").toInt();
                    _b = jsonColor.value("b").toInt();
-                  _color3 = Ws2811Wrapper::Color(_r, _g, _b);
+                  _color3 = _ledWrapper->Color(_r, _g, _b);
 
                }
 
@@ -92,7 +96,7 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
                    _r = jsonColor.value("r").toInt();
                    _g = jsonColor.value("g").toInt();
                    _b = jsonColor.value("b").toInt();
-                  _color2 = Ws2811Wrapper::Color(_r, _g, _b);
+                  _color2 = _ledWrapper->Color(_r, _g, _b);
 
                }
 
@@ -102,7 +106,7 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
                    _r = jsonColor.value("r").toInt();
                    _g = jsonColor.value("g").toInt();
                    _b = jsonColor.value("b").toInt();
-                  _color1 = Ws2811Wrapper::Color(_r, _g, _b);
+                  _color1 = _ledWrapper->Color(_r, _g, _b);
 
                }
 

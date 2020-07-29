@@ -19,7 +19,7 @@ void ShowTheaterChaseRainBow::startShow()
             for (int skippLoop = 0; skippLoop < 3; skippLoop++)
             {
                 for (uint16_t onLoop = 0; onLoop < _ledWrapper->getNumberLeds(); onLoop += 3)
-                    _ledWrapper->setPixelColor(onLoop + skippLoop, Ws2811Wrapper::Wheel( (onLoop + colorWheel) % 255));    //turn every third pixel on
+                    _ledWrapper->setPixelColor(onLoop + skippLoop, _ledWrapper->Wheel( (onLoop + colorWheel) % 255));    //turn every third pixel on
 
                 _ledWrapper->show();
 
