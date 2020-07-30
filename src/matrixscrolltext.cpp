@@ -16,7 +16,7 @@ MatrixScrollText::MatrixScrollText(Ws2811Wrapper* ledWrapper, const LedLightShow
 void MatrixScrollText::startShow()
 {
     int bitCounter = 0;
-    int row = 0;
+    int columnStart = 5;
 
       for(int letter = 0; letter < _matrixText.length(); letter++)
       {
@@ -27,12 +27,12 @@ void MatrixScrollText::startShow()
         bitCounter = 0;
         _ledWrapper->clearLeds();
 
-        for(int col = 5; col < (MAXCOLS + 5); col++)
+        for(int col = columnStart; col < (MAXCOLS + columnStart); col++)
         {
 
-            for(row = 0; row < MAXROWS; row++)
+            for(int row = 0; row < MAXROWS; row++)
             {
-                bitCounter = row * MAXCOLS + (col - 5);
+                bitCounter = row * MAXCOLS + (col - columnStart);
                 if(bitsPerLetter[(int)_matrixText.toStdString().c_str()[letter] - 32][bitCounter] == 1)
                     _ledWrapper->setPixelColor(row, col , _color1);
                 else
