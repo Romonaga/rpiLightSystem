@@ -17,6 +17,7 @@ public:
     // ILightShow interface
 public:
     void startShow();
+    void shiftRows();
 
 private:
 
