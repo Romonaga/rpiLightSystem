@@ -60,6 +60,8 @@ public:
 
     QString getMqttTwitchQueue() const;
 
+    int getMatrixdirection() const;
+
 private:
     SystemSettings();
     static SystemSettings* _instance;
@@ -87,6 +89,7 @@ private:
     bool _twitchSupport;
     int _mqttRetries;
     int _mqttRetryDelay;
+    int _matrixdirection;
 
 
     DNRLogger* _logger;

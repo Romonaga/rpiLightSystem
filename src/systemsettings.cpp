@@ -20,6 +20,11 @@ SystemSettings::SystemSettings()
 
 }
 
+int SystemSettings::getMatrixdirection() const
+{
+    return _matrixdirection;
+}
+
 QString SystemSettings::getMqttTwitchQueue() const
 {
     return _mqttTwitchQueue;
@@ -151,6 +156,7 @@ bool SystemSettings::loadSystemSettings()
             _mqttRetries = qry.value("mqttRetries").toInt();
             _mqttRetryDelay = qry.value("mqttRetryDelay").toInt();
             _mqttTwitchQueue = qry.value("twitchMqttQueue").toString();
+            _matrixdirection = qry.value("matrixDirection").toInt();
 
             retVal = true;
         }

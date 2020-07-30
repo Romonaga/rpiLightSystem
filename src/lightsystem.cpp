@@ -665,7 +665,7 @@ bool LightSystem::startSystem()
 
        _logger->logInfo(info.str());
 
-       renderResults = _ledWrapper.initStrip(Channel1, _settings->getStripRows(), _settings->getStripColumns(), (LedStripType)_settings->getStripType(), _settings->getDma(), _settings->getGpio());
+       renderResults = _ledWrapper.initStrip(Channel1, _settings->getStripRows(), _settings->getStripColumns(), (LedStripType)_settings->getStripType(), _settings->getDma(), _settings->getGpio(), (matrixDirection)_settings->getMatrixdirection());
        if(renderResults != WS2811_SUCCESS)
        {
            info.str("");
