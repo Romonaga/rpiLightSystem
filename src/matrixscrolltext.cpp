@@ -42,6 +42,16 @@ void MatrixScrollText::startShow()
     int rowStart =  (_settings->getStripRows() / 2) - (MAXROWS / 2) - 1;
     int drawRow = 0;
 
+    ws2811_led_t image[MAXROWS * _settings->getStripColumns()];
+
+    for(int col = 0; col < _settings->getStripColumns(); col++)
+    {
+        for(int row = 0; row < MAXROWS; row++)
+        {
+            image[row*col] = _ledWrapper->getPixelColor(row, col);
+        }
+    }
+
     while(_endTime > time(nullptr))
     {
         for(int letter = 0; letter < _matrixText.length(); letter++)
@@ -62,7 +72,7 @@ void MatrixScrollText::startShow()
                     if(letterMatrix[(int)_matrixText.toStdString().c_str()[letter] - 32][bitCounter] == 1)
                         _ledWrapper->setPixelColor(drawRow, drawCol , _color1);
                     else
-                        _ledWrapper->setPixelColor(drawRow, drawCol, _ledWrapper->Color(0,0,0));
+                       _ledWrapper->setPixelColor(drawRow, drawCol, image[(drawRow - rowStart )*drawCol]);
                 }
 
 
