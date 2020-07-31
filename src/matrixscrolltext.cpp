@@ -3,7 +3,7 @@
 #include <math.h>
 #include <QDebug>
 
-#include "font5x7ext.h"
+#include "font7x6ext.h"
 
 
 
@@ -59,7 +59,7 @@ void MatrixScrollText::startShow()
                     drawRow = row + rowStart;
                     bitCounter = row * MAXCOLS + (col - columnStart);
 
-                    if(bitsPerLetter[(int)_matrixText.toStdString().c_str()[letter] - 32][bitCounter] == 1)
+                    if(letterMatrix[(int)_matrixText.toStdString().c_str()[letter] - 32][bitCounter] == 1)
                         _ledWrapper->setPixelColor(drawRow, drawCol , _color1);
                     else
                         _ledWrapper->setPixelColor(drawRow, drawCol, _ledWrapper->Color(0,0,0));

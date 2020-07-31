@@ -3,7 +3,7 @@
 #include <math.h>
 #include <QDebug>
 
-#include "font5x7ext.h"
+#include "font7x6ext.h"
 
 
 

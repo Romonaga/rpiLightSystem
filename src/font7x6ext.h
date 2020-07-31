@@ -4,7 +4,7 @@
 #define MAXROWS 7
 #define MAXCOLS 6
 
-const short bitsPerLetter[][42] =
+const short letterMatrix[][42] =
 {
     //
     {0, 0, 0, 0, 0, 0,
