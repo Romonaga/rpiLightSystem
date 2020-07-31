@@ -17,7 +17,7 @@ public:
     // ILightShow interface
 public:
     void startShow();
-    void shiftColumns(int rowStart);
+    void shiftColumns(int rowStart, ws2811_led_t *image);
 
 private:
 

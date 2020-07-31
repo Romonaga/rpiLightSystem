@@ -13,10 +13,9 @@ MatrixScrollText::MatrixScrollText(Ws2811Wrapper* ledWrapper, const LedLightShow
 
 }
 
-void MatrixScrollText::shiftColumns(int rowStart)
+void MatrixScrollText::shiftColumns(int rowStart, ws2811_led_t *image)
 {
     ws2811_led_t color;
-    ws2811_led_t blackColor = _ledWrapper->Color(0,0,0);
 
     for(int col = 1; col < _settings->getStripColumns() ; col++)
     {
@@ -25,7 +24,7 @@ void MatrixScrollText::shiftColumns(int rowStart)
         {
             color = _ledWrapper->getPixelColor(row, col);
             _ledWrapper->setPixelColor(row , col - 1, color);
-            _ledWrapper->setPixelColor(row, col,blackColor );
+            _ledWrapper->setPixelColor(row, col, image[(row - rowStart )* col]) ;
         }
     }
 
@@ -42,7 +41,7 @@ void MatrixScrollText::startShow()
     int rowStart =  (_settings->getStripRows() / 2) - (MAXROWS / 2) - 1;
     int drawRow = 0;
 
-    ws2811_led_t image[MAXROWS * _settings->getStripColumns()];
+    ws2811_led_t* image = new ws2811_led_t[MAXROWS * _settings->getStripColumns()];
 
     for(int col = 0; col < _settings->getStripColumns(); col++)
     {
@@ -52,7 +51,7 @@ void MatrixScrollText::startShow()
         }
     }
 
-    while(_endTime > time(nullptr))
+    while(_endTime > time(nullptr) && _running == true)
     {
         for(int letter = 0; letter < _matrixText.length(); letter++)
         {
@@ -73,61 +72,27 @@ void MatrixScrollText::startShow()
                         _ledWrapper->setPixelColor(drawRow, drawCol , _color1);
                     else
                        _ledWrapper->setPixelColor(drawRow, drawCol, image[(drawRow - rowStart )*drawCol]);
+                       // _ledWrapper->setPixelColor(drawRow, drawCol, _ledWrapper->Color(0,0,0));
                 }
 
 
                 _ledWrapper->show();
                  Ws2811Wrapper::waitMillSec(_wait);
-                 shiftColumns(rowStart);
+                 shiftColumns(rowStart, image);
 
             }
 
         }
 
+
         if(_running == false)
-          return;
+          break;
 
     }
+
+
+    delete [] image;
 
 }
 
 
-/*
-void MatrixScrollText::startShow()
-{
-    int bitCounter = 0;
-    int row = 0;
-
-
-      for(int letter = 0; letter < _matrixText.length(); letter++)
-      {
-
-        if((int)_matrixText.toStdString().c_str()[letter] < 32 || (int)_matrixText.toStdString().c_str()[letter] > 122)
-            continue;
-
-        bitCounter = 0;
-        _ledWrapper->clearLeds();
-
-        for(int col = 0; col < MAXCOLS; col++)
-        {
-
-
-            for(row = 0; row < MAXROWS; row++)
-            {
-                bitCounter = row * MAXCOLS + col;
-                if(bitsPerLetter[(int)_matrixText.toStdString().c_str()[letter] - 32][bitCounter] == 1)
-                    _ledWrapper->setPixelColor(row, col, _color1);
-                else
-                    _ledWrapper->setPixelColor(row, col, _ledWrapper->Color(0,0,0));
-                //qDebug() << bitCounter;
-            }
-
-            _ledWrapper->show();
-            Ws2811Wrapper::waitMillSec(_wait);
-
-
-        }
-
-    }
-
-}*/
