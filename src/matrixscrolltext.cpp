@@ -18,19 +18,17 @@ void MatrixScrollText::shiftColumns()
     ws2811_led_t color;
     ws2811_led_t blackColor = _ledWrapper->Color(0,0,0);
 
-    int col =  _settings->getStripColumns() - 1;
-
-
-
-    for(int row = 0; row < _settings->getStripRows(); row++)
+    for(int col = 1; col < _settings->getStripColumns() ; col++)
     {
-        color = _ledWrapper->getPixelColor(row, col);
+
+        for(int row = 0; row < _settings->getStripRows(); row++)
+        {
+            color = _ledWrapper->getPixelColor(row, col);
 
 
-        _ledWrapper->setPixelColor(row, col - 1, color);
-
-        qDebug() << "Col: " << col << " Row: " << row << " move: " << col - 1 << " color: " << color;
-        _ledWrapper->setPixelColor(row, col,blackColor );
+            _ledWrapper->setPixelColor(row , col - 1, color);
+         _ledWrapper->setPixelColor(row, col,blackColor );
+        }
     }
 
     _ledWrapper->show();
@@ -42,6 +40,7 @@ void MatrixScrollText::startShow()
     int bitCounter = 0;
     int columnStart = 5;
     int drawCol = _settings->getStripColumns() - 1;
+    _ledWrapper->clearLeds();
 
       for(int letter = 0; letter < _matrixText.length(); letter++)
       {
@@ -50,7 +49,6 @@ void MatrixScrollText::startShow()
             continue;
 
         bitCounter = 0;
-        _ledWrapper->clearLeds();
 
         for(int col = columnStart; col < (MAXCOLS + columnStart); col++)
         {
@@ -72,7 +70,7 @@ void MatrixScrollText::startShow()
 
         }
 
-        shiftColumns();
+//        shiftColumns();
 
     }
 
