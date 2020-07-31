@@ -675,7 +675,7 @@ bool LightSystem::startSystem()
            _started = false;
            return _started;
        }
-
+        _ledWrapper.clearLeds();
         _logger->logInfo("Setting Up MQTT");
         _mqq = new MqttReceiver(_settings->getMqttBroker(), _settings->getHostName(), 0);
         connect(_mqq, SIGNAL(msgReceived(QString)), this, SLOT(processMsgReceived(QString)));
