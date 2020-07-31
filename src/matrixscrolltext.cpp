@@ -35,6 +35,7 @@ void MatrixScrollText::shiftColumns()
 }
 
 
+
 void MatrixScrollText::startShow()
 {
     int bitCounter = 0;
@@ -42,38 +43,41 @@ void MatrixScrollText::startShow()
     int drawCol = _settings->getStripColumns() - 1;
     _ledWrapper->clearLeds();
 
-      for(int letter = 0; letter < _matrixText.length(); letter++)
-      {
-
-        if((int)_matrixText.toStdString().c_str()[letter] < 32 || (int)_matrixText.toStdString().c_str()[letter] > 122)
-            continue;
-
-        bitCounter = 0;
-
-        for(int col = columnStart; col < (MAXCOLS + columnStart); col++)
+    while(_endTime > time(nullptr))
+    {
+        for(int letter = 0; letter < _matrixText.length(); letter++)
         {
 
-            for(int row = 0; row < MAXROWS; row++)
+            if((int)_matrixText.toStdString().c_str()[letter] < 32 || (int)_matrixText.toStdString().c_str()[letter] > 122)
+                continue;
+
+            bitCounter = 0;
+            for(int col = columnStart; col < (MAXCOLS + columnStart); col++)
             {
 
-                bitCounter = row * MAXCOLS + (col - columnStart);
-                if(bitsPerLetter[(int)_matrixText.toStdString().c_str()[letter] - 32][bitCounter] == 1)
-                    _ledWrapper->setPixelColor(row, drawCol , _color1);
-                else
-                    _ledWrapper->setPixelColor(row, drawCol, _ledWrapper->Color(0,0,0));
+                for(int row = 0; row < MAXROWS; row++)
+                {
+
+                    bitCounter = row * MAXCOLS + (col - columnStart);
+                    if(bitsPerLetter[(int)_matrixText.toStdString().c_str()[letter] - 32][bitCounter] == 1)
+                        _ledWrapper->setPixelColor(row, drawCol , _color1);
+                    else
+                        _ledWrapper->setPixelColor(row, drawCol, _ledWrapper->Color(0,0,0));
+                }
+
+
+                _ledWrapper->show();
+                 Ws2811Wrapper::waitMillSec(_wait);
+                 shiftColumns();
+
             }
-
-
-            _ledWrapper->show();
-             Ws2811Wrapper::waitMillSec(_wait);
-             shiftColumns();
 
         }
 
-//        shiftColumns();
+        if(_running == false)
+          return;
 
     }
-
 
 }
 
