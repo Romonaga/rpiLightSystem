@@ -13,7 +13,7 @@ MatrixScrollText::MatrixScrollText(Ws2811Wrapper* ledWrapper, const LedLightShow
 
 }
 
-void MatrixScrollText::shiftColumns()
+void MatrixScrollText::shiftColumns(int rowStart)
 {
     ws2811_led_t color;
     ws2811_led_t blackColor = _ledWrapper->Color(0,0,0);
@@ -21,7 +21,7 @@ void MatrixScrollText::shiftColumns()
     for(int col = 1; col < _settings->getStripColumns() ; col++)
     {
 
-        for(int row = 0; row < _settings->getStripRows(); row++)
+        for(int row = rowStart; row < (MAXROWS + rowStart); row++)
         {
             color = _ledWrapper->getPixelColor(row, col);
 
@@ -39,9 +39,9 @@ void MatrixScrollText::shiftColumns()
 void MatrixScrollText::startShow()
 {
     int bitCounter = 0;
-    int columnStart = 5;
+    int columnStart = MAXCOLS;
     int drawCol = _settings->getStripColumns() - 1;
-    int rowStart =  _settings->getStripRows() / 2 - (MAXROWS / 2);
+    int rowStart =  (_settings->getStripRows() / 2) - (MAXROWS / 2) - 1;
 
     _ledWrapper->clearLeds();
 
@@ -71,7 +71,7 @@ void MatrixScrollText::startShow()
 
                 _ledWrapper->show();
                  Ws2811Wrapper::waitMillSec(_wait);
-                 shiftColumns();
+                 shiftColumns(rowStart);
 
             }
 
