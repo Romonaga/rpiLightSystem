@@ -41,7 +41,10 @@ void MatrixScrollText::startShow()
     int bitCounter = 0;
     int columnStart = 5;
     int drawCol = _settings->getStripColumns() - 1;
+    int rowStart =  _settings->getStripRows() / 2 - (MAXROWS / 2);
+
     _ledWrapper->clearLeds();
+
 
     while(_endTime > time(nullptr))
     {
@@ -60,9 +63,9 @@ void MatrixScrollText::startShow()
 
                     bitCounter = row * MAXCOLS + (col - columnStart);
                     if(bitsPerLetter[(int)_matrixText.toStdString().c_str()[letter] - 32][bitCounter] == 1)
-                        _ledWrapper->setPixelColor(row, drawCol , _color1);
+                        _ledWrapper->setPixelColor(row + rowStart, drawCol , _color1);
                     else
-                        _ledWrapper->setPixelColor(row, drawCol, _ledWrapper->Color(0,0,0));
+                        _ledWrapper->setPixelColor(row + rowStart, drawCol, _ledWrapper->Color(0,0,0));
                 }
 
 
