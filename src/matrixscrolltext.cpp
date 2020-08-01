@@ -17,14 +17,14 @@ void MatrixScrollText::shiftColumns(int rowStart, ws2811_led_t *image)
 {
     ws2811_led_t color;
 
-    for(int col = 1; col < _settings->getStripColumns() ; col++)
+    for(int col = 0; col < _settings->getStripColumns() ; col++)
     {
 
         for(int row = rowStart; row < (MAXROWS + rowStart); row++)
         {
             color = _ledWrapper->getPixelColor(row, col);
             _ledWrapper->setPixelColor(row , col - 1, color);
-         //   _ledWrapper->setPixelColor(row, col, image[(row - rowStart )* col]) ;
+            _ledWrapper->setPixelColor(row, col, image[(row - rowStart )* col]) ;
         }
     }
 
@@ -43,7 +43,7 @@ void MatrixScrollText::startShow()
 
     ws2811_led_t* image = new ws2811_led_t[MAXROWS * _settings->getStripColumns()];
 
-    for(int col = 1; col < _settings->getStripColumns(); col++)
+    for(int col = 0; col < _settings->getStripColumns(); col++)
     {
         for(int row = 0; row < MAXROWS; row++)
         {
@@ -73,8 +73,8 @@ void MatrixScrollText::startShow()
                         _ledWrapper->setPixelColor(drawRow, drawCol , _color1);
                     }
                     else
-                       _ledWrapper->setPixelColor(drawRow, drawCol, image[row * (col - columnStart)]);
-                       //_ledWrapper->setPixelColor(drawRow, drawCol, _ledWrapper->Color(0,0,0));
+                      // _ledWrapper->setPixelColor(drawRow, drawCol, image[row * (col - columnStart)]);
+                       _ledWrapper->setPixelColor(drawRow, drawCol, _ledWrapper->Color(0,0,0));
                 }
 
 
