@@ -16,10 +16,9 @@ void ShowFlame::startShow()
         if(_running == false)
           return;
 
-        for(u_int32_t row = 0; row <= _settings->getStripRows(); row++)
+        for(u_int32_t counter = 0; counter < _ledWrapper->getNumberLeds(); counter++)
         {
-            for(u_int32_t column = 0; column <= _settings->getStripColumns(); column++)
-            {
+
               int flicker = (rand() % (100 - 0 + 1)) + 0;
               int r1 = _r - flicker;
               int g1 = _g - flicker;
@@ -27,11 +26,10 @@ void ShowFlame::startShow()
               if (g1 < 0) g1 = 0;
               if (r1 < 0) r1 = 0;
               if (b1 < 0) b1 = 0;
-              _ledWrapper->setPixelColor(row, column, r1, g1, b1);
+              _ledWrapper->setPixelColor(counter, _ledWrapper->Color(r1, g1, b1));
 
 
 
-            }
 
             _ledWrapper->show();
             if(_running == false)
