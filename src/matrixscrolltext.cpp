@@ -10,21 +10,46 @@
 MatrixScrollText::MatrixScrollText(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
     ILightShow(ledWrapper, lightShow, showParms)
 {
+    _image = new ws2811_led_t[MAXROWS * _settings->getStripColumns()];
+    _rowStart =  (_settings->getStripRows() / 2) - (MAXROWS / 2) - 1;
+    _drawCol = _settings->getStripColumns() - 1;
+
+    for(int col = 0; col < _settings->getStripColumns(); col++)
+    {
+        for(int row = _rowStart; row < (MAXROWS + _rowStart); row++)
+        {
+            _image[(row - _rowStart) *col] = _ledWrapper->getPixelColor(row, col);
+        }
+    }
 
 }
 
-void MatrixScrollText::shiftColumns(int rowStart, ws2811_led_t *image)
+MatrixScrollText::~MatrixScrollText()
+{
+    delete [] _image;
+}
+
+void MatrixScrollText::shiftColumns()
 {
     ws2811_led_t color;
+    ws2811_led_t off = _ledWrapper->Color(0,0,0);
+    int drawRow = 0;
+    int past = 0;
 
-    for(int col = 1; col < _settings->getStripColumns() ; col++)
+    for(int current = 0; current  < _settings->getStripColumns() ; current ++)
     {
 
-        for(int row = rowStart; row < (MAXROWS + rowStart); row++)
+        for(int row = _rowStart; row < (MAXROWS + _rowStart); row++)
         {
-            color = _ledWrapper->getPixelColor(row, col);
-            _ledWrapper->setPixelColor(row , col - 1, color);
-            _ledWrapper->setPixelColor(row, col, image[(row - rowStart ) * (col - 1)]) ;
+            drawRow = row + _rowStart;
+            past = current + 1;
+            color = _ledWrapper->getPixelColor(row, past);          //Get past
+            _ledWrapper->setPixelColor(row , current, color);       // move to present
+            _ledWrapper->setPixelColor(row , past, off);            //dark hole past
+
+            //   _image[( (drawRow - _rowStart) * _drawCol)]
+
+
         }
     }
 
@@ -37,22 +62,14 @@ void MatrixScrollText::startShow()
 {
     int bitCounter = 0;
     int columnStart = MAXCOLS;
-    int drawCol = _settings->getStripColumns() - 1;
-    int rowStart =  (_settings->getStripRows() / 2) - (MAXROWS / 2) - 1;
+
+
     int drawRow = 0;
 
-    ws2811_led_t* image = new ws2811_led_t[MAXROWS * _settings->getStripColumns()];
 
-    for(int col = 0; col < _settings->getStripColumns(); col++)
-    {
-        for(int row = 0; row < MAXROWS; row++)
-        {
-            image[row*col] = _ledWrapper->getPixelColor(row, col);
-        }
-    }
 
-    while(_endTime > time(nullptr) && _running == true)
-    {
+  //  while(_endTime > time(nullptr) && _running == true)
+  //  {
         for(int letter = 0; letter < _matrixText.length(); letter++)
         {
 
@@ -65,35 +82,41 @@ void MatrixScrollText::startShow()
 
                 for(int row = 0; row < MAXROWS; row++)
                 {
-                    drawRow = row + rowStart;
+                    drawRow = row + _rowStart;
                     bitCounter = row * MAXCOLS + (col - columnStart);
 
                     if(letterMatrix[(int)_matrixText.toStdString().c_str()[letter] - 32][bitCounter] == 1)
                     {
-                        _ledWrapper->setPixelColor(drawRow, drawCol , _color1);
+                        _ledWrapper->setPixelColor(drawRow, _drawCol , _color1);
                     }
                     else
-                       _ledWrapper->setPixelColor(drawRow, drawCol, image[row * (col - columnStart)]);
-                      // _ledWrapper->setPixelColor(drawRow, drawCol, _ledWrapper->Color(0,0,0));
+                    {
+                       //_ledWrapper->setPixelColor(drawRow, _drawCol, _image[( (drawRow - _rowStart) * _drawCol)]);
+                      _ledWrapper->setPixelColor(drawRow, _drawCol, _ledWrapper->Color(0,0,0));
+
+                 //     qDebug() << "col: " << drawCol << " row: " << drawRow << " imageLoc: " << ( (drawRow - _rowStart) * drawCol) << " colSt: " << columnStart << " maxI: " << MAXROWS * _settings->getStripColumns();
+
+                    }
+
                 }
 
 
                 _ledWrapper->show();
                  Ws2811Wrapper::waitMillSec(_wait);
-                 shiftColumns(rowStart, image);
+                 shiftColumns();
 
             }
 
         }
 
 
-        if(_running == false)
-          break;
+     //   if(_running == false)
+      //    break;
 
-    }
+  //  }
 
 
-    delete [] image;
+
 
 }
 
