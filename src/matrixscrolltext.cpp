@@ -18,7 +18,8 @@ MatrixScrollText::MatrixScrollText(Ws2811Wrapper* ledWrapper, const LedLightShow
     {
         for(int row = _rowStart; row < (MAXROWS + _rowStart); row++)
         {
-            _image[(row - _rowStart) *col] = _ledWrapper->getPixelColor(row, col);
+            //qDebug() << "col: " << col << " row: " << (row - _rowStart) << " rowStart: " << _rowStart << " imageLoc: " << ( (row - _rowStart) * _settings->getStripColumns()) + col << " MaxLoc: " << MAXROWS * _settings->getStripColumns();
+            _image[( (row - _rowStart) * _settings->getStripColumns()) + col] = _ledWrapper->getPixelColor(row, col);
         }
     }
 
@@ -32,22 +33,33 @@ MatrixScrollText::~MatrixScrollText()
 void MatrixScrollText::shiftColumns()
 {
     ws2811_led_t color;
-    ws2811_led_t off = _ledWrapper->Color(0,0,0);
-    int drawRow = 0;
+    ws2811_led_t blackColor = _ledWrapper->Color(0,0,0);
+
     int past = 0;
 
-    for(int current = 0; current  < _settings->getStripColumns() ; current ++)
+    for(int current = 0; current  < _settings->getStripColumns() - 1 ; current ++)
     {
 
         for(int row = _rowStart; row < (MAXROWS + _rowStart); row++)
         {
-            drawRow = row + _rowStart;
             past = current + 1;
+
             color = _ledWrapper->getPixelColor(row, past);          //Get past
             _ledWrapper->setPixelColor(row , current, color);       // move to present
-            _ledWrapper->setPixelColor(row , past, off);            //dark hole past
+            //_ledWrapper->setPixelColor(row , past, blackColor);     // black hole the past for now.
 
-            //   _image[( (drawRow - _rowStart) * _drawCol)]
+
+         //   if(_image[( (row - _rowStart) * _settings->getStripColumns()) + current] != _color1)
+       //         _ledWrapper->setPixelColor(row , current, _image[( (row - _rowStart) * _settings->getStripColumns()) + current]);    //set to past past colors color
+             _ledWrapper->setPixelColor(row , past, _image[( (row - _rowStart) * _settings->getStripColumns()) + past]);    //set to past past colors color
+
+            //    qDebug() << "shiftColumns-- col: " << past << " row: " << (row - _rowStart) << " rowStart: " << _rowStart << " imageLoc: " << ( (row - _rowStart) * _settings->getStripColumns()) + past << " MaxLoc: " << MAXROWS * _settings->getStripColumns();
+
+
+//            _ledWrapper->setPixelColor(row , past, _image[( (row - _rowStart) * _settings->getStripColumns()) + past]);    //set to past past colors color
+
+            //    qDebug() << "col: " << past << " row: " << (row - _rowStart) << " rowStart: " << _rowStart << " imageLoc: " << ( (row - _rowStart) * _settings->getStripColumns()) + past << " MaxLoc: " << MAXROWS * _settings->getStripColumns();
+
 
 
         }
@@ -91,10 +103,11 @@ void MatrixScrollText::startShow()
                     }
                     else
                     {
-                       //_ledWrapper->setPixelColor(drawRow, _drawCol, _image[( (drawRow - _rowStart) * _drawCol)]);
+                   //    _ledWrapper->setPixelColor(drawRow, _drawCol, _image[( row * _settings->getStripColumns()) + col - columnStart]);
                       _ledWrapper->setPixelColor(drawRow, _drawCol, _ledWrapper->Color(0,0,0));
 
-                 //     qDebug() << "col: " << drawCol << " row: " << drawRow << " imageLoc: " << ( (drawRow - _rowStart) * drawCol) << " colSt: " << columnStart << " maxI: " << MAXROWS * _settings->getStripColumns();
+                      qDebug() << "startShow-- col: " << col - columnStart << " row: " << row << " rowStart: " << _rowStart << " imageLoc: " << ( row * _settings->getStripColumns()) + col - columnStart  << " MaxLoc: " << MAXROWS * _settings->getStripColumns();
+
 
                     }
 
