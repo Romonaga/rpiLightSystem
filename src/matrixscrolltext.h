@@ -20,11 +20,14 @@ public:
     void startShow();
     void shiftColumns();
 
+    void snapShot();
+    
 private:
     ws2811_led_t* _image;
     int _rowStart;
     int _drawCol ;
 
+    void replaySnapShot();
 };
 
 #endif // ShowBouncingBalls_H

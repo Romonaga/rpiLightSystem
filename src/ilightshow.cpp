@@ -139,12 +139,15 @@ void ILightShow::run()
     _endTime =  time(nullptr) + (_numMins * 60);
     
     startShow();
-    _running = false;
+
+  _running = false;
 
     if(_clearOnFinish)
         _ledWrapper->clearLeds();
 
-    emit showComplete(this);
+     emit showComplete(this);
+
+
 
 }
 
