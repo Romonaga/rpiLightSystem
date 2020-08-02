@@ -9,19 +9,17 @@ MatrixScrollText::MatrixScrollText(Ws2811Wrapper* ledWrapper, const LedLightShow
     ILightShow(ledWrapper, lightShow, showParms)
 {
 
-    //We only care about what we might overlay.
-    _image = new ws2811_led_t[MAXROWS * _settings->getStripColumns()];
-
     _rowStart =  (_settings->getStripRows() / 2) - (MAXROWS / 2) - 1;
     _drawCol = _settings->getStripColumns() - 1;
 
+    _image = nullptr;
 
 }
 
 MatrixScrollText::~MatrixScrollText()
 {
-
-    delete [] _image;
+    if(_image != nullptr)
+        delete [] _image;
 }
 
 //logic is clear, but we are walking from where we drew the row
@@ -29,8 +27,6 @@ MatrixScrollText::~MatrixScrollText()
 void MatrixScrollText::shiftColumns()
 {
     ws2811_led_t drawColor;
-    ws2811_led_t currentColor;
-
 
     int past = 0;
     for(int current = 0; current  < _settings->getStripColumns() - 1 ; current ++)
@@ -41,9 +37,8 @@ void MatrixScrollText::shiftColumns()
             past = current + 1;
 
             drawColor = _ledWrapper->getPixelColor(row, past);                                                              //init drawColor to past color
-            currentColor = _ledWrapper->getPixelColor(row, current);                                                        //get current color
 
-            if( (drawColor != _color1 && currentColor != _color1) )                                                         //replay saved color if needed
+            if( (drawColor != _color1 && _ledWrapper->getPixelColor(row, current) != _color1) )                             //replay saved color if needed
                 drawColor = _image[( (row - _rowStart) * _settings->getStripColumns()) + current];
 
             _ledWrapper->setPixelColor(row , current, drawColor);                                                           // move to present
@@ -56,88 +51,101 @@ void MatrixScrollText::shiftColumns()
     _ledWrapper->show();
 }
 
+//all we are doing here is captruing our drawing area.  As it is defined,
+// we dont need to deal with the complete matrix..  Just what we touch.
 void MatrixScrollText::snapShot()
 {
+    //We only care about what we might overlay.
+    _image = new ws2811_led_t[MAXROWS * _settings->getStripColumns()];
+
     for(int col = 0; col < _settings->getStripColumns(); col++)
     {
         for(int row = 0; row < MAXROWS ; row++)
-        {
             _image[ (row  * _settings->getStripColumns()) + col]  = _ledWrapper->getPixelColor(row + _rowStart, col);
-
-       //     qDebug() << "snap: " << col << " row: " << row  << " pos: " << (row  * _settings->getStripColumns()) + col << " max: " << MAXROWS * _settings->getStripColumns() <<
-       //              " color: " << _ledWrapper->getPixelColor(row + _rowStart, col);
-
-
-        }
     }
 }
 
+//This will reprint the snapshot so to speak.  Here we will
+//simply get the picture and repaint it, to put the picture back to how
+//it was before we touched it
 void MatrixScrollText::replaySnapShot()
 {
     for(int col = 0; col < _settings->getStripColumns(); col++)
     {
         for(int row = 0; row < MAXROWS; row++)
-        {
             _ledWrapper->setPixelColor(row + _rowStart, col, _image[ (row  * _settings->getStripColumns()) + col]);
-
-      //      qDebug() << "replaySnapShot: " << col << " row: " << row  << " pos: " << (row  * _settings->getStripColumns()) + col << " max: " << MAXROWS * _settings->getStripColumns() <<
-             //           " color: " << _ledWrapper->getPixelColor(row + _rowStart, col);
-
-        }
-
 
     }
 
     _ledWrapper->show();
+
+    delete [] _image;
+    _image = nullptr;
 }
+
+void MatrixScrollText::scrollText(QString msg, bool noDelay)
+{
+
+
+    for(int letter = 0; letter < msg.length(); letter++)
+    {
+
+        if((int)msg.toStdString().c_str()[letter] < 32 || (int)msg.toStdString().c_str()[letter] > 122) //only attempt to print what we know.
+            continue;
+
+
+        for(int col = MAXCOLS; col < (MAXCOLS * 2); col++)
+        {
+            for(int row = 0; row < MAXROWS; row++)
+            {
+
+                if(letterMatrix[(int)msg.toStdString().c_str()[letter] - 32][row * MAXCOLS + (col - MAXCOLS)] == 1) //should this pixal be on?
+                    _ledWrapper->setPixelColor(row + _rowStart, _drawCol , _color1);
+            }
+
+
+            _ledWrapper->show();
+
+            if(noDelay == false)
+                Ws2811Wrapper::waitMillSec(_wait);
+
+            shiftColumns();
+
+        }
+    }
+
+}
+
 
 void MatrixScrollText::startShow()
 {
 
-    snapShot();
+    QString sendPad;
 
-    for(int pad = 0; pad < _settings->getStripColumns() / MAXCOLS; pad++) //pad the string so it will scroll off the screen
-        _matrixText.append(" ");
+    if(_matrixText.length() == 0)
+        return;
+
+    bool fastPad = (bool)_showParmsJson.value("fastPad").toInt();
+    for(int pad = 0; pad < _settings->getStripColumns() / MAXCOLS; pad++)       //pad the string so it will scroll off the screen
+        sendPad.append(" ");
+
+    if(fastPad == false)
+        _matrixText.append(sendPad);
+
+    snapShot();
 
     while(_endTime > time(nullptr) && _running == true)
     {
-        for(int letter = 0; letter < _matrixText.length(); letter++)
-        {
 
-            if((int)_matrixText.toStdString().c_str()[letter] < 32 || (int)_matrixText.toStdString().c_str()[letter] > 122) //only attempt to print what we know.
-                continue;
+        scrollText(_matrixText, !fastPad);
 
-
-            for(int col = MAXCOLS; col < (MAXCOLS * 2); col++)
-            {
-                for(int row = 0; row < MAXROWS; row++)
-                {
-
-                    if(letterMatrix[(int)_matrixText.toStdString().c_str()[letter] - 32][row * MAXCOLS + (col - MAXCOLS)] == 1) //should this pixal be on?
-                        _ledWrapper->setPixelColor(row + _rowStart, _drawCol , _color1);
-
-                  //   qDebug() << "startShow- col: " << _drawCol << " row: " <<  (row + _rowStart) << " max: " << MAXROWS * _settings->getStripColumns() << " letter: " << _matrixText.toStdString().c_str()[letter];
-
-                }
-
-
-
-                _ledWrapper->show();
-                 Ws2811Wrapper::waitMillSec(_wait);
-                 shiftColumns();
-
-            }
-
-        }
-
-
-        if(_running == false)
-            break;
-
+        if(fastPad == true)
+            scrollText(sendPad, fastPad);
     }
 
-    replaySnapShot();
 
+
+    replaySnapShot();
 
 }
 

@@ -513,7 +513,10 @@ void LightSystem::runShow()
         _logger->logInfo(info.str());
 
         connect(_runningShows[0], SIGNAL(showComplete(ILightShow*)), this, SLOT(showComplete(ILightShow*)));
+
+        _runningShowsMutex.lock();
         _runningShows[0]->start();
+        _runningShowsMutex.unlock();
 
     }
 }
@@ -524,15 +527,17 @@ void LightSystem::cleanUpShow(ILightShow* show)
 
     std::stringstream info;
 
-    _runningShowsMutex.lock();
+
     if(show != nullptr) delete show;
 
+    _runningShowsMutex.lock();
     _runningShows.removeOne(show);
+    _runningShowsMutex.unlock();
 
     info << "LightSystem::cleanUpShow Show(" <<  show->getShowName().toStdString().c_str() << ") Queue(" << _runningShows.count() << ")";
     _logger->logInfo(info.str());
 
-    _runningShowsMutex.unlock();
+
 
 }
 

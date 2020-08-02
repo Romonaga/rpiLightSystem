@@ -18,16 +18,21 @@ public:
     // ILightShow interface
 public:
     void startShow();
-    void shiftColumns();
 
+
+private:
     void snapShot();
+    void shiftColumns();
+    void scrollText(QString msg, bool noDelay);
+    void replaySnapShot();
+
     
 private:
     ws2811_led_t* _image;
     int _rowStart;
     int _drawCol ;
 
-    void replaySnapShot();
+
 };
 
 #endif // ShowBouncingBalls_H

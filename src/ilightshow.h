@@ -78,7 +78,6 @@ public:
     void gammaCorrection();
 
 
-
 private:
     virtual void startShow() = 0;
     ws2811_led_t gamaColor(ws2811_led_t inColor);
@@ -91,6 +90,7 @@ protected:
     QString _showParms;
     QString _matrixText;
     int _userId;
+     QJsonObject _showParmsJson;
 
 
     bool _running;

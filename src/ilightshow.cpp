@@ -26,7 +26,6 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
     _color3 = _ledWrapper->Color(125, 125, 0);
     _color4 = _ledWrapper->Color(125, 0, 125);
 
-    QJsonObject jsonObject;
     QJsonObject jsonColors;
     QJsonObject jsonColor;
 
@@ -38,36 +37,36 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
        if(doc.isObject())
        {
 
-            jsonObject = doc.object();
+            _showParmsJson = doc.object();
 
-            if(jsonObject.value("UserID").isString())
-                _userId = jsonObject.value("UserID").toString().toInt();
+            if(_showParmsJson.value("UserID").isString())
+                _userId = _showParmsJson.value("UserID").toString().toInt();
 
-            if(jsonObject.value("brightness").isString())
-                _brightness = jsonObject.value("brightness").toString().toInt();
+            if(_showParmsJson.value("brightness").isString())
+                _brightness = _showParmsJson.value("brightness").toString().toInt();
 
-            if(jsonObject.value("delay").isString())
-                _wait = jsonObject.value("delay").toString().toInt();
+            if(_showParmsJson.value("delay").isString())
+                _wait = _showParmsJson.value("delay").toString().toInt();
 
-            _clearOnStart = (bool)jsonObject.value("clearStart").toInt();
-            _clearOnFinish = (bool)jsonObject.value("clearFinish").toInt();
-            _useGammaCorrection = (bool)jsonObject.value("gammaCorrection").toInt();
+            _clearOnStart = (bool)_showParmsJson.value("clearStart").toInt();
+            _clearOnFinish = (bool)_showParmsJson.value("clearFinish").toInt();
+            _useGammaCorrection = (bool)_showParmsJson.value("gammaCorrection").toInt();
 
-            if(jsonObject.value("minutes").isString())
-                _numMins = jsonObject.value("minutes").toString().toDouble();
+            if(_showParmsJson.value("minutes").isString())
+                _numMins = _showParmsJson.value("minutes").toString().toDouble();
 
-            if(jsonObject.value("width").isString())
-                _width = jsonObject.value("width").toString().toInt();
+            if(_showParmsJson.value("width").isString())
+                _width = _showParmsJson.value("width").toString().toInt();
 
-            if(jsonObject.value("colorEvery").isString())
-                _colorEvery = jsonObject.value("colorEvery").toString().toInt();
+            if(_showParmsJson.value("colorEvery").isString())
+                _colorEvery = _showParmsJson.value("colorEvery").toString().toInt();
 
-            if(jsonObject.value("matrixText").isString())
-                _matrixText = jsonObject.value("matrixText").toString();
+            if(_showParmsJson.value("matrixText").isString())
+                _matrixText = _showParmsJson.value("matrixText").toString();
 
-           if(jsonObject["colors"].isObject())
+           if(_showParmsJson["colors"].isObject())
            {
-               jsonColors = jsonObject["colors"].toObject();
+               jsonColors = _showParmsJson["colors"].toObject();
 
                if(jsonColors["color4"].isObject())
                {
@@ -216,6 +215,7 @@ ws2811_led_t ILightShow::gamaColor(ws2811_led_t inColor)
 {
     return (ws2811_led_t) ((inColor / 255) ^ (ws2811_led_t)(1 / _settings->getGamma())) * 255;
 }
+
 //encoded = ((original / 255) ^ (1 / gamma)) * 255
 //Gamma decoding is used to restore the original values, so the formula for that is:
 //original = ((encoded / 255) ^ gamma) * 255

@@ -13,7 +13,6 @@ MatrixArt::MatrixArt(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, 
 
 void MatrixArt::startShow()
 {
-    _logger->logInfo("ShowMatrix Started");
 
     QJsonObject jsonObject;
     QJsonObject jsonPixels;
@@ -30,7 +29,15 @@ void MatrixArt::startShow()
                  jsonPixels = jsonObject["pixles"].toObject();
                  foreach(const QJsonValue &value, jsonPixels)
                  {
-                     _ledWrapper->setPixelColor(value["r"].toInt(), value["c"].toInt(), std::stoul(value["co"].toString().replace("#","0x").toStdString().c_str(), nullptr, 16));
+                     try
+                     {
+                        _ledWrapper->setPixelColor(value["r"].toInt(), value["c"].toInt(), std::stoul(value["co"].toString().replace("#","0x").toStdString().c_str(), nullptr, 16));
+                     }
+                     catch (const std::invalid_argument&)
+                     {
+                         _logger->logInfo("MatrixArt could not decode value, stoppping.");
+                         return;
+                     }
                  }
 
                  _ledWrapper->show();
