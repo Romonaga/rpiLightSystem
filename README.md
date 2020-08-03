@@ -10,6 +10,7 @@ While we have provided source code, as well as instructions for building system.
 Features.
 * Customizable Lightshows (done)
 * Led Matrix Support (done) (Yes you can do a LED Wall with this!)
+* Save and Edit Matrix Art. (Done).
 * Scrolling Text (done) (PITA)
 * User Drawn Pixal Art Support (done) (PITA)
 * JPG / Animated JPEG support (Started)
