@@ -28,6 +28,7 @@ SOURCES += src/ilightshow.cpp \
     src/showcolorevery.cpp \
     src/showcolorwipe.cpp \
     src/showcyclon.cpp \
+    src/showdelay.cpp \
     src/showfade.cpp \
     src/showflame.cpp \
     src/showhnh.cpp \
@@ -75,6 +76,7 @@ HEADERS += \
     src/showcolorevery.h \
     src/showcolorwipe.h \
     src/showcyclon.h \
+    src/showdelay.h \
     src/showfade.h \
     src/showflame.h \
     src/showhnh.h \

@@ -45,6 +45,7 @@
 #include "showbouncingballs.h"
 #include "matrixart.h"
 #include "matrixscrolltext.h"
+#include "showdelay.h"
 
 
 
@@ -441,6 +442,10 @@ void LightSystem::queueShow(const LedLightShows& show, const QString& showParms)
 
         case MatrixText:
             _runningShows.append(new MatrixScrollText(&_ledWrapper, show, showParms));
+            break;
+
+        case DelayShow:
+            _runningShows.append(new ShowDelay(&_ledWrapper, show, showParms));
             break;
 
     default:

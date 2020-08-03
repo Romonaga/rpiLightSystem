@@ -42,7 +42,8 @@
             X(21, BBalls, "Bouncing Balls.","bb"),                   \
             X(22, Fade, "Fade.","fade"),                   \
             X(23, MatrixArtShow, "Display Art","art"),                   \
-            X(24, MatrixText, "Scroll Text","mt")                   \
+            X(24, MatrixText, "Scroll Text","mt"),                   \
+            X(25, DelayShow, "Delay Show","ds")                   \
 
 
 #define LIGHT_SHOWS_ENUM(type, name, txt, twitch) name = type
