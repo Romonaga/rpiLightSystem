@@ -30,6 +30,21 @@ CREATE TABLE `lLightSystemFeatures` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `lMatrixTypes`
+--
+
+DROP TABLE IF EXISTS `lMatrixTypes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `lMatrixTypes` (
+  `ID` int NOT NULL,
+  `Description` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `ID_UNIQUE` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `lStripType`
 --
 
@@ -60,8 +75,7 @@ CREATE TABLE `lightShows` (
   `hasMinutes` tinyint DEFAULT '1',
   `colorEvery` tinyint DEFAULT '0',
   `showOrder` tinyint DEFAULT NULL,
-  `isMatrix` tinyint DEFAULT '0',
-  `hasText` tinyint DEFAULT '0',
+  `matrixType` tinyint DEFAULT '0',
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -128,7 +142,7 @@ CREATE TABLE `lightSystems` (
   `mqttRetryDelay` int DEFAULT '2500',
   `twitchMqttQueue` varchar(45) DEFAULT '',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=116 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=122 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -247,4 +261,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-05  6:16:15
+-- Dump completed on 2020-08-05 10:16:03
