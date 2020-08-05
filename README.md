@@ -28,7 +28,6 @@ Features.
 * Grouped Light Systems, control Light systems as a group. (not Started Yet)
 * Simple to use, easy to setup.  
 * Website for controling the Lightshows is work produced by Myrana. (always a work in progress)
-* Twitch Support, yes that is correct, (https://www.twitch.tv/lumawin) you will be able to run a Twitch Bot to control and let others control Light Systems. (done/deprecated in favor of panel support)
 * Twitch Pannel Support (Phase 1 Released and Live)
 
 </b>
@@ -44,7 +43,7 @@ Everything that is needed to build and run this project is or will be included i
     2. make
     3. sudo make install
 4. Time to build the WS2811 support.
-    1. clone or download the rpi_ws281x lib from  this repo.
+    1. clone or download the rpi_ws281x lib from  this repo. <b>** You must use the one from this repo, it has changes the wrapper needs. I am hoping my changes make it into the main repo at some point. **</b>
     2. run scons, this will build the lib.
         1. sudo  cp *.h /usr/local/include/.
         2. sudo cp libws2811.a /usr/local/lib/.
