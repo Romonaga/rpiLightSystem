@@ -43,7 +43,7 @@ Everything that is needed to build and run this project is or will be included i
     2. make
     3. sudo make install
 4. Time to build the WS2811 support.
-    1. clone or download the rpi_ws281x lib from  this repo. ** You must use the one from this repo, it has changes the wrapper needs. I am hoping my changes make it into the main repo at some point. **
+    1. clone or download the rpi_ws281x lib from  this repo. <b>** You must use the one from this repo, it has changes the wrapper needs. I am hoping my changes make it into the main repo at some point. **</b>
     2. run scons, this will build the lib.
         1. sudo  cp *.h /usr/local/include/.
         2. sudo cp libws2811.a /usr/local/lib/.
