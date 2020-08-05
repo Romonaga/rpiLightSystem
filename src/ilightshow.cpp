@@ -216,6 +216,53 @@ ws2811_led_t ILightShow::gamaColor(ws2811_led_t inColor)
     return (ws2811_led_t) ((inColor / 255) ^ (ws2811_led_t)(1 / _settings->getGamma())) * 255;
 }
 
+void ILightShow::drawCircle(int xc, int yc, int x, int y)
+{
+
+
+    _ledWrapper->setPixelColor(xc+x, yc+y, _color1);
+    _ledWrapper->setPixelColor(xc-x, yc+y, _color1);
+    _ledWrapper->setPixelColor(xc+x, yc-y, _color1);
+    _ledWrapper->setPixelColor(xc-x, yc-y, _color1);
+    _ledWrapper->setPixelColor(xc+y, yc+x, _color1);
+    _ledWrapper->setPixelColor(xc-y, yc+x, _color1);
+    _ledWrapper->setPixelColor(xc+y, yc-x, _color1);
+    _ledWrapper->setPixelColor(xc-y, yc-x, _color1);
+
+}
+
+void ILightShow::circleBres(int xc, int yc, int r)
+{
+    int x = 0, y = r;
+    int d = 3 - 2 * r;
+    drawCircle(xc, yc, x, y);
+    while (y >= x)
+    {
+        // for each pixel we will
+        // draw all eight pixels
+
+        x++;
+
+        // check for decision parameter
+        // and correspondingly
+        // update d, x, y
+        if (d > 0)
+        {
+            y--;
+            d = d + 4 * (x - y) + 10;
+        }
+        else
+            d = d + 4 * x + 6;
+        drawCircle(xc, yc, x, y);
+
+    }
+}
+
+
+
+
+
+
 //encoded = ((original / 255) ^ (1 / gamma)) * 255
 //Gamma decoding is used to restore the original values, so the formula for that is:
 //original = ((encoded / 255) ^ gamma) * 255

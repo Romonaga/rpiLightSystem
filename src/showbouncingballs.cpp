@@ -4,17 +4,26 @@
 #include <QDebug>
 
 #include "font7x6ext.h"
-
+#include<iostream>
+using namespace std;
 
 
 ShowBouncingBalls::ShowBouncingBalls(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
     ILightShow(ledWrapper, lightShow, showParms)
 {
 
+
 }
 
 
 void ShowBouncingBalls::startShow()
+{
+
+}
+
+/*
+void ShowBouncingBalls::startShow()
+
 {
     _ledWrapper->clearLeds();
     FILE* fileIn;
@@ -97,7 +106,7 @@ void ShowBouncingBalls::startShow()
 
 }
 
-/*
+
 
 void ShowBouncingBalls::startShow()
 {

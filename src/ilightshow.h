@@ -18,37 +18,38 @@
 
 
 #define LIGHT_SHOWS(X)                                                  \
-            X(0, Nope, "Why Are We Here?","nope"),                           \
-            X(1, Blink, "Blink","blink"),                           \
-            X(2, Chaser, "Chaser","c"),                              \
-            X(3, TC, "Theater Chase","tc"),                                    \
-            X(4, TCR, "Theater Chase Rainbow","tcrb"),                        \
-            X(5, Color3R, "Color 3 Reverse","c3r"),   \
-            X(6, Cyclon, "Cylon","cy"),                          \
-            X(7, ColorWipe, "Color Wipe","cw"),                    \
-            X(8, HAndH, "Half n Half","hnh"),                    \
-            X(9, Rainbow, "Rainbow","rb"),                   \
-            X(10, RainbowCycle, "Rainbow Cycle","rbc"),                   \
-            X(11, NeoRand, "NeoRand (Twinkle)","nrt"),                   \
-            X(12, Flame, "Flame","f"),                   \
-            X(13, ColorThirds, "ColorThirds","c3rd"),                   \
-            X(14, ColorForths, "ColorForths","c4th"),                   \
-            X(15, TriChaser, "Tri-Color Chase","trcc"),                   \
-            X(16, DisplayColor, "Display A Color","dc"),                   \
-            X(17, ColorEvery, "Color Every X Led.","cx"),                   \
-            X(18, TwinkleOverlay, "Twinkle Overlay.","to"),                   \
-            X(19, PulseOverlay, "Pulse Overlay.","po"),                   \
-            X(20, Scanner, "Scanner.","scan"),                   \
-            X(21, BBalls, "Bouncing Balls.","bb"),                   \
-            X(22, Fade, "Fade.","fade"),                   \
-            X(23, MatrixArtShow, "Display Art","art"),                   \
-            X(24, MatrixText, "Scroll Text","mt"),                   \
-            X(25, DelayShow, "Delay Show","ds")                   \
+            X(0, Nope, "Why Are We Here?"),                           \
+            X(1, Blink, "Blink"),                           \
+            X(2, Chaser, "Chaser"),                              \
+            X(3, TC, "Theater Chase"),                                    \
+            X(4, TCR, "Theater Chase Rainbow"),                        \
+            X(5, Color3R, "Color 3 Reverse"),   \
+            X(6, Cyclon, "Cylon"),                          \
+            X(7, ColorWipe, "Color Wipe"),                    \
+            X(8, HAndH, "Half n Half"),                    \
+            X(9, Rainbow, "Rainbow"),                   \
+            X(10, RainbowCycle, "Rainbow Cycle"),                   \
+            X(11, NeoRand, "NeoRand (Twinkle)"),                   \
+            X(12, Flame, "Flame"),                   \
+            X(13, ColorThirds, "ColorThirds"),                   \
+            X(14, ColorForths, "ColorForths"),                   \
+            X(15, TriChaser, "Tri-Color Chase"),                   \
+            X(16, DisplayColor, "Display A Color"),                   \
+            X(17, ColorEvery, "Color Every X Led."),                   \
+            X(18, TwinkleOverlay, "Twinkle Overlay."),                   \
+            X(19, PulseOverlay, "Pulse Overlay."),                   \
+            X(20, Scanner, "Scanner."),                   \
+            X(21, BBalls, "Bouncing Balls."),                   \
+            X(22, Fade, "Fade."),                   \
+            X(23, MatrixArtShow, "Display Art"),                   \
+            X(24, MatrixText, "Scroll Text"),                   \
+            X(25, DelayShow, "Delay Show"),                   \
+            X(26, MatrixTripShow, "Trippy Matrix"),                   \
+            X(27, MatrixC, "Circle")                   \
 
 
-#define LIGHT_SHOWS_ENUM(type, name, txt, twitch) name = type
-#define LIGHT_SHOWS_SHOW(type, name, txt, twitch) txt
-#define LIGHT_SHOWS_TWITCH(type, name, txt, twitch) twitch
+#define LIGHT_SHOWS_ENUM(type, name, txt) name = type
+#define LIGHT_SHOWS_SHOW(type, name, txt) txt
 
 
 typedef enum {
@@ -69,19 +70,23 @@ public:
 
     LedLightShows getLightShow() const;
     QString getShowName();
-
     QString getShowParms() const;
-
     bool isRunning() const;
-    int genRand(unsigned int min, unsigned int max);
-
     int getUserId() const;
-    void gammaCorrection();
 
 
 private:
     virtual void startShow() = 0;
     ws2811_led_t gamaColor(ws2811_led_t inColor);
+    void drawCircle(int xc, int yc, int x, int y);
+
+
+protected:
+    int genRand(unsigned int min, unsigned int max);
+    void gammaCorrection();
+    void circleBres(int xc, int yc, int r);
+
+
 
 
 protected:

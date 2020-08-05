@@ -54,7 +54,7 @@ void ShowTwinkle::startShow()
     {
 
         found = false;
-        twinkChance =  genRand(1, _ledWrapper->getNumberLeds() * .3);
+        twinkChance =  genRand(1, _ledWrapper->getNumberLeds() * .1);
 
         for (unsigned int inner = 0; inner < _ledWrapper->getNumberLeds(); inner++)
         {

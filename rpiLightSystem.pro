@@ -15,6 +15,8 @@ SOURCES += src/ilightshow.cpp \
     src/main.cpp \
     src/matrixart.cpp \
     src/matrixscrolltext.cpp \
+    src/matrixtcircle.cpp \
+    src/matrixtrip.cpp \
     src/motionlightsfeature.cpp \
     src/mqttreceiver.cpp \
     src/playlistmanager.cpp \
@@ -62,7 +64,9 @@ HEADERS += \
     src/lightsensorfeature.h \
     src/lightsystem.h \
     src/matrixart.h \
+    src/matrixcircle.h \
     src/matrixscrolltext.h \
+    src/matrixtrip.h \
     src/motionlightsfeature.h \
     src/mqttreceiver.h \
     src/playlistmanager.h \

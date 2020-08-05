@@ -45,7 +45,9 @@
 #include "showbouncingballs.h"
 #include "matrixart.h"
 #include "matrixscrolltext.h"
+#include "matrixtrip.h"
 #include "showdelay.h"
+#include "matrixcircle.h"
 
 
 
@@ -448,8 +450,16 @@ void LightSystem::queueShow(const LedLightShows& show, const QString& showParms)
             _runningShows.append(new ShowDelay(&_ledWrapper, show, showParms));
             break;
 
-    default:
-        _logger->logWarning("Unknown Show");
+        case MatrixTripShow:
+            _runningShows.append(new MatrixTrip(&_ledWrapper, show, showParms));
+            break;
+
+        case MatrixC:
+            _runningShows.append(new MatrixCircle(&_ledWrapper, show, showParms));
+            break;
+
+        default:
+            _logger->logWarning("Unknown Show");
 
     }
 

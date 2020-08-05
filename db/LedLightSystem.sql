@@ -1,10 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `LedLightSystem` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `LedLightSystem`;
--- MySQL dump 10.13  Distrib 8.0.20, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.21, for Linux (x86_64)
 --
 -- Host: 127.0.0.1    Database: LedLightSystem
 -- ------------------------------------------------------
--- Server version	8.0.20-0ubuntu0.20.04.1
+-- Server version	8.0.21-0ubuntu0.20.04.3
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -62,7 +60,32 @@ CREATE TABLE `lightShows` (
   `hasMinutes` tinyint DEFAULT '1',
   `colorEvery` tinyint DEFAULT '0',
   `showOrder` tinyint DEFAULT NULL,
+  `isMatrix` tinyint DEFAULT '0',
+  `hasText` tinyint DEFAULT '0',
   PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `lightSystemChannels`
+--
+
+DROP TABLE IF EXISTS `lightSystemChannels`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `lightSystemChannels` (
+  `channelId` int NOT NULL,
+  `lightSystemId` int NOT NULL,
+  `stripType` int DEFAULT NULL,
+  `stripRows` int DEFAULT NULL,
+  `stripColumns` int DEFAULT NULL,
+  `dma` int DEFAULT NULL,
+  `gpio` int DEFAULT NULL,
+  `brightness` int DEFAULT NULL,
+  `gamma` double DEFAULT NULL,
+  `enabled` tinyint DEFAULT NULL,
+  `matrixDirection` int DEFAULT '0',
+  PRIMARY KEY (`channelId`,`lightSystemId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -82,6 +105,7 @@ CREATE TABLE `lightSystemFeatures` (
   `timeFeatureStart` varchar(45) DEFAULT '0',
   `timeFeatureEnd` varchar(45) DEFAULT '0',
   `luxThreshHold` int DEFAULT '0',
+  `enabled` tinyint DEFAULT '0',
   PRIMARY KEY (`featureId`,`lightSystemId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -96,22 +120,15 @@ DROP TABLE IF EXISTS `lightSystems`;
 CREATE TABLE `lightSystems` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `systemName` varchar(100) DEFAULT NULL,
-  `stripType` int DEFAULT NULL,
-  `stripHeight` int DEFAULT NULL,
-  `stripWidth` int DEFAULT NULL,
-  `dma` int DEFAULT NULL,
-  `gpio` int DEFAULT NULL,
   `serverHostName` varchar(50) DEFAULT NULL,
-  `brightness` int DEFAULT NULL,
   `enabled` int DEFAULT NULL,
   `userId` int DEFAULT NULL,
-  `gamma` double DEFAULT NULL,
   `twitchSupport` tinyint DEFAULT '0',
   `mqttRetries` int DEFAULT '2000',
   `mqttRetryDelay` int DEFAULT '2500',
   `twitchMqttQueue` varchar(45) DEFAULT '',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=116 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -199,7 +216,26 @@ CREATE TABLE `userPlaylist` (
   `playlistName` varchar(50) DEFAULT NULL,
   `showParms` json DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `role` enum('Author','Admin') DEFAULT NULL,
+  `password` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -211,4 +247,4 @@ CREATE TABLE `userPlaylist` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-07-19 14:15:38
+-- Dump completed on 2020-08-05  6:16:15
