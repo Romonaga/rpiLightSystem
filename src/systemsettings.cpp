@@ -101,7 +101,7 @@ bool SystemSettings::loadSystemSettings()
         _hostName = name;
 
 
-        QString sql("SELECT ID, systemName,serverHostName,userID,TwitchSupport,mqttRetries,mqttRetryDelay,twitchMqttQueue,lc.* FROM LedLightSystem.lightSystems as ls, LedLightSystem.lightSystemChannels as lc where ls.id = lc.lightSystemId and lc.channelId = 1 and lc.enabled = 1 and ls.enabled = 1 and serverHostName = '");
+        QString sql("SELECT * from lightSystems where enabled = 1 and serverHostName = '");
         sql.append(_hostName);
         sql.append("'");
         QSqlQuery qry = database.exec(sql);
@@ -230,6 +230,7 @@ QString SystemSettings::getDBServer() const
 {
     return _server;
 }
+
 void SystemSettings::setServer(const QString &server)
 {
     _server = server;

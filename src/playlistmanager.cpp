@@ -92,7 +92,6 @@ QString PlayListManager::getPlayList(QJsonObject playList)
     {
         std::stringstream sql;
         sql << "select showParms from userPlaylist where ID = " << playList.value("playlistName").toInt();
-        _logger->logInfo(sql.str());
         QSqlQuery result(sql.str().c_str(), database);
         if(result.lastError().type() == QSqlError::NoError)
         {
