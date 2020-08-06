@@ -585,10 +585,9 @@ void LightSystem::loadFeatures()
     database.setDatabaseName(_settings->getInstance()->getDataBase());
     if(database.open())
     {
-        QString sql("select * from lightSystemFeatures where lightSystemId = ");
+        QString sql("select * from lightSystemFeatures where enabled = 1 and lightSystemId = ");
         sql.append(QString::number(_settings->getInstance()->getSystemId()));
         QSqlQuery qry = database.exec(sql);
-
         if(qry.lastError().type() == QSqlError::NoError)
         {
 
