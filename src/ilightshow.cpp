@@ -21,6 +21,7 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
     _numMins = 1;
     _width = 5;
     _colorEvery = 2;
+    _channelId = 1;
     _color1 = _ledWrapper->Color(125, 125, 125);
     _color2 = _ledWrapper->Color(0, 125, 125);
     _color3 = _ledWrapper->Color(125, 125, 0);
@@ -29,7 +30,7 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
     QJsonObject jsonColors;
     QJsonObject jsonColor;
 
-  
+
    QJsonDocument doc = QJsonDocument::fromJson(showParms.toUtf8());
 
    if(!doc.isNull())
@@ -51,7 +52,7 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
             _clearOnStart = (bool)_showParmsJson.value("clearStart").toInt();
             _clearOnFinish = (bool)_showParmsJson.value("clearFinish").toInt();
             _useGammaCorrection = (bool)_showParmsJson.value("gammaCorrection").toInt();
-
+            _channelId = _showParmsJson.value("channelId").toInt();
             if(_showParmsJson.value("minutes").isString())
                 _numMins = _showParmsJson.value("minutes").toString().toDouble();
 
@@ -132,11 +133,13 @@ void ILightShow::run()
     if(_clearOnStart)
         _ledWrapper->clearLeds();
 
-    _settings->setBrightness(_brightness);
+    _ledWrapper->setCurChannel((ws2811Channel)_channelId);
+
+    _settings->getChannels()[_channelId]->setBrightness(_brightness);
      gammaCorrection();
 
     _endTime =  time(nullptr) + (_numMins * 60);
-    
+
     startShow();
 
   _running = false;
@@ -172,7 +175,7 @@ void ILightShow::gammaCorrection()
     }
 */
     if(true == _useGammaCorrection)
-        _ledWrapper->setCustomGammaCorrection(_settings->getGamma());
+        _ledWrapper->setCustomGammaCorrection(_settings->getChannels()[_channelId]->gamma());
       else
         _ledWrapper->setCustomGammaCorrection(0);
 
@@ -213,7 +216,7 @@ int ILightShow::getUserId() const
 
 ws2811_led_t ILightShow::gamaColor(ws2811_led_t inColor)
 {
-    return (ws2811_led_t) ((inColor / 255) ^ (ws2811_led_t)(1 / _settings->getGamma())) * 255;
+    return (ws2811_led_t) ((inColor / 255) ^ (ws2811_led_t)(1 / _settings->getChannels()[_channelId]->gamma())) * 255;
 }
 
 void ILightShow::drawCircle(int xc, int yc, int x, int y)

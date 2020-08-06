@@ -2,8 +2,9 @@
 #define SYSTEMSETTINGS_H
 
 #include <QString>
+#include <QMap>
 #include <dnrlogger.h>
-
+#include "channelsettings.h"
 
 class SystemSettings
 {
@@ -31,36 +32,18 @@ public:
     bool loadSystemSettings();
     
     QString getSystemName() const;
-    int getStripType() const;
-    uint16_t getStripRows() const;
-    uint16_t getStripColumns() const;
-    short getDma() const;
-    short getGpio() const;
-
     QString getHostName() const;
-    int getBrightness() const;
-
     QString getMqttBroker() const;
-
     bool getDbgLog() const;
-
-    void setBrightness(int brightness);
-
     bool getLogShows() const;
-
     int getSystemId() const;
-
-    double getGamma() const;
-
     bool getTwitchSupport() const;
-
     int getMqttRetries() const;
-
     int getMqttRetryDelay() const;
-
     QString getMqttTwitchQueue() const;
 
-    int getMatrixdirection() const;
+
+    QMap<int, ChannelSettings *> getChannels() const;
 
 private:
     SystemSettings();
@@ -76,23 +59,16 @@ private:
 
     //System Setings From DB
     QString _systemName;
-    int _stripType;
     int _systemId;
-    uint16_t _stripColumns;
-    uint16_t _stripRows;
-    short _dma;
-    short _gpio;
-    int _brightness;
-    bool _dbgLog;
     bool _logShows;
-    double _gamma;
     bool _twitchSupport;
     int _mqttRetries;
     int _mqttRetryDelay;
-    int _matrixdirection;
-
+    bool _dbgLog;
 
     DNRLogger* _logger;
+
+    QMap<int, ChannelSettings*> _channels;
 
 };
 

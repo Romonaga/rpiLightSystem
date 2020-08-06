@@ -20,10 +20,11 @@ SystemSettings::SystemSettings()
 
 }
 
-int SystemSettings::getMatrixdirection() const
+QMap<int, ChannelSettings *> SystemSettings::getChannels() const
 {
-    return _matrixdirection;
+    return _channels;
 }
+
 
 QString SystemSettings::getMqttTwitchQueue() const
 {
@@ -45,19 +46,10 @@ bool SystemSettings::getTwitchSupport() const
     return _twitchSupport;
 }
 
-double SystemSettings::getGamma() const
-{
-    return _gamma;
-}
 
 bool SystemSettings::getLogShows() const
 {
     return _logShows;
-}
-
-void SystemSettings::setBrightness(int brightness)
-{
-    _brightness = brightness;
 }
 
 bool SystemSettings::getDbgLog() const
@@ -73,31 +65,6 @@ QString SystemSettings::getMqttBroker() const
 QString SystemSettings::getHostName() const
 {
     return _hostName;
-}
-
-short SystemSettings::getGpio() const
-{
-    return _gpio;
-}
-
-short SystemSettings::getDma() const
-{
-    return _dma;
-}
-
-uint16_t SystemSettings::getStripRows() const
-{
-    return _stripRows;
-}
-
-uint16_t SystemSettings::getStripColumns() const
-{
-    return _stripColumns;
-}
-
-int SystemSettings::getStripType() const
-{
-    return _stripType;
 }
 
 QString SystemSettings::getSystemName() const
@@ -118,7 +85,6 @@ int SystemSettings::getSystemId() const
 
 bool SystemSettings::loadSystemSettings()
 {
-   
     QSqlDatabase database = QSqlDatabase::addDatabase("QMYSQL","rpiLightSystem");
     bool retVal =  false;
     std::stringstream info;
@@ -145,20 +111,36 @@ bool SystemSettings::loadSystemSettings()
             qry.next();
             _systemId = qry.value("ID").toInt();
             _systemName = qry.value("systemName").toString();
-            _stripType = qry.value("stripType").toUInt();
-            _stripColumns = qry.value("stripColumns").toUInt();
-            _stripRows = qry.value("stripRows").toUInt();
-            _dma = qry.value("dma").toInt();
-            _gpio = qry.value("gpio").toInt();
-            _brightness = qry.value("brightness").toInt();
-            _gamma = qry.value("gamma").toDouble();
             _twitchSupport = qry.value("twitchSupport").toBool();
             _mqttRetries = qry.value("mqttRetries").toInt();
             _mqttRetryDelay = qry.value("mqttRetryDelay").toInt();
             _mqttTwitchQueue = qry.value("twitchMqttQueue").toString();
-            _matrixdirection = qry.value("matrixDirection").toInt();
 
-            retVal = true;
+            sql = "SELECT * FROM LedLightSystem.lightSystemChannels where enabled = 1 and lightSystemId = ";
+            sql.append(QString().number(_systemId));
+
+            QSqlQuery chanQry = database.exec(sql);
+            _logger->logInfo(sql.toStdString());
+            if(chanQry.lastError().type() == QSqlError::NoError && chanQry.numRowsAffected() > 0)
+            {
+                while(chanQry.next())
+                {
+                    ChannelSettings* cSettings = new ChannelSettings(chanQry);
+
+                    _channels.insert(cSettings->channelId(), cSettings);
+
+                }
+
+                retVal = true;
+
+            }
+            else
+            {
+
+                info << "loadSystemSettings Cant Load channel Settings: " << chanQry.lastError().text().toStdString().c_str();
+                _logger->logInfo(info.str());
+            }
+
         }
         else
         {
@@ -248,11 +230,6 @@ QString SystemSettings::getDBServer() const
 {
     return _server;
 }
-int SystemSettings::getBrightness() const
-{
-    return _brightness;
-}
-
 void SystemSettings::setServer(const QString &server)
 {
     _server = server;

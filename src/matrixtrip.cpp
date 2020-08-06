@@ -4,8 +4,6 @@
 #include <QDebug>
 
 #include "font7x6ext.h"
-#include<iostream>
-using namespace std;
 
 
 MatrixTrip::MatrixTrip(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
@@ -18,8 +16,8 @@ MatrixTrip::MatrixTrip(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
 
 void MatrixTrip::startShow()
 {
-    int rowMid = _settings->getStripRows() / 2;
-    int colMid = _settings->getStripColumns() / 2;
+    int rowMid =_settings->getChannels()[_channelId]->stripRows() / 2;
+    int colMid = _settings->getChannels()[_channelId]->stripColumns() / 2;
     ws2811_led_t lastColor = 0;
 
     while(_endTime > time(nullptr))

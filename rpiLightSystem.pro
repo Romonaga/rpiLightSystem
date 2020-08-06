@@ -9,6 +9,7 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 SOURCES += src/ilightshow.cpp \
+    src/channelsettings.cpp \
     src/lightluxfeature.cpp \
     src/lightsensorfeature.cpp \
     src/lightsystem.cpp \
@@ -58,6 +59,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
+    src/channelsettings.h \
     src/font7x6ext.h \
     src/ilightshow.h \
     src/lightluxfeature.h \

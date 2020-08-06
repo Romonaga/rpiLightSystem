@@ -671,38 +671,17 @@ bool LightSystem::startSystem()
 
     if(_started ) return true;
 
-    _logger->logInfo("** Start System **");
-    ws2811_return_t renderResults = WS2811_SUCCESS;
     _started = _settings->loadSettings();
     if(_started)
     {
-        _logger->logInfo("Setting Up Led Strip");
-        info << "start() Settings Host(" << _settings->getHostName().toStdString().c_str() << ") DMA(" << _settings->getDma() << ") GPIO(" <<
-                _settings->getGpio() << ") sType(" << _settings->getStripType() << ") Rows(" <<
-                _settings->getStripRows() << ") Columns(" << _settings->getStripColumns() << ") Brightness(" <<
-                _settings->getBrightness() << ") MQTTBroker(" << _settings->getMqttBroker().toStdString().c_str() << ") DebugLog(" <<
-                _settings->getDbgLog() << ")";
 
-       _logger->logInfo(info.str());
-
-       renderResults = _ledWrapper.initStrip(Channel1, _settings->getStripRows(), _settings->getStripColumns(), (LedStripType)_settings->getStripType(), _settings->getDma(), _settings->getGpio(), (matrixDirection)_settings->getMatrixdirection());
-       if(renderResults != WS2811_SUCCESS)
-       {
-           info.str("");
-           info << "LightSystem start() Failed Code(" << renderResults << ") Msg(" <<
-                   _ledWrapper.ws2811_get_return_t_str(renderResults) << ")";
-           _logger->logWarning(info.str());
-           _started = false;
-           return _started;
-       }
-        _ledWrapper.clearLeds();
         _logger->logInfo("Setting Up MQTT");
         _mqq = new MqttReceiver(_settings->getMqttBroker(), _settings->getHostName(), 0);
         connect(_mqq, SIGNAL(msgReceived(QString)), this, SLOT(processMsgReceived(QString)));
 
 
         _logger->logInfo("Setting Up MQTT System Status");
-         queue << _settings->getHostName().toStdString().c_str() << "/SystemStatus";
+        queue << _settings->getHostName().toStdString().c_str() << "/SystemStatus";
         _statusPipe = new MQTTPublisher(_settings->getMqttBroker().toStdString(),queue.str(),0, _settings->getMqttRetryDelay(), _settings->getMqttRetries());
         _statusPipe->Start();
 
@@ -710,19 +689,46 @@ bool LightSystem::startSystem()
         {
             _logger->logInfo("Setting Up Twitch Support");
             queue.str("");
-             queue << _settings->getHostName().toStdString().c_str() << "/" << _settings->getMqttTwitchQueue().toStdString().c_str();
+            queue << _settings->getHostName().toStdString().c_str() << "/" << _settings->getMqttTwitchQueue().toStdString().c_str();
             _twitch  = new MqttReceiver(_settings->getMqttBroker(), queue.str().c_str(), 0,queue.str().c_str());
             connect(_twitch, SIGNAL(msgReceived(QString)), this, SLOT(processMsgReceivedTwitch(QString)));
 
         }
 
 
-        _logger->logInfo("Configuring LED Strip");
-       _ledWrapper.setBrightness(_settings->getBrightness());
-       _ledWrapper.setClearOnExit(true);
+        _logger->logInfo("Configuring LED Channels");
+        foreach(ChannelSettings* channel,  _settings->getChannels())
+        {
+            _logger->logInfo("Setting Up Led Channel");
 
-      loadFeatures();
-      startShows();
+            info.str("");
+            info << "start() Settings Host(" << _settings->getHostName().toStdString().c_str() << ") Channel(" << channel->channelId() << ") DMA(" << channel->dma() << ") GPIO(" <<
+            channel->gpio() << ") sType(" << channel->stripColumns() << ") Rows(" <<
+            channel->stripRows() << ") Columns(" << channel->stripColumns() << ") Brightness(" <<
+            channel->brightness() << ") MQTTBroker(" << _settings->getMqttBroker().toStdString().c_str() << ")";
+
+
+            _logger->logInfo(info.str());
+            ws2811_return_t renderResults = _ledWrapper.initStrip( (ws2811Channel)channel->channelId(), channel->stripRows(), channel->stripColumns(), (LedStripType)channel->stripType(), channel->dma(), channel->gpio(), (matrixDirection)channel->matrixdirection());
+            if(renderResults != WS2811_SUCCESS)
+            {
+
+              info.str("");
+              info << "LightSystem start() Failed Code(" << renderResults << ") Msg(" <<
+                      _ledWrapper.ws2811_get_return_t_str(renderResults) << ")";
+              _logger->logWarning(info.str());
+              _started = false;
+              return _started;
+            }
+            _ledWrapper.setBrightness(channel->brightness());
+            _ledWrapper.clearLeds();
+
+        }
+
+        _ledWrapper.setClearOnExit(true);
+
+        loadFeatures();
+        startShows();
 
 
     }

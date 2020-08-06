@@ -113,6 +113,8 @@ protected:
     ws2811_led_t _color4;
     uint8_t _brightness;
     time_t _endTime;
+    short _channelId;
+
 
     double _numMins;
     uint8_t _width;
