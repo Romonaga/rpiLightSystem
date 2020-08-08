@@ -12,6 +12,7 @@
 #include "systemsettings.h"
 #include "dnrlogger.h"
 
+#include "font7x6ext.h"
 
 #include  <condition_variable>
 
@@ -66,6 +67,7 @@ class ILightShow : public QThread
 
 public:
     explicit ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString& showParms);
+    ~ILightShow();
     void stopShow();
 
 
@@ -88,7 +90,10 @@ protected:
     void gammaCorrection();
     void circleBres(int xc, int yc, int r);
     void drawBox(int startRow, int startcol, int length, int height);
-
+    void snapShot();
+    void shiftColumns();
+    void scrollText(QString msg, bool noDelay);
+    void replaySnapShot();
 
 
 
@@ -129,6 +134,9 @@ protected:
     int _g;
     int _b;
 
+    int _rowStart;
+    int _drawCol;
+    ws2811_led_t* _image;
 
 
 protected:
