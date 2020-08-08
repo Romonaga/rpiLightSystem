@@ -56,7 +56,9 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
             _clearOnStart = (bool)_showParmsJson.value("clearStart").toInt();
             _clearOnFinish = (bool)_showParmsJson.value("clearFinish").toInt();
             _useGammaCorrection = (bool)_showParmsJson.value("gammaCorrection").toInt();
-            _channelId = _showParmsJson.value("channelId").toInt();
+
+            _channelId = _showParmsJson.value("channelId").toString().toInt();
+
             if(_showParmsJson.value("minutes").isString())
                 _numMins = _showParmsJson.value("minutes").toString().toDouble();
 
