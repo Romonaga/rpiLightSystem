@@ -21,7 +21,7 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
     _numMins = 1;
     _width = 5;
     _colorEvery = 2;
-    _channelId = 1;
+    _channelId = 0;
     _color1 = _ledWrapper->Color(125, 125, 125);
     _color2 = _ledWrapper->Color(0, 125, 125);
     _color3 = _ledWrapper->Color(125, 125, 0);
@@ -57,7 +57,7 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
             _clearOnFinish = (bool)_showParmsJson.value("clearFinish").toInt();
             _useGammaCorrection = (bool)_showParmsJson.value("gammaCorrection").toInt();
 
-            _channelId = _showParmsJson.value("channelId").toString().toInt();
+            _channelId = _showParmsJson.value("channelId").toString().toInt() - 1;
 
             if(_showParmsJson.value("minutes").isString())
                 _numMins = _showParmsJson.value("minutes").toString().toDouble();

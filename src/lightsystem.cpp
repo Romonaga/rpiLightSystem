@@ -569,7 +569,7 @@ void LightSystem::showComplete(ILightShow* show)
     info << "LightSystem::showComplete Show(" <<  show->getShowName().toStdString().c_str() << ")";
     _logger->logInfo(info.str());
     show->stopShow();
-
+    logShow(show);
     cleanUpShow(show);
     runShow();
 
