@@ -122,31 +122,58 @@ void MatrixScrollText::startShow()
 {
 
     QString sendPad;
+       int position = 0;
 
-    if(_matrixText.length() == 0)
-        return;
+       if(_showParmsJson.value("matrixText").isString())
+           _matrixText = _showParmsJson.value("matrixText").toString();
 
-    bool fastPad = (bool)_showParmsJson.value("fastPad").toInt();
-    for(int pad = 0; pad < _settings->getChannels()[_channelId]->stripColumns() / MAXCOLS; pad++)       //pad the string so it will scroll off the screen
-        sendPad.append(" ");
+       position  = _showParmsJson.value("position").toString().toInt();
 
-    if(fastPad == false)
-        _matrixText.append(sendPad);
+       switch(position)
+       {
+       case 1:
+            _rowStart = 0;
+           break;
 
-    snapShot();
+       case 2:
+            _rowStart =  (_settings->getChannels()[_channelId]->stripRows() / 2) - (MAXROWS / 2) - 1;
+           break;
 
-    while(_endTime > time(nullptr) && _running == true)
-    {
-
-        scrollText(_matrixText, !fastPad);
-
-        if(fastPad == true)
-            scrollText(sendPad, fastPad);
-    }
-
+       case 3:
+           _rowStart = _settings->getChannels()[_channelId]->stripRows() - MAXROWS;
+           break;
 
 
-    replaySnapShot();
+       }
+
+       if(_matrixText.length() == 0)
+           return;
+
+       bool fastPad = (bool)_showParmsJson.value("fastPad").toInt();
+       for(int pad = 0; pad < _settings->getChannels()[_channelId]->stripColumns() / MAXCOLS; pad++)       //pad the string so it will scroll off the screen
+           sendPad.append(" ");
+
+       if(fastPad == false)
+           _matrixText.append(sendPad);
+
+       snapShot();
+
+       while(_endTime > time(nullptr) && _running == true)
+       {
+
+           if(fastPad == true)
+           {
+               scrollText(_matrixText, true);
+               scrollText(sendPad, false);
+           }
+           else
+           {
+               scrollText(_matrixText, false);
+           }
+       }
+
+       replaySnapShot();
+
 
 }
 
