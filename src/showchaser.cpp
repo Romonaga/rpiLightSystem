@@ -22,7 +22,7 @@ void ShowChaser::startShow()
            renderResults = _ledWrapper->show();
            if(renderResults != WS2811_SUCCESS)
            {
-               _logger->logWarning(_ledWrapper->ws2811_get_return_t_str(renderResults));
+               _logger->logWarning(_ledWrapper->getws2811ErrorString(renderResults));
                return;
            }
            if(_running == false)

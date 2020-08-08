@@ -15,9 +15,18 @@ void ShowRainbowCycle::startShow()
         {
             if(_running == false || _endTime < time(nullptr))
                 return ;
+            for(uint16_t row = 0; row < _settings->getChannels()[_channelId]->stripRows(); row ++)
+            {
+                for(uint16_t col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col ++)
+                {
+                    _ledWrapper->setPixelColor(row, col, _ledWrapper->Wheel((((row * col) * 256 / _ledWrapper->getNumberLeds()) + cycle) & 255));
 
-            for(uint16_t led =0; led < _ledWrapper->getNumberLeds() ; led++)
-               _ledWrapper->setPixelColor(led, _ledWrapper->Wheel(((led * 256 / _ledWrapper->getNumberLeds()) + cycle) & 255));
+                }
+
+            }
+
+            //for(uint16_t led =0; led < _ledWrapper->getNumberLeds() ; led++)
+              // _ledWrapper->setPixelColor(led, _ledWrapper->Wheel(((led * 256 / _ledWrapper->getNumberLeds()) + cycle) & 255));
 
              _ledWrapper->show();
 

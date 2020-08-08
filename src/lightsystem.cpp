@@ -48,7 +48,7 @@
 #include "matrixtrip.h"
 #include "showdelay.h"
 #include "matrixcircle.h"
-
+#include "matrixsquare.h"
 
 
 LightSystem::LightSystem(QObject *parent) : QObject(parent)
@@ -107,6 +107,7 @@ LightSystem::~LightSystem()
     _ledWrapper.clearLeds();
 
     _logger->logInfo("~LightSystem Offline");
+
 }
 
 const char *LightSystem::getEnumName(int index)
@@ -458,6 +459,10 @@ void LightSystem::queueShow(const LedLightShows& show, const QString& showParms)
             _runningShows.append(new MatrixCircle(&_ledWrapper, show, showParms));
             break;
 
+        case MatrixS:
+            _runningShows.append(new MatrixSquare(&_ledWrapper, show, showParms));
+            break;
+
         default:
             _logger->logWarning("Unknown Show");
 
@@ -708,13 +713,14 @@ bool LightSystem::startSystem()
 
 
             _logger->logInfo(info.str());
-            ws2811_return_t renderResults = _ledWrapper.initStrip( (ws2811Channel)channel->channelId(), channel->stripRows(), channel->stripColumns(), (LedStripType)channel->stripType(), channel->dma(), channel->gpio(), (matrixDirection)channel->matrixdirection());
+            ws2811_return_t renderResults = _ledWrapper.initStrip( (ws2811Channel)channel->channelId(), channel->stripRows(), channel->stripColumns(),
+                                                       (LedStripType)channel->stripType(), channel->dma(), channel->gpio(), (matrixDirection)channel->matrixdirection());
             if(renderResults != WS2811_SUCCESS)
             {
 
               info.str("");
               info << "LightSystem start() Failed Code(" << renderResults << ") Msg(" <<
-                      _ledWrapper.ws2811_get_return_t_str(renderResults) << ")";
+                      _ledWrapper.getws2811ErrorString(renderResults) << ")";
               _logger->logWarning(info.str());
               _started = false;
               return _started;

@@ -19,6 +19,8 @@ ShowBouncingBalls::ShowBouncingBalls(Ws2811Wrapper* ledWrapper, const LedLightSh
 void ShowBouncingBalls::startShow()
 {
 
+
+
 }
 
 /*

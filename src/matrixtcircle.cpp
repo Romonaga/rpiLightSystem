@@ -17,10 +17,11 @@ void MatrixCircle::startShow()
 {
     QJsonDocument doc = QJsonDocument::fromJson(_showParms.toUtf8());
 
-    int startRow = doc["startRow"].toInt();
-    int startCol = doc["startCol"].toInt();
-    int circleSize = doc["startCol"].toInt();
-    int fill = doc["startCol"].toInt();
+    int startRow = doc["startRow"].toString().toInt();
+    int startCol = doc["startColumn"].toString().toInt();
+    int circleSize = doc["radius"].toString().toInt();
+    int fill = doc["fill"].toInt();
+
 
     if(fill == 0)
     {
@@ -28,13 +29,13 @@ void MatrixCircle::startShow()
     }
     else
     {
-        for(int counter = (circleSize + 1); counter > 0; counter--)
+        for(int counter = circleSize ; counter > 0; counter--)
         {
             circleBres(startRow, startCol, counter);
 
         }
-        _ledWrapper->show();
-    }
 
+    }
+    _ledWrapper->show();
 }
 

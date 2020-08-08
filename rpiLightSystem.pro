@@ -16,6 +16,7 @@ SOURCES += src/ilightshow.cpp \
     src/main.cpp \
     src/matrixart.cpp \
     src/matrixscrolltext.cpp \
+    src/matrixsquare.cpp \
     src/matrixtcircle.cpp \
     src/matrixtrip.cpp \
     src/motionlightsfeature.cpp \
@@ -68,6 +69,7 @@ HEADERS += \
     src/matrixart.h \
     src/matrixcircle.h \
     src/matrixscrolltext.h \
+    src/matrixsquare.h \
     src/matrixtrip.h \
     src/motionlightsfeature.h \
     src/mqttreceiver.h \

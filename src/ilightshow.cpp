@@ -263,6 +263,24 @@ void ILightShow::circleBres(int xc, int yc, int r)
 
 
 
+void ILightShow::drawBox(int startRow, int startcol, int length, int height)
+{
+    int col = 0;
+    int row = 0;
+
+    for(col = startcol; col < (startcol + length) ; col++)
+        _ledWrapper->setPixelColor(startRow, col, _color1);
+
+    for(row = startRow; row < (startRow + height) ; row++)
+        _ledWrapper->setPixelColor(row, col - 1, _color1);
+
+    for(col = col; col > startcol ; col--)
+        _ledWrapper->setPixelColor(row, col - 1, _color1);
+
+    for(row = row; row > startRow; row--)
+        _ledWrapper->setPixelColor(row, col, _color1);
+
+}
 
 
 

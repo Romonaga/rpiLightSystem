@@ -45,7 +45,8 @@
             X(24, MatrixText, "Scroll Text"),                   \
             X(25, DelayShow, "Delay Show"),                   \
             X(26, MatrixTripShow, "Trippy Matrix"),                   \
-            X(27, MatrixC, "Circle")                   \
+            X(27, MatrixC, "Circle"),                   \
+            X(28, MatrixS, "Square")                   \
 
 
 #define LIGHT_SHOWS_ENUM(type, name, txt) name = type
@@ -81,10 +82,12 @@ private:
     void drawCircle(int xc, int yc, int x, int y);
 
 
+
 protected:
     int genRand(unsigned int min, unsigned int max);
     void gammaCorrection();
     void circleBres(int xc, int yc, int r);
+    void drawBox(int startRow, int startcol, int length, int height);
 
 
 
