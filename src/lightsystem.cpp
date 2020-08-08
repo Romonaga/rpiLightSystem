@@ -165,6 +165,16 @@ void LightSystem::playPlayList(QString playList)
     }
 }
 
+void LightSystem::playArtShow(QJsonObject jsonObject)
+{
+    PlayListManager pmanager;
+    QString artShow = pmanager.getArtShow(jsonObject);
+    processMsgReceived(artShow);
+}
+
+
+
+
 void LightSystem::playuserPlayList(QJsonObject jsonObject)
 {
     PlayListManager pmanager;
@@ -265,7 +275,7 @@ void LightSystem::sendSystemInfo()
 
 void LightSystem::processMsgReceived(QString msg)
 {
-   //std::stringstream info;
+ //  std::stringstream info;
 
 //   info << "LightSystem::processMsgReceived: " << msg.toStdString().c_str();
  //  _logger->logInfo(info.str());
@@ -306,6 +316,10 @@ void LightSystem::processMsgReceived(QString msg)
             else if(jsonObject.value("systemInfo").toInt())
             {
                 sendSystemInfo();
+            }
+            else if(jsonObject.value("playArtShow").toInt())
+            {
+                playArtShow(jsonObject);
             }
             else
             {

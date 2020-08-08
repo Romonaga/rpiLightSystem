@@ -78,9 +78,6 @@ QString PlayListManager::getPlayList(QJsonObject playList)
 
     std::stringstream info;
 
-    info << "getPlayList Web" << playList.value("playlistName").toString().toStdString().c_str();;
-    _logger->logInfo(info.str());
-
     QSqlDatabase database = QSqlDatabase::addDatabase("QMYSQL","playListManager");
     database.setHostName(_settings->getDBServer());
     database.setUserName(_settings->getDBUser());
@@ -119,11 +116,6 @@ QString PlayListManager::getPlayList(int32_t playlistID)
 {
     QString playList;
 
-    std::stringstream info;
-
-    info << "getPlayList rpi" << (int)playlistID;
-    _logger->logInfo(info.str());
-
 
     QSqlDatabase database = QSqlDatabase::addDatabase("QMYSQL","playListManager");
     database.setHostName(_settings->getDBServer());
@@ -158,4 +150,40 @@ QString PlayListManager::getPlayList(int32_t playlistID)
 }
 
 
+QString PlayListManager::getArtShow(QJsonObject artShow)
+{
+    QString artShowResults;
+
+
+    QSqlDatabase database = QSqlDatabase::addDatabase("QMYSQL","playListManager");
+    database.setHostName(_settings->getDBServer());
+    database.setUserName(_settings->getDBUser());
+    database.setPassword(_settings->getDBPwd());
+    database.setDatabaseName(_settings->getDataBase());
+
+    if(database.open())
+    {
+        std::stringstream sql;
+        sql << "select showParms from matrixArt where ID = " << artShow.value("artShowId").toInt();
+        QSqlQuery result(sql.str().c_str(), database);
+        if(result.lastError().type() == QSqlError::NoError)
+        {
+            result.next();
+            artShowResults = result.value("showParms").toString();
+
+        }
+        else
+        {
+            _logger->logInfo(result.lastError().text().toStdString());
+        }
+        database.close();
+    }
+    else
+    {
+        _logger->logInfo(database.lastError().text().toStdString());
+    }
+
+   // QSqlDatabase::removeDatabase("playListManager");
+    return artShowResults;
+}
 

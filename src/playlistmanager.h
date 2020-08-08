@@ -19,7 +19,12 @@ public:
     //Keeping as it has a good example of extracting JSON to string.
   //  bool savePlayList(const QString& name, int32_t userId, const QVector<ILightShow*>& shows);
     QString getPlayList(QJsonObject playList);
+    QString getArtShow(QJsonObject artShow);
     QString getPlayList(int32_t playlistID);
+
+    //QString getArtShow(int32_t artShowID);
+
+
 
 private:
     SystemSettings* _settings;

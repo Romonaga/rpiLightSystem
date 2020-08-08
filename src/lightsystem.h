@@ -63,6 +63,8 @@ private:
     void runShow();
     void edituserPlayList(QJsonObject jsonObject);
     void playuserPlayList(QJsonObject jsonObject);
+    void playArtShow(QJsonObject jsonObject);
+
     void clearQueue();
 
     void processShow(QString msg, QJsonObject jsonObject);
