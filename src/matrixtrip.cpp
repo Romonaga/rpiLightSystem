@@ -32,7 +32,7 @@ void MatrixTrip::startShow()
             }while(_color1 == lastColor);
 
             lastColor = _color1;
-            circleBres(rowMid, colMid, counter);
+            drawCircle(rowMid, colMid, counter);
             _ledWrapper->show();
             Ws2811Wrapper::waitMillSec(_wait);
         }

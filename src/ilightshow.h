@@ -81,19 +81,25 @@ public:
 private:
     virtual void startShow() = 0;
     ws2811_led_t gamaColor(ws2811_led_t inColor);
+    void circleBres(int xc, int yc, int r);
     void drawCircle(int xc, int yc, int x, int y);
+    void circlePoints(int cx, int cy, int x, int y);
+    void circleMidpoint(int xCenter, int yCenter, int radius);
 
 
 
 protected:
     int genRand(unsigned int min, unsigned int max);
     void gammaCorrection();
-    void circleBres(int xc, int yc, int r);
+
+    void drawCircle(int xCenter, int yCenter, int radius);
+
     void drawBox(int startRow, int startcol, int length, int height);
     void snapShot();
     void shiftColumns();
     void scrollText(QString msg, bool noDelay);
     void replaySnapShot();
+
 
 
 

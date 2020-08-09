@@ -13,6 +13,7 @@ MatrixCircle::MatrixCircle(Ws2811Wrapper* ledWrapper, const LedLightShows &light
 }
 
 
+
 void MatrixCircle::startShow()
 {
     QJsonDocument doc = QJsonDocument::fromJson(_showParms.toUtf8());
@@ -25,17 +26,25 @@ void MatrixCircle::startShow()
 
     if(fill == 0)
     {
-        circleBres(startRow, startCol, circleSize);
+        //circleBres(startRow, startCol, circleSize);
+        //dda_circle(startRow, startCol, circleSize);
+        //circleMidpoint(startRow, startCol, circleSize);
+        drawCircle(startRow, startCol, circleSize);
     }
     else
     {
         for(int counter = circleSize ; counter > 0; counter--)
         {
-            circleBres(startRow, startCol, counter);
+           // circleBres(startRow, startCol, counter);
+            //dda_circle(startRow, startCol, counter);
+          //  circleMidpoint(startRow, startCol, counter);
+
+            drawCircle(startRow, startCol, counter);
 
         }
 
     }
     _ledWrapper->show();
 }
+
 

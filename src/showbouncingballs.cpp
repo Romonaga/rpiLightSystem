@@ -24,6 +24,40 @@ void ShowBouncingBalls::startShow()
 }
 
 /*
+ *
+ *
+ *
+void BresenhamCircle::drawBresenhamCircle() {
+            int x = 0, y = radius_;
+            int decesionParameter = 3 - 2 * radius_;
+            displayBresenhmCircle(xc_, yc_, x, y);
+            while (y >= x)
+            {
+                x++;
+                if (decesionParameter > 0)
+                {
+                    y--;
+                    decesionParameter = decesionParameter + 4 * (x - y) + 10;
+                }
+                else
+                    decesionParameter = decesionParameter + 4 * x + 6;
+                displayBresenhmCircle(xc_, yc_, x, y); //displaying all the Eight Pixels of (x,y)
+                delay(30);
+            }
+        }
+
+void BresenhamCircle::displayBresenhmCircle(int xc_,int yc_, int x, int y) {
+            //displaying all 8 coordinates of(x,y) residing in 8-octants
+            putpixel(xc_+x, yc_+y, WHITE);
+            putpixel(xc_-x, yc_+y, WHITE);
+            putpixel(xc_+x, yc_-y, WHITE);
+            putpixel(xc_-x, yc_-y, WHITE);
+            putpixel(xc_+y, yc_+x, WHITE);
+            putpixel(xc_-y, yc_+x, WHITE);
+            putpixel(xc_+y, yc_-x, WHITE);
+            putpixel(xc_-y, yc_-x, WHITE);
+        }
+
 void ShowBouncingBalls::startShow()
 
 {

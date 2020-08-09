@@ -3,7 +3,7 @@
 
 #include <QDebug>
 #include <random>
-
+#include <math.h>
 
 
 ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString& showParms) :
@@ -255,6 +255,36 @@ ws2811_led_t ILightShow::gamaColor(ws2811_led_t inColor)
     return (ws2811_led_t) ((inColor / 255) ^ (ws2811_led_t)(1 / _settings->getChannels()[_channelId]->gamma())) * 255;
 }
 
+
+void ILightShow::drawCircle(int xCenter, int yCenter, int radius)
+{
+
+    switch(radius)
+    {
+        case 1:
+        case 3:
+        case 4:
+        case 6:
+            circleMidpoint(xCenter, yCenter, radius);
+           break;
+
+        case 2:
+        case 5:
+        case 7:
+        case 8:
+            circleBres(xCenter, yCenter, radius);
+            break;
+
+        default:
+            circleMidpoint(xCenter, yCenter, radius);
+            break;
+
+
+    }
+
+}
+
+
 void ILightShow::drawCircle(int xc, int yc, int x, int y)
 {
 
@@ -269,6 +299,8 @@ void ILightShow::drawCircle(int xc, int yc, int x, int y)
     _ledWrapper->setPixelColor(xc-y, yc-x, _color1);
 
 }
+
+
 
 void ILightShow::circleBres(int xc, int yc, int r)
 {
@@ -298,6 +330,206 @@ void ILightShow::circleBres(int xc, int yc, int r)
 }
 
 
+void ILightShow::circlePoints(int cx, int cy, int x, int y)
+{
+
+
+    if (x == 0) {
+        _ledWrapper->setPixelColor( cx, cy + y, _color1);
+        _ledWrapper->setPixelColor(cx, cy - y, _color1);
+        _ledWrapper->setPixelColor(cx + y, cy, _color1);
+        _ledWrapper->setPixelColor(cx - y, cy, _color1);
+    } else
+    if (x == y) {
+        _ledWrapper->setPixelColor(cx + x, cy + y,_color1);
+        _ledWrapper->setPixelColor(cx - x, cy + y, _color1);
+        _ledWrapper->setPixelColor(cx + x, cy - y, _color1);
+        _ledWrapper->setPixelColor(cx - x, cy - y, _color1);
+    } else
+    if (x < y) {
+        _ledWrapper->setPixelColor(cx + x, cy + y, _color1);
+        _ledWrapper->setPixelColor(cx - x, cy + y, _color1);
+        _ledWrapper->setPixelColor(cx + x, cy - y, _color1);
+        _ledWrapper->setPixelColor(cx - x, cy - y, _color1);
+        _ledWrapper->setPixelColor(cx + y, cy + x, _color1);
+        _ledWrapper->setPixelColor(cx - y, cy + x, _color1);
+        _ledWrapper->setPixelColor(cx + y, cy - x, _color1);
+        _ledWrapper->setPixelColor(cx - y, cy - x, _color1);
+    }
+}
+
+
+void ILightShow::circleMidpoint(int xCenter, int yCenter, int radius)
+{
+    int x = 0;
+    int y = radius;
+    int p = (5 - radius*4)/4;
+
+    circlePoints(xCenter, yCenter, x, y);
+    while (x < y) {
+        x++;
+        if (p < 0) {
+            p += 2*x+1;
+        } else {
+            y--;
+            p += 2*(x-y)+1;
+        }
+        circlePoints(xCenter, yCenter, x, y);
+    }
+}
+
+
+/*
+ *
+ *  void dda_circle(int xc,int yc,int r)
+{
+
+   float xc1,xc2,yc1,yc2,eps,sx,sy;
+
+  int val,i;
+
+  xc1=r;
+
+  yc1=0;
+
+  sx=xc1;
+
+  sy=yc1;
+
+  i=0;
+
+  do{
+
+      val=pow(2,i);
+
+      i++;
+
+      }while(val<r);
+
+  eps = 1/pow(2,i-1);
+
+  do{
+
+      xc2 = xc1 + yc1*eps;
+      yc2 = yc1 - eps*xc2;
+
+      putpixel(xc+xc2,yc-yc2,3);
+
+      xc1=xc2;
+
+      yc1=yc2;
+
+     }while((yc1-sy)<eps || (sx-xc1)>eps);
+
+}
+
+private final void circlePoints(int cx, int cy, int x, int y, int pix)
+    {
+        int act = Color.red.getRGB();
+
+        if (x == 0) {
+            raster.setPixel(act, cx, cy + y);
+            raster.setPixel(pix, cx, cy - y);
+            raster.setPixel(pix, cx + y, cy);
+            raster.setPixel(pix, cx - y, cy);
+        } else
+        if (x == y) {
+            raster.setPixel(act, cx + x, cy + y);
+            raster.setPixel(pix, cx - x, cy + y);
+            raster.setPixel(pix, cx + x, cy - y);
+            raster.setPixel(pix, cx - x, cy - y);
+        } else
+        if (x < y) {
+            raster.setPixel(act, cx + x, cy + y);
+            raster.setPixel(pix, cx - x, cy + y);
+            raster.setPixel(pix, cx + x, cy - y);
+            raster.setPixel(pix, cx - x, cy - y);
+            raster.setPixel(pix, cx + y, cy + x);
+            raster.setPixel(pix, cx - y, cy + x);
+            raster.setPixel(pix, cx + y, cy - x);
+            raster.setPixel(pix, cx - y, cy - x);
+        }
+    }
+
+    public void circleMidpoint(int xCenter, int yCenter, int radius, Color c)
+    {
+        int pix = c.getRGB();
+        int x = 0;
+        int y = radius;
+        int p = (5 - radius*4)/4;
+
+        circlePoints(xCenter, yCenter, x, y, pix);
+        while (x < y) {
+            x++;
+            if (p < 0) {
+                p += 2*x+1;
+            } else {
+                y--;
+                p += 2*(x-y)+1;
+            }
+            circlePoints(xCenter, yCenter, x, y, pix);
+        }
+    }
+
+
+void ILightShow::midPointCircleDraw(int x_centre, int y_centre, int r)
+{
+    int x = r, y = 0;
+
+    // Printing the initial point on the axes
+    // after translation
+    _ledWrapper->setPixelColor(x + x_centre, y + y_centre, _color2);
+
+
+    // When radius is zero only a single
+    // point will be printed
+    if (r > 0)
+    {
+        _ledWrapper->setPixelColor(x + x_centre, -y + y_centre, _color2);
+        _ledWrapper->setPixelColor(y + x_centre, x + y_centre, _color2);
+        _ledWrapper->setPixelColor(-y + x_centre, x + y_centre, _color2);
+    }
+
+    // Initialising the value of P
+    int P = 1 - r;
+    while (x > y)
+    {
+        y++;
+
+        // Mid-point is inside or on the perimeter
+        if (P <= 0)
+            P = P + 2*y + 1;
+        // Mid-point is outside the perimeter
+        else
+        {
+            x--;
+            P = P + 2*y - 2*x + 1;
+        }
+
+        // All the perimeter points have already been printed
+        if (x < y)
+            break;
+
+        // Printing the generated point and its reflection
+        // in the other octants after translation
+        _ledWrapper->setPixelColor(x + x_centre ,  y + y_centre, _color2);
+        _ledWrapper->setPixelColor(-x + x_centre,  y + y_centre, _color2);
+        _ledWrapper->setPixelColor(x + x_centre ,  -y + y_centre, _color2);
+        _ledWrapper->setPixelColor(-x + x_centre,  -y + y_centre, _color2);
+
+        // If the generated point is on the line x = y then
+        // the perimeter points have already been printed
+        if (x != y)
+        {
+            _ledWrapper->setPixelColor(y + x_centre, x + y_centre, _color2);
+            _ledWrapper->setPixelColor(-y + x_centre, x + y_centre, _color2);
+            _ledWrapper->setPixelColor(y + x_centre, -x + y_centre, _color2);
+            _ledWrapper->setPixelColor(-y + x_centre, -x + y_centre, _color2);
+        }
+    }
+}
+
+*/
 
 void ILightShow::drawBox(int startRow, int startcol, int length, int height)
 {
