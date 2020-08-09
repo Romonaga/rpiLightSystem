@@ -2,7 +2,7 @@
 --
 -- Host: 127.0.0.1    Database: LedLightSystem
 -- ------------------------------------------------------
--- Server version	8.0.21-0ubuntu0.20.04.3
+-- Server version	8.0.21-0ubuntu0.20.04.4
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -26,6 +26,16 @@ INSERT INTO `lLightSystemFeatures` VALUES (1,'Lights By Motion'),(2,'Lights By L
 UNLOCK TABLES;
 
 --
+-- Dumping data for table `lMatrixShapes`
+--
+
+LOCK TABLES `lMatrixShapes` WRITE;
+/*!40000 ALTER TABLE `lMatrixShapes` DISABLE KEYS */;
+INSERT INTO `lMatrixShapes` VALUES (1,'Circle'),(2,'Square'),(3,'Rectangle'),(4,'Triangle');
+/*!40000 ALTER TABLE `lMatrixShapes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Dumping data for table `lMatrixTypes`
 --
 
@@ -33,6 +43,16 @@ LOCK TABLES `lMatrixTypes` WRITE;
 /*!40000 ALTER TABLE `lMatrixTypes` DISABLE KEYS */;
 INSERT INTO `lMatrixTypes` VALUES (0,'None'),(1,'Matrix Art'),(2,'Matrix Text'),(3,'Matrix Show'),(4,'Matrix Shape');
 /*!40000 ALTER TABLE `lMatrixTypes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `lPosition`
+--
+
+LOCK TABLES `lPosition` WRITE;
+/*!40000 ALTER TABLE `lPosition` DISABLE KEYS */;
+INSERT INTO `lPosition` VALUES (1,'Top'),(2,'Center'),(3,'Bottom');
+/*!40000 ALTER TABLE `lPosition` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -51,7 +71,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `lightShows` WRITE;
 /*!40000 ALTER TABLE `lightShows` DISABLE KEYS */;
-INSERT INTO `lightShows` VALUES (1,'Blink',1,0,1,0,1,0,18,0),(2,'Chaser',1,1,1,0,1,0,13,0),(3,'Theater Chase',1,0,1,0,1,0,2,0),(4,'Theater Chase Rainbow',1,0,1,0,1,0,3,0),(5,'Color 3 Reverse',1,3,1,0,1,0,14,0),(6,'Cylon',1,1,1,1,1,0,15,0),(7,'Color Wipe',1,1,1,0,1,0,16,0),(8,'Half n Half',1,2,0,0,0,0,9,0),(9,'Rainbow',1,0,1,0,1,0,7,0),(10,'Rainbow Cycle',1,0,1,0,1,0,4,0),(11,'Neorand',1,0,0,0,1,0,5,0),(12,'Flame',1,1,1,0,1,0,8,0),(13,'Color 1/3 ',1,3,0,0,0,0,10,0),(14,'Color 1/4',1,4,0,0,0,0,11,0),(15,'Tri-Color Chaser',1,3,1,0,1,0,6,0),(16,'Display Color',1,1,0,0,0,0,1,0),(17,'Color Every',1,1,0,0,0,1,12,0),(18,'Twinkle Overlay',1,2,1,0,1,0,17,0),(19,'Pulse Overlay',1,0,1,0,1,0,19,0),(20,'Scanner',1,1,1,1,1,0,20,0),(21,'Bouncing Balls',1,4,0,0,0,0,30,0),(22,'Fade',0,0,1,1,1,0,31,0),(23,'Matrix Art',1,0,0,0,0,0,32,1),(24,'Matrix Text',1,1,1,0,1,0,32,2),(25,'Delay Show',1,0,1,0,0,0,33,0),(26,'Matrix Trip',1,1,1,0,1,0,32,3),(27,'Circle',1,1,0,0,0,0,40,4);
+INSERT INTO `lightShows` VALUES (1,'Blink',1,0,1,0,1,0,18,0,0),(2,'Chaser',1,1,1,0,1,0,13,0,0),(3,'Theater Chase',1,0,1,0,1,0,2,0,0),(4,'Theater Chase Rainbow',1,0,1,0,1,0,3,0,0),(5,'Color 3 Reverse',1,3,1,0,1,0,14,0,0),(6,'Cylon',1,1,1,1,1,0,15,0,0),(7,'Color Wipe',1,1,1,0,1,0,16,0,0),(8,'Half n Half',1,2,0,0,0,0,9,0,0),(9,'Rainbow',1,0,1,0,1,0,7,0,0),(10,'Rainbow Cycle',1,0,1,0,1,0,4,0,0),(11,'Neorand',1,0,0,0,1,0,5,0,0),(12,'Flame',1,1,1,0,1,0,8,0,0),(13,'Color 1/3 ',1,3,0,0,0,0,10,0,0),(14,'Color 1/4',1,4,0,0,0,0,11,0,0),(15,'Tri-Color Chaser',1,3,1,0,1,0,6,0,0),(16,'Display Color',1,1,0,0,0,0,1,0,0),(17,'Color Every',1,1,0,0,0,1,12,0,0),(18,'Twinkle Overlay',1,2,1,0,1,0,17,0,0),(19,'Pulse Overlay',1,0,1,0,1,0,19,0,0),(20,'Scanner',1,1,1,1,1,0,20,0,0),(21,'Bouncing Balls',1,4,0,0,0,0,30,0,0),(22,'Fade',0,0,1,1,1,0,31,0,0),(23,'Matrix Art',1,0,0,0,0,0,32,1,0),(24,'Matrix Text',1,1,1,0,1,0,32,2,0),(25,'Delay Show',1,0,1,0,0,0,33,0,0),(26,'Matrix Trip',1,1,1,0,1,0,32,3,0),(27,'Circle',1,1,0,0,0,0,40,4,1),(28,'Square',1,1,0,0,0,0,40,4,2);
 /*!40000 ALTER TABLE `lightShows` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -64,4 +84,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-05 10:16:51
+-- Dump completed on 2020-08-08 19:41:25

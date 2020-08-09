@@ -2,7 +2,7 @@
 --
 -- Host: 127.0.0.1    Database: LedLightSystem
 -- ------------------------------------------------------
--- Server version	8.0.21-0ubuntu0.20.04.3
+-- Server version	8.0.21-0ubuntu0.20.04.4
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -30,6 +30,21 @@ CREATE TABLE `lLightSystemFeatures` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `lMatrixShapes`
+--
+
+DROP TABLE IF EXISTS `lMatrixShapes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `lMatrixShapes` (
+  `ID` int NOT NULL,
+  `Description` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `ID_UNIQUE` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `lMatrixTypes`
 --
 
@@ -42,6 +57,20 @@ CREATE TABLE `lMatrixTypes` (
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID_UNIQUE` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `lPosition`
+--
+
+DROP TABLE IF EXISTS `lPosition`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `lPosition` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `description` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,6 +105,7 @@ CREATE TABLE `lightShows` (
   `colorEvery` tinyint DEFAULT '0',
   `showOrder` tinyint DEFAULT NULL,
   `matrixType` tinyint DEFAULT '0',
+  `matrixShape` tinyint DEFAULT '0',
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -168,6 +198,23 @@ CREATE TABLE `lumaUsers` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `matrixArt`
+--
+
+DROP TABLE IF EXISTS `matrixArt`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `matrixArt` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `userID` int DEFAULT NULL,
+  `artName` varchar(50) DEFAULT NULL,
+  `showParms` json DEFAULT NULL,
+  `enabled` tinyint DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `showsRan`
 --
 
@@ -182,7 +229,7 @@ CREATE TABLE `showsRan` (
   `showParms` json DEFAULT NULL,
   `timeStamp` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=601 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=768 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -230,7 +277,7 @@ CREATE TABLE `userPlaylist` (
   `playlistName` varchar(50) DEFAULT NULL,
   `showParms` json DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=99 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -261,4 +308,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-05 10:16:03
+-- Dump completed on 2020-08-08 19:40:29
