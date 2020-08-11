@@ -71,31 +71,6 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
             if(_showParmsJson.value("matrixText").isString())
                 _matrixText = _showParmsJson.value("matrixText").toString();
 
-           if(_showParmsJson.value("position").isString())
-           {
-               _rowStart =  (_settings->getChannels()[_channelId]->stripRows()/ 2) - (MAXROWS / 2) - 1;
-               _drawCol = _settings->getChannels()[_channelId]->stripColumns() - 1;
-
-
-               switch(_showParmsJson.value("position").toString().toInt())
-               {
-
-               case 1:
-                    _rowStart = 0;
-                   break;
-
-               case 2:
-                    _rowStart =  (_settings->getChannels()[_channelId]->stripRows() / 2) - (MAXROWS / 2) - 1;
-                   break;
-
-               case 3:
-                   _rowStart = _settings->getChannels()[_channelId]->stripRows() - MAXROWS;
-                   break;
-
-
-               }
-           }
-
            if(_showParmsJson["colors"].isObject())
            {
                jsonColors = _showParmsJson["colors"].toObject();
@@ -378,6 +353,110 @@ void ILightShow::circleMidpoint(int xCenter, int yCenter, int radius)
     }
 }
 
+
+
+void ILightShow::drawTriangle(int startRow, int startCol, int size, int direction)
+{
+
+    switch((TrigDirection)direction)
+    {
+        case PointUp:
+            drawline(startRow - 1, startCol - 1, (startRow - 1 ) + size, (startCol - 1) - size);
+            drawline(startRow - 1, startCol - 1, (startRow - 1)  + size, (startCol - 1) + size);
+            drawline( (startRow - 1) + (size - 1), (startCol - size) + 1, (startRow - 1) + (size - 1), (size - 1) + (startCol - 1));
+            break;
+
+        case PointRight:
+            drawline(startRow - 1 , startCol - 1, startRow - size, (startCol - 1) - size);
+            drawline(startRow - 1 , startCol - 1, (startRow - 1) + size, (startCol - 1) - size);
+            drawline((startRow - 1) - (size - 1), startCol - size  , (startRow - 1) + size, (startCol - 1) - (size - 1));
+            break;
+
+        case PointDown:
+            drawline(startRow - 1, startCol - 1, startRow - size, (startCol - 1) - size);
+            drawline(startRow - 1, startCol - 1, startRow - size, (startCol - 1) + size);
+            drawline(startRow - size, (startCol) - size + 1, startRow - size, (size + startCol) - 2);
+            break;
+
+
+        case PointLeft:
+            drawline(startRow - 1, startCol - 1, (startRow - 1 ) - size, (startCol - 1) + size);
+            drawline(startRow - 1, startCol - 1, (startRow - 1)  + size, (startCol - 1) + size);
+            drawline( (startRow - size) + 1, (startCol - 1) + (size - 1), (startRow - 1) + (size - 1), (startCol - 1) + (size - 1));
+            break;
+
+
+    }
+
+
+
+}
+
+
+void ILightShow::drawline(int x1, int y1, int x2, int y2)
+{
+    float x, y, dx, dy, step;
+    int i;
+
+    dx = (x2 - x1);
+    dy = (y2 - y1);
+
+    if (abs(dx) >= abs(dy))
+        step = abs(dx);
+    else
+        step = abs(dy);
+
+    dx = dx / step;
+    dy = dy / step;
+
+    x = x1;
+    y = y1;
+    i = 1;
+
+    while (i <= step)
+    {
+
+        _ledWrapper->setPixelColor(x, y, _color1);
+        x = x + dx;
+        y = y + dy;
+        i = i + 1;
+
+    }
+
+}
+
+/*
+void ILightShow::drawline(int x0, int y0, int x1, int y1)
+{
+    int dx, dy, p, x, y;
+
+    dx=x1-x0;
+    dy=y1-y0;
+
+    x=x0;
+    y=y0;
+
+    p=2*dy-dx;
+
+    while(x<x1)
+    {
+        if(p>=0)
+        {
+            qDebug()  << "x: " << x << " y: " << y;
+            _ledWrapper->setPixelColor(x,y,_color1);
+            y=y+1;
+            p=p+2*dy-2*dx;
+        }
+        else
+        {
+            qDebug()  << "x: " << x << " y: " << y;
+            _ledWrapper->setPixelColor(x,y,_color1);
+            p=p+2*dy;
+        }
+        x=x+1;
+    }
+}
+*/
 
 /*
  *

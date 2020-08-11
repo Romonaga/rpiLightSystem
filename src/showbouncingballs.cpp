@@ -15,11 +15,97 @@ ShowBouncingBalls::ShowBouncingBalls(Ws2811Wrapper* ledWrapper, const LedLightSh
 
 }
 
-
+/*
+ * drawline(row + (len - 1), 13  , row + (len - 1), y - 1);
+ * */
 void ShowBouncingBalls::startShow()
 {
+    //Truths StartRow, StartCol, Size
+    int startRow = 7;
+    int startCol = 16;
+    int size = 7;
+
+    drawTriangle(startRow, startCol, size, 1);
+    drawTriangle(startRow, startCol, size, 2);
+    drawTriangle(startRow, startCol, size, 3);
+    drawTriangle(startRow, startCol, size, 4);
 
 
+
+
+   //drawTriangle(startRow, startCol, size, 2);
+ //   drawTriangle(startRow, startCol, size, 3);
+ //   drawTriangle(startRow, startCol, size, 4);
+
+    //pointing left
+
+    //drawline(startRow - 1, startCol - 1, (startRow - 1 ) - size, (startCol - 1) + size);
+    //drawline(startRow - 1, startCol - 1, (startRow - 1)  + size, (startCol - 1) + size);
+    //drawline( (startRow - 1) - size, (startCol - 1) + (size - 1), startCol - 1, (startCol - 1) + (size - 1));
+
+    //drawline(4, 8, 0, 13);
+    //drawline(4, 8, 9, 13);
+    //drawline(1, 12, 8, 12);
+
+
+    //drawline(startRow - 1, startCol - 1, (startRow - 1 ) + size, (startCol - 1) - size);
+    //drawline(startRow - 1, startCol - 1, (startRow - 1)  + size, (startCol - 1) + size);
+    //drawline( (startRow - 1) + (size - 1), 5, (startRow - 1) + (size - 1), (size - 1) + (startCol - 1));
+
+    //drawTriangle(5, 9, 5, 1);
+
+    //drawline( startRow - size, size, startRow + size, (size + startCol) - 2);
+
+    //drawline(startRow - 1, startCol - 1, startRow - size, (startCol - 1) - size);
+    //drawline(startRow - 1, startCol - 1, startRow - size, (startCol - 1) + size);
+    //drawline( startRow - size, size, startRow - size, (size + startCol) - 2);
+
+    //pointing right
+    //drawline(5, 8, 0, 3);
+   // drawline(startRow - 1 , startCol - 1, startRow - size, (startCol - 1) - size);
+
+    //drawline(5, 8, 10, 3);
+  //  drawline(startRow - 1 , startCol - 1, (startRow - 1) + size, (startCol - 1) - size);
+
+    //drawline(1, 4, 8, 4);
+  //  drawline((startRow - 1) - size, startCol - size  , startCol - 1, startCol - size);
+
+    //pointing left
+    //drawline(5, 8, 0, 13);
+    //drawline(5, 8, 10, 13);
+    //drawline(2, 12, 10, 12);
+
+
+    //pointing up
+    //   drawline(0, 8, 5, 13);
+    //   drawline(0, 8, 5, 4);
+    //   drawline(4, 4, 4, 12);
+
+
+    //pointing down
+
+    //Truths StartRow, StartCol, Size
+    //int startRow = 5;
+    //int startCol = 9;
+    //int size = 5;
+
+   // drawline(startRow - 1, startCol - 1, startRow - size, (startCol - 1) - size);
+    //drawline(4, 8, 0, 3);  //StartRow, startCol, startRow, startCol - size
+
+    //drawline(startRow - 1, startCol - 1, startRow - size, (startCol - 1) + size);
+    //drawline(4, 8, 0, 13); //StartRow + size, startCol, startRow, startCol + size
+
+    //drawline( startRow - size, size, startRow - size, (size + startCol) - 2); //startRow, startCol - (startCol - size), (startCol + size) - 1
+    //drawline(0, 5, 0, 12); //startRow, startCol - (startCol - size), (startCol + size) - 1
+
+
+    //Down
+ //   drawTriangle(5, 9, 5, 3);
+
+    //right
+    //drawTriangle(5, 9, 5, 2);
+
+    _ledWrapper->show();
 
 }
 

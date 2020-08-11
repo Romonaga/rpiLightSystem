@@ -9,6 +9,8 @@ MatrixScrollText::MatrixScrollText(Ws2811Wrapper* ledWrapper, const LedLightShow
     ILightShow(ledWrapper, lightShow, showParms)
 {
 
+    _rowStart =  (_settings->getChannels()[_channelId]->stripRows()/ 2) - (MAXROWS / 2) - 1;
+    _drawCol = _settings->getChannels()[_channelId]->stripColumns() - 1;
 
 }
 
@@ -33,6 +35,28 @@ void MatrixScrollText::startShow()
 
        if(fastPad == false)
            _matrixText.append(sendPad);
+
+       if(_showParmsJson.value("position").isString())
+       {
+
+           switch(_showParmsJson.value("position").toString().toInt())
+           {
+
+           case 1:
+                _rowStart = 0;
+               break;
+
+           case 2:
+                _rowStart =  (_settings->getChannels()[_channelId]->stripRows() / 2) - (MAXROWS / 2) - 1;
+               break;
+
+           case 3:
+               _rowStart = _settings->getChannels()[_channelId]->stripRows() - MAXROWS;
+               break;
+
+
+           }
+       }
 
        snapShot();
 

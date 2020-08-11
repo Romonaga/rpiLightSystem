@@ -47,7 +47,8 @@
             X(25, DelayShow, "Delay Show"),                   \
             X(26, MatrixTripShow, "Trippy Matrix"),                   \
             X(27, MatrixC, "Circle"),                   \
-            X(28, MatrixS, "Square")                   \
+            X(28, MatrixS, "Square"),                   \
+            X(29, MatrixT, "Triangle")                   \
 
 
 #define LIGHT_SHOWS_ENUM(type, name, txt) name = type
@@ -60,6 +61,13 @@ typedef enum {
     LIGHT_SHOWS_ENUM_COUNT
 } LedLightShows;
 
+typedef enum {
+    PointUp = 1,
+    PointRight = 2,
+    PointDown =   3,
+    PointLeft = 4
+
+} TrigDirection;
 
 class ILightShow : public QThread
 {
@@ -88,13 +96,16 @@ private:
 
 
 
+
 protected:
     int genRand(unsigned int min, unsigned int max);
     void gammaCorrection();
 
     void drawCircle(int xCenter, int yCenter, int radius);
-
     void drawBox(int startRow, int startcol, int length, int height);
+    void drawline(int x1, int y1, int x2, int y2);
+    void drawTriangle(int startRow, int startCol, int size, int direction);
+
     void snapShot();
     void shiftColumns();
     void scrollText(QString msg, bool noDelay);
