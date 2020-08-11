@@ -17,28 +17,28 @@ void MatrixTriangle::startShow()
 {
     QJsonDocument doc = QJsonDocument::fromJson(_showParms.toUtf8());
 
-    int startRow = doc["startRow"].toString().toInt() - 1;
-    int startCol = doc["startColumn"].toString().toInt() - 1;
+    int startRow = doc["startRow"].toString().toInt();
+    int startCol = doc["startColumn"].toString().toInt();
 
     int length = doc["len"].toString().toInt();
 
     int fill = doc["fill"].toInt();
-    int position = 1;
+    int direction = 1;
 
-     if(_showParmsJson.value("position").isString())
-         position = _showParmsJson.value("position").toString().toInt();
+     if(_showParmsJson.value("direction").isString())
+         direction = _showParmsJson.value("direction").toString().toInt();
 
 
 
     if(fill == 0)
     {
-        drawTriangle(startRow, startCol, length , position);
+        drawTriangle(startRow, startCol, length , direction);
     }
     else
     {
         for(int counter = length ; counter > 1; counter--)
         {
-            drawTriangle(startRow, startCol, counter , position);
+            drawTriangle(startRow, startCol, counter , direction);
         }
 
     }

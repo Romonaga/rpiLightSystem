@@ -309,19 +309,22 @@ void ILightShow::circlePoints(int cx, int cy, int x, int y)
 {
 
 
-    if (x == 0) {
+    if (x == 0)
+    {
         _ledWrapper->setPixelColor( cx, cy + y, _color1);
         _ledWrapper->setPixelColor(cx, cy - y, _color1);
         _ledWrapper->setPixelColor(cx + y, cy, _color1);
         _ledWrapper->setPixelColor(cx - y, cy, _color1);
-    } else
-    if (x == y) {
+    }
+    else if (x == y)
+    {
         _ledWrapper->setPixelColor(cx + x, cy + y,_color1);
         _ledWrapper->setPixelColor(cx - x, cy + y, _color1);
         _ledWrapper->setPixelColor(cx + x, cy - y, _color1);
         _ledWrapper->setPixelColor(cx - x, cy - y, _color1);
-    } else
-    if (x < y) {
+    }
+    else if (x < y)
+    {
         _ledWrapper->setPixelColor(cx + x, cy + y, _color1);
         _ledWrapper->setPixelColor(cx - x, cy + y, _color1);
         _ledWrapper->setPixelColor(cx + x, cy - y, _color1);
@@ -341,11 +344,14 @@ void ILightShow::circleMidpoint(int xCenter, int yCenter, int radius)
     int p = (5 - radius*4)/4;
 
     circlePoints(xCenter, yCenter, x, y);
-    while (x < y) {
+    while (x < y)
+    {
         x++;
-        if (p < 0) {
+        if (p < 0)
+        {
             p += 2*x+1;
-        } else {
+        } else
+        {
             y--;
             p += 2*(x-y)+1;
         }
