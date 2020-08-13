@@ -19,7 +19,7 @@ public:
     void startShow();
 
 private:
-    void saveArt();
+
 
 private:
     std::vector<unsigned char> _jpgBuffer;

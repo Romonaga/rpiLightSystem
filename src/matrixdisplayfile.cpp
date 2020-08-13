@@ -20,33 +20,6 @@ MatrixCreateDisplayFile::MatrixCreateDisplayFile(Ws2811Wrapper* ledWrapper, cons
 
 }
 
-void MatrixCreateDisplayFile::saveArt()
-{
-
-   /* QSqlDatabase database = QSqlDatabase::addDatabase("QMYSQL","saveArt");
-    database.setHostName(_settings->getDBServer());
-    database.setUserName(_settings->getDBUser());
-    database.setPassword(_settings->getDBPwd());
-    database.setDatabaseName(_settings->getDataBase());
-
-    if(database.open())
-    {
-        std::stringstream sql;
-        sql << "insert into matrixArt(userId, artName, showParms, enabled) values('1','" << _fileName.toStdString().c_str() << "','" << _jsondoc->toJson().toStdString().c_str() << "','1');";
-        QSqlQuery result(sql.str().c_str(), database);
-        if(result.lastError().type() != QSqlError::NoError)
-        {
-            _logger->logInfo(result.lastError().text().toStdString());
-        }
-        database.close();
-    }
-    else
-    {
-        _logger->logInfo(database.lastError().text().toStdString());
-    }
-    */
-}
-
 
 void MatrixCreateDisplayFile::startShow()
 {
@@ -60,8 +33,7 @@ void MatrixCreateDisplayFile::startShow()
     int pixalCount = 0;
     QJsonDocument jsondoc =  QJsonDocument();
     QJsonObject jsonObj = jsondoc.object();
-    QJsonArray pixals = QJsonArray();
-
+    QJsonObject pixal = jsondoc.object();
 
     QString fileName = _showParmsJson.value("uploadArt").toString();
     int saveAsArt = _showParmsJson.value("saveArt").toInt();
@@ -99,8 +71,6 @@ void MatrixCreateDisplayFile::startShow()
             }
 
 
-            QJsonObject pixal = jsondoc.object();
-
             if(error == 0 && reSampledImageData != nullptr)
             {
                 for(int row = 0; row < _settings->getChannels()[_channelId]->stripRows(); row++)
@@ -116,17 +86,13 @@ void MatrixCreateDisplayFile::startShow()
 
                             color["r"] = row;
                             color["c"] = col;
-                            QString number = QString("0x").append(QStringLiteral("%1").arg(ledColor, 8, 16, QLatin1Char('0')));
-
-                          //  color["co"] = QString("0x").append(QString().number(ledColor, 16));
                             color["co"] = QString("0x").append(QStringLiteral("%1").arg(ledColor, 6, 16, QLatin1Char('0')));
-                            pixal[QString().number(pixalCount)] = color;
 
+                            pixal[QString().number(pixalCount)] = color;
 
                         }
                         _ledWrapper->setPixelColor(row, col,  ledColor);
                         index += 3;
-
                     }
                 }
 
