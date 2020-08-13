@@ -12,9 +12,11 @@ Features.
 * Led Matrix Support (done) (Yes you can do a LED Wall with this!)
 * User Drawn Pixal Art Support (done) (PITA)
 * Save and Edit Matrix Art. (Done).
+* Load JPG/PNG into matrix (done).
+* Save User Created Art As JPG, allowing you to print and share your art!
 * Scrolling Text (done) (PITA)
-* JPG / Animated JPEG support (Started)
-* Support for 2 channels (In Testing)
+* Animated JPEG support (Started)
+* Support for 2 channels (In Testing) Lots of work still needs to be done.
 * Lights By Motion. (done)
 * Lights By Light Sensor. (done)
 * Lights By Timer. (done)
