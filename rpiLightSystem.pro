@@ -10,11 +10,15 @@ CONFIG -= app_bundle
 TEMPLATE = app
 SOURCES += src/ilightshow.cpp \
     src/channelsettings.cpp \
+    src/jpgd.cpp \
     src/lightluxfeature.cpp \
     src/lightsensorfeature.cpp \
     src/lightsystem.cpp \
+    src/lodepng.cpp \
     src/main.cpp \
     src/matrixart.cpp \
+    src/matrixcreatejpg.cpp \
+    src/matrixdisplayfile.cpp \
     src/matrixscrolltext.cpp \
     src/matrixsquare.cpp \
     src/matrixtcircle.cpp \
@@ -47,7 +51,8 @@ SOURCES += src/ilightshow.cpp \
     src/showtrichaser.cpp \
     src/showtwinkle.cpp \
     src/systemsettings.cpp  \
-    src/timefeature.cpp
+    src/timefeature.cpp \
+    src/toojpeg.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -64,11 +69,15 @@ HEADERS += \
     src/channelsettings.h \
     src/font7x6ext.h \
     src/ilightshow.h \
+    src/jpgd.h \
     src/lightluxfeature.h \
     src/lightsensorfeature.h \
     src/lightsystem.h \
+    src/lodepng.h \
     src/matrixart.h \
     src/matrixcircle.h \
+    src/matrixcreatejpg.h \
+    src/matrixdisplayfile.h \
     src/matrixscrolltext.h \
     src/matrixsquare.h \
     src/matrixtriangle.h \
@@ -100,7 +109,8 @@ HEADERS += \
     src/showtrichaser.h \
     src/showtwinkle.h \
     src/systemsettings.h \
-    src/timefeature.h
+    src/timefeature.h \
+    src/toojpeg.h
 
 LIBS += -lWs2811Wrapper
 LIBS += -lws2811

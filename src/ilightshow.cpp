@@ -134,8 +134,7 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
 
 ILightShow::~ILightShow()
 {
-    if(_image != nullptr)
-        delete [] _image;
+    deleteSnapShot();
 }
 
 void ILightShow::run()
@@ -431,191 +430,6 @@ void ILightShow::drawline(int x1, int y1, int x2, int y2)
 
 }
 
-/*
-void ILightShow::drawline(int x0, int y0, int x1, int y1)
-{
-    int dx, dy, p, x, y;
-
-    dx=x1-x0;
-    dy=y1-y0;
-
-    x=x0;
-    y=y0;
-
-    p=2*dy-dx;
-
-    while(x<x1)
-    {
-        if(p>=0)
-        {
-            qDebug()  << "x: " << x << " y: " << y;
-            _ledWrapper->setPixelColor(x,y,_color1);
-            y=y+1;
-            p=p+2*dy-2*dx;
-        }
-        else
-        {
-            qDebug()  << "x: " << x << " y: " << y;
-            _ledWrapper->setPixelColor(x,y,_color1);
-            p=p+2*dy;
-        }
-        x=x+1;
-    }
-}
-*/
-
-/*
- *
- *  void dda_circle(int xc,int yc,int r)
-{
-
-   float xc1,xc2,yc1,yc2,eps,sx,sy;
-
-  int val,i;
-
-  xc1=r;
-
-  yc1=0;
-
-  sx=xc1;
-
-  sy=yc1;
-
-  i=0;
-
-  do{
-
-      val=pow(2,i);
-
-      i++;
-
-      }while(val<r);
-
-  eps = 1/pow(2,i-1);
-
-  do{
-
-      xc2 = xc1 + yc1*eps;
-      yc2 = yc1 - eps*xc2;
-
-      putpixel(xc+xc2,yc-yc2,3);
-
-      xc1=xc2;
-
-      yc1=yc2;
-
-     }while((yc1-sy)<eps || (sx-xc1)>eps);
-
-}
-
-private final void circlePoints(int cx, int cy, int x, int y, int pix)
-    {
-        int act = Color.red.getRGB();
-
-        if (x == 0) {
-            raster.setPixel(act, cx, cy + y);
-            raster.setPixel(pix, cx, cy - y);
-            raster.setPixel(pix, cx + y, cy);
-            raster.setPixel(pix, cx - y, cy);
-        } else
-        if (x == y) {
-            raster.setPixel(act, cx + x, cy + y);
-            raster.setPixel(pix, cx - x, cy + y);
-            raster.setPixel(pix, cx + x, cy - y);
-            raster.setPixel(pix, cx - x, cy - y);
-        } else
-        if (x < y) {
-            raster.setPixel(act, cx + x, cy + y);
-            raster.setPixel(pix, cx - x, cy + y);
-            raster.setPixel(pix, cx + x, cy - y);
-            raster.setPixel(pix, cx - x, cy - y);
-            raster.setPixel(pix, cx + y, cy + x);
-            raster.setPixel(pix, cx - y, cy + x);
-            raster.setPixel(pix, cx + y, cy - x);
-            raster.setPixel(pix, cx - y, cy - x);
-        }
-    }
-
-    public void circleMidpoint(int xCenter, int yCenter, int radius, Color c)
-    {
-        int pix = c.getRGB();
-        int x = 0;
-        int y = radius;
-        int p = (5 - radius*4)/4;
-
-        circlePoints(xCenter, yCenter, x, y, pix);
-        while (x < y) {
-            x++;
-            if (p < 0) {
-                p += 2*x+1;
-            } else {
-                y--;
-                p += 2*(x-y)+1;
-            }
-            circlePoints(xCenter, yCenter, x, y, pix);
-        }
-    }
-
-
-void ILightShow::midPointCircleDraw(int x_centre, int y_centre, int r)
-{
-    int x = r, y = 0;
-
-    // Printing the initial point on the axes
-    // after translation
-    _ledWrapper->setPixelColor(x + x_centre, y + y_centre, _color2);
-
-
-    // When radius is zero only a single
-    // point will be printed
-    if (r > 0)
-    {
-        _ledWrapper->setPixelColor(x + x_centre, -y + y_centre, _color2);
-        _ledWrapper->setPixelColor(y + x_centre, x + y_centre, _color2);
-        _ledWrapper->setPixelColor(-y + x_centre, x + y_centre, _color2);
-    }
-
-    // Initialising the value of P
-    int P = 1 - r;
-    while (x > y)
-    {
-        y++;
-
-        // Mid-point is inside or on the perimeter
-        if (P <= 0)
-            P = P + 2*y + 1;
-        // Mid-point is outside the perimeter
-        else
-        {
-            x--;
-            P = P + 2*y - 2*x + 1;
-        }
-
-        // All the perimeter points have already been printed
-        if (x < y)
-            break;
-
-        // Printing the generated point and its reflection
-        // in the other octants after translation
-        _ledWrapper->setPixelColor(x + x_centre ,  y + y_centre, _color2);
-        _ledWrapper->setPixelColor(-x + x_centre,  y + y_centre, _color2);
-        _ledWrapper->setPixelColor(x + x_centre ,  -y + y_centre, _color2);
-        _ledWrapper->setPixelColor(-x + x_centre,  -y + y_centre, _color2);
-
-        // If the generated point is on the line x = y then
-        // the perimeter points have already been printed
-        if (x != y)
-        {
-            _ledWrapper->setPixelColor(y + x_centre, x + y_centre, _color2);
-            _ledWrapper->setPixelColor(-y + x_centre, x + y_centre, _color2);
-            _ledWrapper->setPixelColor(y + x_centre, -x + y_centre, _color2);
-            _ledWrapper->setPixelColor(-y + x_centre, -x + y_centre, _color2);
-        }
-    }
-}
-
-*/
-
 void ILightShow::drawBox(int startRow, int startcol, int length, int height)
 {
     int col = 0;
@@ -668,11 +482,11 @@ void ILightShow::shiftColumns()
 
 //all we are doing here is captruing our drawing area.  As it is defined,
 // we dont need to deal with the complete matrix..  Just what we touch.
-void ILightShow::snapShot()
+/*void ILightShow::snapShot(unsigned int snapShotBufferSize)
 {
-
     //We only care about what we might overlay.
-    _image = new ws2811_led_t[MAXROWS * _settings->getChannels()[_channelId]->stripColumns()];
+    _snapShotBufferSize = snapShotBufferSize;
+    _image = new ws2811_led_t[_snapShotBufferSize];
 
     for(int col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col++)
     {
@@ -680,24 +494,89 @@ void ILightShow::snapShot()
             _image[ (row  * _settings->getChannels()[_channelId]->stripColumns()) + col]  = _ledWrapper->getPixelColor(row + _rowStart, col);
     }
 }
+*/
+
+//all we are doing here is captruing our drawing area.  As it is defined,
+// we dont need to deal with the complete matrix..  Just what we touch.
+void ILightShow::snapShot(int rowStart, int maxRows)
+{
+    //We only care about what we might overlay.
+    _snapShotBufferSize = maxRows * _settings->getChannels()[_channelId]->stripColumns();
+
+    _image = new ws2811_led_t[_snapShotBufferSize];
+
+    for(int col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col++)
+    {
+        for(int row = 0; row < maxRows ; row++)
+            _image[ (row  * _settings->getChannels()[_channelId]->stripColumns()) + col]  = _ledWrapper->getPixelColor(row + rowStart, col);
+    }
+}
 
 //This will reprint the snapshot so to speak.  Here we will
 //simply get the picture and repaint it, to put the picture back to how
 //it was before we touched it
-void ILightShow::replaySnapShot()
+void ILightShow::replaySnapShot(int rowStart, int maxRows)
 {
     for(int col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col++)
     {
-        for(int row = 0; row < MAXROWS; row++)
-            _ledWrapper->setPixelColor(row + _rowStart, col, _image[ (row  * _settings->getChannels()[_channelId]->stripColumns()) + col]);
+        for(int row = 0; row < maxRows; row++)
+            _ledWrapper->setPixelColor(row + rowStart, col, _image[ (row  * _settings->getChannels()[_channelId]->stripColumns()) + col]);
 
     }
 
     _ledWrapper->show();
 
-    delete [] _image;
-    _image = nullptr;
+
 }
+
+//used to free memory allocated durring snapshot process.
+void ILightShow::deleteSnapShot()
+{
+    if(_image == nullptr)
+    {
+        delete [] _image;
+        _image = nullptr;
+    }
+
+}
+
+//You ARE responsable for this memory allocation!
+unsigned char* ILightShow::resample(int newWidth, int newHeight, int width, int height, unsigned char* imageData)
+{
+    if(imageData == nullptr) return nullptr;
+    //
+    // Get a new buuffer to interpolate into
+    unsigned char* newData = new unsigned char [newWidth * newHeight * 3];
+
+    double scaleWidth =  (double)newWidth / (double)width;
+    double scaleHeight = (double)newHeight / (double)height;
+
+    for(int cy = 0; cy < newHeight; cy++)
+    {
+        for(int cx = 0; cx < newWidth; cx++)
+        {
+            int pixel = (cy * (newWidth *3)) + (cx*3);
+            int nearestMatch =  (((int)(cy / scaleHeight) * (width *3)) + ((int)(cx / scaleWidth) *3) );
+
+            newData[pixel    ] =  imageData[nearestMatch    ];
+            newData[pixel + 1] =  imageData[nearestMatch + 1];
+            newData[pixel + 2] =  imageData[nearestMatch + 2];
+        }
+    }
+
+
+
+    return newData;
+
+}
+
+
+unsigned int ILightShow::getSnapShotBufferSize() const
+{
+    return _snapShotBufferSize;
+}
+
+
 
 void ILightShow::scrollText(QString msg, bool noDelay)
 {

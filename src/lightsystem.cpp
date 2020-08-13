@@ -50,7 +50,8 @@
 #include "matrixcircle.h"
 #include "matrixsquare.h"
 #include "matrixtriangle.h"
-
+#include "matrixcreatejpg.h"
+#include "matrixdisplayfile.h"
 
 LightSystem::LightSystem(QObject *parent) : QObject(parent)
 {
@@ -481,6 +482,14 @@ void LightSystem::queueShow(const LedLightShows& show, const QString& showParms)
         case MatrixT:
             _runningShows.append(new MatrixTriangle(&_ledWrapper, show, showParms));
             break;
+
+        case MatrixJpg:
+            _runningShows.append(new MatrixCreateJpg(&_ledWrapper, show, showParms));
+            break;
+
+        case MatrixDF:
+            _runningShows.append(new MatrixCreateDisplayFile(&_ledWrapper, show, showParms));
+             break;
 
         default:
             _logger->logWarning("Unknown Show");

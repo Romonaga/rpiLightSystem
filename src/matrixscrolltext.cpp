@@ -25,7 +25,6 @@ void MatrixScrollText::startShow()
 
     QString sendPad;
 
-
        if(_matrixText.length() == 0)
            return;
 
@@ -58,7 +57,7 @@ void MatrixScrollText::startShow()
            }
        }
 
-       snapShot();
+       snapShot(_rowStart, MAXROWS);
 
        while(_endTime > time(nullptr) && _running == true)
        {
@@ -74,8 +73,8 @@ void MatrixScrollText::startShow()
            }
        }
 
-       replaySnapShot();
-
+       replaySnapShot(_rowStart, MAXROWS);
+       deleteSnapShot();
 
 }
 

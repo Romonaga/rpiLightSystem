@@ -48,7 +48,9 @@
             X(26, MatrixTripShow, "Trippy Matrix"),                   \
             X(27, MatrixC, "Circle"),                   \
             X(28, MatrixS, "Square"),                   \
-            X(29, MatrixT, "Triangle")                   \
+            X(29, MatrixT, "Triangle"),                   \
+            X(30, MatrixJpg, "Create Art JPG"),                   \
+            X(31, MatrixDF, "Display File JPG/PNG")                   \
 
 
 #define LIGHT_SHOWS_ENUM(type, name, txt) name = type
@@ -106,10 +108,17 @@ protected:
     void drawline(int x1, int y1, int x2, int y2);
     void drawTriangle(int startRow, int startCol, int size, int direction);
 
-    void snapShot();
     void shiftColumns();
     void scrollText(QString msg, bool noDelay);
-    void replaySnapShot();
+
+    //void snapShot(unsigned int snapShotBufferSize);
+    void snapShot(int rowStart, int maxRows);
+    void replaySnapShot(int rowStart, int maxRows);
+    void deleteSnapShot();
+
+    //You ARE responsable for this memory allocation!
+    unsigned char* resample(int newWidth, int newHeight, int width, int height, unsigned char* imageData);
+    unsigned int getSnapShotBufferSize() const;
 
 
 
@@ -154,6 +163,8 @@ protected:
     int _rowStart;
     int _drawCol;
     ws2811_led_t* _image;
+    unsigned int _snapShotBufferSize;
+
 
 
 protected:

@@ -45,6 +45,8 @@ public:
 
     QMap<int, ChannelSettings *> getChannels() const;
 
+    QString getUserArtDirectory() const;
+
 private:
     SystemSettings();
     static SystemSettings* _instance;
@@ -65,6 +67,7 @@ private:
     int _mqttRetries;
     int _mqttRetryDelay;
     bool _dbgLog;
+    QString _userArtDirectory;
 
     DNRLogger* _logger;
 

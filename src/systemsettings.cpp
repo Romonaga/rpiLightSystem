@@ -20,6 +20,11 @@ SystemSettings::SystemSettings()
 
 }
 
+QString SystemSettings::getUserArtDirectory() const
+{
+    return _userArtDirectory;
+}
+
 QMap<int, ChannelSettings *> SystemSettings::getChannels() const
 {
     return _channels;
@@ -115,6 +120,7 @@ bool SystemSettings::loadSystemSettings()
             _mqttRetries = qry.value("mqttRetries").toInt();
             _mqttRetryDelay = qry.value("mqttRetryDelay").toInt();
             _mqttTwitchQueue = qry.value("twitchMqttQueue").toString();
+            _userArtDirectory = qry.value("userArtDirectory").toString();
 
             sql = "SELECT * FROM LedLightSystem.lightSystemChannels where enabled = 1 and lightSystemId = ";
             sql.append(QString().number(_systemId));

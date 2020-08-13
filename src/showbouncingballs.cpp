@@ -1,10 +1,21 @@
 #include "showbouncingballs.h"
 #include <QVector>
+#include <QFileInfo>
 #include <math.h>
 #include <QDebug>
+#include <fstream>
+#include <unistd.h>
+
 
 #include "font7x6ext.h"
 #include<iostream>
+#include "jpgd.h"
+
+//#define LODEPNG_COMPILE_DISK 1
+//#define LODEPNG_COMPILE_DECODER 1
+
+#include "lodepng.h"
+
 using namespace std;
 
 
@@ -15,396 +26,144 @@ ShowBouncingBalls::ShowBouncingBalls(Ws2811Wrapper* ledWrapper, const LedLightSh
 
 }
 
-/*
- * drawline(row + (len - 1), 13  , row + (len - 1), y - 1);
- * */
+
 void ShowBouncingBalls::startShow()
 {
-    //Truths StartRow, StartCol, Size
-    int startRow = 7;
-    int startCol = 16;
-    int size = 7;
+    unsigned char* imageData = nullptr;
+    unsigned char* reSampledImageData = nullptr;
 
-    drawTriangle(startRow, startCol, size, 1);
-    drawTriangle(startRow, startCol, size, 2);
-    drawTriangle(startRow, startCol, size, 3);
-    drawTriangle(startRow, startCol, size, 4);
+    int comps = 3;
+    int index = 0;
+    unsigned error = 0;
 
+    QString fileName = _showParmsJson.value("filename").toString();
+    fileName = "/home/hellweek/code/userArt/th_5.jpg";
 
+    QFileInfo file(fileName);
+    if(file.exists())
+    {
+        if((file.suffix().toUpper() == "PNG"))
+        {
+            unsigned int width = 0;
+            unsigned int height = 0;
 
-
-   //drawTriangle(startRow, startCol, size, 2);
- //   drawTriangle(startRow, startCol, size, 3);
- //   drawTriangle(startRow, startCol, size, 4);
-
-    //pointing left
-
-    //drawline(startRow - 1, startCol - 1, (startRow - 1 ) - size, (startCol - 1) + size);
-    //drawline(startRow - 1, startCol - 1, (startRow - 1)  + size, (startCol - 1) + size);
-    //drawline( (startRow - 1) - size, (startCol - 1) + (size - 1), startCol - 1, (startCol - 1) + (size - 1));
-
-    //drawline(4, 8, 0, 13);
-    //drawline(4, 8, 9, 13);
-    //drawline(1, 12, 8, 12);
-
-
-    //drawline(startRow - 1, startCol - 1, (startRow - 1 ) + size, (startCol - 1) - size);
-    //drawline(startRow - 1, startCol - 1, (startRow - 1)  + size, (startCol - 1) + size);
-    //drawline( (startRow - 1) + (size - 1), 5, (startRow - 1) + (size - 1), (size - 1) + (startCol - 1));
-
-    //drawTriangle(5, 9, 5, 1);
-
-    //drawline( startRow - size, size, startRow + size, (size + startCol) - 2);
-
-    //drawline(startRow - 1, startCol - 1, startRow - size, (startCol - 1) - size);
-    //drawline(startRow - 1, startCol - 1, startRow - size, (startCol - 1) + size);
-    //drawline( startRow - size, size, startRow - size, (size + startCol) - 2);
-
-    //pointing right
-    //drawline(5, 8, 0, 3);
-   // drawline(startRow - 1 , startCol - 1, startRow - size, (startCol - 1) - size);
-
-    //drawline(5, 8, 10, 3);
-  //  drawline(startRow - 1 , startCol - 1, (startRow - 1) + size, (startCol - 1) - size);
-
-    //drawline(1, 4, 8, 4);
-  //  drawline((startRow - 1) - size, startCol - size  , startCol - 1, startCol - size);
-
-    //pointing left
-    //drawline(5, 8, 0, 13);
-    //drawline(5, 8, 10, 13);
-    //drawline(2, 12, 10, 12);
-
-
-    //pointing up
-    //   drawline(0, 8, 5, 13);
-    //   drawline(0, 8, 5, 4);
-    //   drawline(4, 4, 4, 12);
-
-
-    //pointing down
-
-    //Truths StartRow, StartCol, Size
-    //int startRow = 5;
-    //int startCol = 9;
-    //int size = 5;
-
-   // drawline(startRow - 1, startCol - 1, startRow - size, (startCol - 1) - size);
-    //drawline(4, 8, 0, 3);  //StartRow, startCol, startRow, startCol - size
-
-    //drawline(startRow - 1, startCol - 1, startRow - size, (startCol - 1) + size);
-    //drawline(4, 8, 0, 13); //StartRow + size, startCol, startRow, startCol + size
-
-    //drawline( startRow - size, size, startRow - size, (size + startCol) - 2); //startRow, startCol - (startCol - size), (startCol + size) - 1
-    //drawline(0, 5, 0, 12); //startRow, startCol - (startCol - size), (startCol + size) - 1
-
-
-    //Down
- //   drawTriangle(5, 9, 5, 3);
-
-    //right
-    //drawTriangle(5, 9, 5, 2);
-
-    _ledWrapper->show();
-
-}
-
-/*
- *
- *
- *
-void BresenhamCircle::drawBresenhamCircle() {
-            int x = 0, y = radius_;
-            int decesionParameter = 3 - 2 * radius_;
-            displayBresenhmCircle(xc_, yc_, x, y);
-            while (y >= x)
+            error = lodepng_decode24_file(&imageData, &width, &height, fileName.toStdString().c_str());
+            if(error == 0)
             {
-                x++;
-                if (decesionParameter > 0)
+                reSampledImageData =  resample(_settings->getChannels()[_channelId]->stripColumns(),_settings->getChannels()[_channelId]->stripRows(), width, height, imageData);
+                free(imageData);
+            }
+
+        }
+        else if(file.suffix().toUpper() == "JPG")
+        {
+            int width = 0;
+            int height = 0;
+            error = 1;
+            imageData = jpgd::decompress_jpeg_image_from_file(fileName.toStdString().c_str(), &width, &height, &comps, 3 );
+            if(imageData != nullptr)
+            {
+                error = 0;
+                reSampledImageData =  resample(_settings->getChannels()[_channelId]->stripColumns(),_settings->getChannels()[_channelId]->stripRows(), width, height, imageData);
+                delete [] imageData;
+            }
+
+        }
+
+        if(error == 0)
+        {
+            for(int row = 0; row < _settings->getChannels()[_channelId]->stripRows(); row++)
+            {
+
+                for(int col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col++)
                 {
-                    y--;
-                    decesionParameter = decesionParameter + 4 * (x - y) + 10;
+
+                    _ledWrapper->setPixelColor(row, col, reSampledImageData[index], reSampledImageData[index + 1], reSampledImageData[index + 2] );
+                    index += 3;
+
                 }
-                else
-                    decesionParameter = decesionParameter + 4 * x + 6;
-                displayBresenhmCircle(xc_, yc_, x, y); //displaying all the Eight Pixels of (x,y)
-                delay(30);
-            }
-        }
-
-void BresenhamCircle::displayBresenhmCircle(int xc_,int yc_, int x, int y) {
-            //displaying all 8 coordinates of(x,y) residing in 8-octants
-            putpixel(xc_+x, yc_+y, WHITE);
-            putpixel(xc_-x, yc_+y, WHITE);
-            putpixel(xc_+x, yc_-y, WHITE);
-            putpixel(xc_-x, yc_-y, WHITE);
-            putpixel(xc_+y, yc_+x, WHITE);
-            putpixel(xc_-y, yc_+x, WHITE);
-            putpixel(xc_+y, yc_-x, WHITE);
-            putpixel(xc_-y, yc_-x, WHITE);
-        }
-
-void ShowBouncingBalls::startShow()
-
-{
-    _ledWrapper->clearLeds();
-    FILE* fileIn;
-    unsigned char r[2];
-    unsigned char g[2];
-    unsigned char b[2];
-    int counter = 0;
-
-    fileIn = fopen("/home/hellweek/code/frog.rgb","r+");
-    if(fileIn)
-    {
-        while(!feof(fileIn))
-        {
-            fread(r, sizeof(unsigned char), 1, fileIn);
-            fread(g, sizeof(unsigned char), 1, fileIn);
-            fread(b, sizeof(unsigned char), 1, fileIn);
-
-            ws2811_led_t color = _ledWrapper->Color((u_int8_t)r[0],(u_int8_t)g[0],(u_int8_t)b[0]);
-            _ledWrapper->setPixelColor(counter, color);
-
-
-
-            counter++;
-        }
-        fclose(fileIn);
-        _ledWrapper->show();
-    }
-    else
-    {
-        _logger->logInfo("Nope");
-    }
-
-
-   // Draw our box
-    _ledWrapper->setPixelColor(6,0, _color2);
-    _ledWrapper->setPixelColor(6,1, _color1);
-    _ledWrapper->setPixelColor(6,2, _color1);
-    _ledWrapper->setPixelColor(6,3, _color1);
-    _ledWrapper->setPixelColor(6,4, _color1);
-    _ledWrapper->setPixelColor(6,5, _color1);
-
-    _ledWrapper->setPixelColor(6,6, _color4);
-    _ledWrapper->setPixelColor(6,7, _color4);
-    _ledWrapper->setPixelColor(6,8, _color4);
-
-     _ledWrapper->setPixelColor(7,6, _color4);
-     _ledWrapper->setPixelColor(7,7, _color3);
-     _ledWrapper->setPixelColor(7,8, _color4);
-
-     _ledWrapper->setPixelColor(8,6, _color4);
-     _ledWrapper->setPixelColor(8,7, _color4);
-     _ledWrapper->setPixelColor(8,8, _color4);
-
-     //lets fill around it programaticly;
-    for(u_int32_t row = 0; row < _ledWrapper->getRows(); row++)
-    {
-        _ledWrapper->setPixelColor(row, 0, _color2);
-        _ledWrapper->setPixelColor(row, _ledWrapper->getColumns() -1 , _color2);
-
-        for(u_int32_t column = 1; column < _ledWrapper->getColumns() - 1; column++)
-        {
-            if(row >= 6 && row <= 8)
-            {
-                if(column >= 6 && column <= 8)
-                    continue;
             }
 
-            if(row == 0 || row == _ledWrapper->getRows() - 1)
-                _ledWrapper->setPixelColor(row, column, _color2);
-           else
-            _ledWrapper->setPixelColor(row, column, _color1);
+
+            _ledWrapper->show();
+
+            delete [] reSampledImageData;
         }
+
     }
 
-
-
-     _ledWrapper->show();
 
 
 
 }
 
 
+/*
 
 void ShowBouncingBalls::startShow()
 {
-    float Gravity = -9.81;
-  int StartHeight = 1;
+    int width = 0;
+    int height = 0;
+    int comps = 3;
+    int index = 0;
 
-  float Height[_width];
-  float ImpactVelocityStart = sqrt( -2 * Gravity * StartHeight );
-  float ImpactVelocity[_width];
-  float TimeSinceLastBounce[_width];
-  int   Position[_width];
-  long  ClockTimeSinceLastBounce[_width];
-  float Dampening[_width];
 
-  for (int i = 0 ; i < _width ; i++)
-  {
-    ClockTimeSinceLastBounce[i] = time(nullptr);
-    Height[i] = StartHeight;
-    Position[i] = 0;
-    ImpactVelocity[i] = ImpactVelocityStart;
-    TimeSinceLastBounce[i] = 0;
-    Dampening[i] = 0.90 - float(i)/pow(_width,2);
-  }
+//    unsigned char* data = jpgd::decompress_jpeg_image_from_file("/home/hellweek/code/userArt/art_Hk0cN5.jpg", &width, &hight, &comps, 3 );
+//    qDebug() << "w: " << width << " h: " << hight;
 
-  while(_endTime > time(nullptr))
-  {
-    if(_running ==  false)
-      return;
+//    unsigned char* image =  resample(_settings->getChannels()[_channelId]->stripColumns(),_settings->getChannels()[_channelId]->stripRows(), width, hight, data);
 
-    for (int i = 0 ; i < _width ; i++)
+
+//    for(int row = 0; row < _settings->getChannels()[_channelId]->stripRows(); row++)
+//    {
+
+//        for(int col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col++)
+//        {
+
+
+//            _ledWrapper->setPixelColor(row, col, image[index], image[index + 1], image[index + 2] );
+//            index += 3;
+
+//            //_ledWrapper->setPixalColor(row, col, image[index++]);
+
+//        }
+//    }
+
+//    _ledWrapper->show();
+//    delete [] data;
+//    delete [] image;
+
+
+    unsigned error;
+    unsigned char* image1 = nullptr;
+    unsigned width1, height1 = 0;
+
+    error = lodepng_decode24_file(&image1, &width1, &height1, "/home/hellweek/code/userArt/greenthing.png");
+    unsigned char* image =  resample(_settings->getChannels()[_channelId]->stripColumns(),_settings->getChannels()[_channelId]->stripRows(), width1, height1, image1);
+    free(image1);
+
+  //  qDebug() << "grwol width: " << width1 << " h: " << height1 << " error: " << error << " buf size: " << bufferSize << "my calc: " << (width1 * height1) * 3;
+
+    index = 0;
+    for(int row = 0; row < _settings->getChannels()[_channelId]->stripRows(); row++)
     {
-      TimeSinceLastBounce[i] =  time(nullptr) - ClockTimeSinceLastBounce[i];
-      Height[i] = 0.5 * Gravity * pow( TimeSinceLastBounce[i]/1000 , 2.0 ) + ImpactVelocity[i] * TimeSinceLastBounce[i]/1000;
 
-      if ( Height[i] < 0 )
-      {
-        Height[i] = 0;
-        ImpactVelocity[i] = Dampening[i] * ImpactVelocity[i];
-        ClockTimeSinceLastBounce[i] = time(nullptr);
-
-        if ( ImpactVelocity[i] < 0.01 )
+        for(int col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col++)
         {
-          ImpactVelocity[i] = ImpactVelocityStart;
+
+
+            _ledWrapper->setPixelColor(row, col, image[index], image[index + 1], image[index + 2] );
+            index += 3;
+
+            //_ledWrapper->setPixalColor(row, col, image[index++]);
+
         }
-      }
-      Position[i] = round( Height[i] * (_ledWrapper->getNumberLeds() - 1) / StartHeight);
-      qDebug() << "Position: " <<  Position[i] << " Height: "  << Height[i] << " I: " << i << " width: " << _width;
     }
 
-    for (int i = 0 ; i < _width ; i++)
-    {
-        //qDebug() << Position[i];
-       _ledWrapper->setPixelColor(Position[i],_color1);
-    }
     _ledWrapper->show();
 
-    _ledWrapper->clearLeds();
-  }
+
 }
 
-void ShowBouncingBalls::startShow()
-{
 
-    time_t start_time = time(nullptr);
-    QVector<time_t> clockTimeSinceLastBounce;
-    QVector<time_t> timeSinceLastBounce;
-
-
-    QVector<int> height;
-    QVector<int> position;
-    QVector<int> impactVelocity;
-
-    QVector<int> dampening;
-
-
-    int startHeight = 1;
-    double impactVelocityStart = sqrt(-2 * -9.81 * 1);
-
-
-    time_t last_ClockTimeSinceLastBounce = start_time;
-
-    for(int counter = 0; counter < _width; counter++)
-    {
-        clockTimeSinceLastBounce.append(start_time - last_ClockTimeSinceLastBounce);
-        height.append(startHeight);
-        position.append(0);
-        impactVelocity.append(sqrt(-2 * -9.81 * 1));
-        timeSinceLastBounce.append(0);
-
-        dampening.append(0.90 - (( double) counter / pow(_width, 2)));
-
-    }
-
-
-    while(_endTime > time(nullptr))
-    {
-        int ballCount = 0;
-        for(ballCount = 0; ballCount < _width; ballCount++)
-        {
-            timeSinceLastBounce[ballCount] = time(nullptr) - clockTimeSinceLastBounce[ballCount];
-            height[ballCount] = 0.5 * (-9.81) *  pow(timeSinceLastBounce[ballCount],2) + impactVelocity[ballCount] * timeSinceLastBounce[ballCount];
-            if(height[ballCount] < 0)
-                height[ballCount] = 0;
-
-            impactVelocity[ballCount] = dampening[ballCount] * impactVelocity[ballCount];
-            clockTimeSinceLastBounce[ballCount] = time(nullptr);
-
-            if (impactVelocity[ballCount] < 0.01)
-                impactVelocity[ballCount] = impactVelocityStart;
-        }
-
-        position[ballCount] = round(height[ballCount] * (_ledWrapper->getNumberLeds()-1)/startHeight);
-
-
-        for(int i= 0; i < _width; i++)
-            _ledWrapper->setPixelColor(_settings->getStripHeight(), position[i],_color1);
-
-        _ledWrapper->show();
-
-        for(int i= 0; i < _width; i++)
-            _ledWrapper->setPixelColor(_settings->getStripHeight(), i, _color1);
-
-
-        for(u_int32_t i = 0; i < _ledWrapper->getNumberLeds() ; i++)
-            _ledWrapper->setPixelColor(_settings->getStripHeight(), i, 255,0,0);
-
-
-         Ws2811Wrapper::waitMillSec(_wait);
-
-    }
-}
-
- * def bouncing_balls(strip, playtime, ball_count=2, wait_ms=200):
-    """Shows an accelerated pixel with physicslike a ball in a flipper game"""
-    import time, math
-    start_time = time.time()
-    ClockTimeSinceLastBounce = [0 for i in range(ball_count)]
-    StartHeight=1
-
-    for i in range(ball_count):
-        ClockTimeSinceLastBounce[i] = time.time()
-
-    Height = [0 for i in range(ball_count)]
-    Position = [0 for i in range(ball_count)]
-    ImpactVelocity = [0 for i in range(ball_count)]
-    ImpactVelocityStart= math.sqrt(-2 * -9.81 * 1)
-    Dampening = [0 for i in range(ball_count)]
-    TimeSinceLastBounce = [0 for i in range(ball_count)]
-
-    for i in range(0,ball_count,1):
-        last_ClockTimeSinceLastBounce = ClockTimeSinceLastBounce[i]
-        ClockTimeSinceLastBounce[i] = time.time() - last_ClockTimeSinceLastBounce
-
-        Height[i] = StartHeight
-        Position[i] = 0
-        ImpactVelocity[i] = math.sqrt(-2 * -9.81 * 1)
-        TimeSinceLastBounce[i] = 0
-        Dampening[i] = 0.90 - (float(i)/(ball_count**2))
-    act_time = time.time()
-    while ((act_time+ playtime)> time.time()):
-        for i in range(ball_count):
-            TimeSinceLastBounce[i] = time.time() - ClockTimeSinceLastBounce[i]
-            Height[i] = 0.5 * (-9.81) * (TimeSinceLastBounce[i]**2) + ImpactVelocity[i] * TimeSinceLastBounce[i]
-            if (Height[i] < 0):
-                Height[i] = 0
-                ImpactVelocity[i] = Dampening[i] * ImpactVelocity[i]
-                ClockTimeSinceLastBounce[i] = time.time()
-                if (ImpactVelocity[i] < 0.01):
-                    ImpactVelocity[i] = ImpactVelocityStart
-
-            Position[i] = round(Height[i] * (strip.numPixels()-1)/StartHeight)
-        for i in range(ball_count):
-            strip.setPixelColorRGB(Position[i], 0, 0,255)
-        strip.show()
-        for i in range(strip.numPixels()):
-            strip.setPixelColorRGB(i, 0,0,0)
- *
- * */
-
+*/

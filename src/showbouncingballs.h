@@ -3,7 +3,7 @@
 
 #include "ilightshow.h"
 
-
+#include <vector>
 
 
 
@@ -19,6 +19,7 @@ public:
     void startShow();
 
 private:
+    std::vector<unsigned char> _jpgBuffer;
 
 
 };
