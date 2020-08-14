@@ -15,7 +15,7 @@ Features.
 * Load JPG/PNG into matrix (done).
 * Save User Created Art As JPG, allowing you to print and share your art!
 * Scrolling Text (done) (PITA)
-* Animated JPEG support (Started)
+* Animated GIF support (Done)
 * Support for 2 channels (In Testing) Lots of work still needs to be done.
 * Lights By Motion. (done)
 * Lights By Light Sensor. (done)
