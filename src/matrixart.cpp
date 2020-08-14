@@ -26,13 +26,11 @@ void MatrixArt::startShow()
 
              if(jsonObject["pixles"].isObject())
              {
-                 qDebug() << "we have pix";
                  jsonPixels = jsonObject["pixles"].toObject();
                  foreach(const QJsonValue &value, jsonPixels)
                  {
                      try
                      {
-                         qDebug() << "GROWL row: " << value["r"].toInt()  << " col: " <<  value["c"].toInt() <<  "color: " << value["co"].toString().replace("#","0x").toStdString().c_str();
                         _ledWrapper->setPixelColor(value["r"].toInt(), value["c"].toInt(), std::stoul(value["co"].toString().replace("#","0x").toStdString().c_str(), nullptr, 16));
                      }
                      catch (const std::invalid_argument&)
