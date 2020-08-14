@@ -3,18 +3,12 @@
 #include <QFileInfo>
 #include <math.h>
 #include <QDebug>
-#include <fstream>
-#include <unistd.h>
 
+extern "C"
+{
+    #include "gifdec.h"
+}
 
-#include "font7x6ext.h"
-#include<iostream>
-#include "jpgd.h"
-
-//#define LODEPNG_COMPILE_DISK 1
-//#define LODEPNG_COMPILE_DECODER 1
-
-#include "lodepng.h"
 
 using namespace std;
 
@@ -29,72 +23,51 @@ ShowBouncingBalls::ShowBouncingBalls(Ws2811Wrapper* ledWrapper, const LedLightSh
 
 void ShowBouncingBalls::startShow()
 {
-    unsigned char* imageData = nullptr;
+
+    int index = 0;
+    unsigned loopCount = 0;
     unsigned char* reSampledImageData = nullptr;
 
-    int comps = 3;
-    int index = 0;
-    unsigned error = 0;
+    gd_GIF *gif = gd_open_gif("/home/hellweek/code/userArt/animated.gif");
 
-    QString fileName = _showParmsJson.value("filename").toString();
-    fileName = "/home/hellweek/code/userArt/th_5.jpg";
+    unsigned char *imageData = new unsigned char[gif->width * gif->height * 3];
 
-    QFileInfo file(fileName);
-    if(file.exists())
+    loopCount = (gif->loop_count <= 20) ? 20 : gif->loop_count;
+    for (unsigned looped = 0; loopCount > looped; looped++)
     {
-        if((file.suffix().toUpper() == "PNG"))
+
+        while (gd_get_frame(gif))
         {
-            unsigned int width = 0;
-            unsigned int height = 0;
 
-            error = lodepng_decode24_file(&imageData, &width, &height, fileName.toStdString().c_str());
-            if(error == 0)
-            {
-                reSampledImageData =  resample(_settings->getChannels()[_channelId]->stripColumns(),_settings->getChannels()[_channelId]->stripRows(), width, height, imageData);
-                free(imageData);
-            }
+            gd_render_frame(gif, imageData);
+            reSampledImageData =  resample(_settings->getChannels()[_channelId]->stripColumns(),_settings->getChannels()[_channelId]->stripRows(), gif->width, gif->height, imageData);
+            index = 0;
 
-        }
-        else if(file.suffix().toUpper() == "JPG")
-        {
-            int width = 0;
-            int height = 0;
-            error = 1;
-            imageData = jpgd::decompress_jpeg_image_from_file(fileName.toStdString().c_str(), &width, &height, &comps, 3 );
-            if(imageData != nullptr)
-            {
-                error = 0;
-                reSampledImageData =  resample(_settings->getChannels()[_channelId]->stripColumns(),_settings->getChannels()[_channelId]->stripRows(), width, height, imageData);
-                delete [] imageData;
-            }
-
-        }
-
-        if(error == 0)
-        {
             for(int row = 0; row < _settings->getChannels()[_channelId]->stripRows(); row++)
             {
 
                 for(int col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col++)
                 {
-
-                    _ledWrapper->setPixelColor(row, col, reSampledImageData[index], reSampledImageData[index + 1], reSampledImageData[index + 2] );
+                    ws2811_led_t ledColor = _ledWrapper->Color(reSampledImageData[index], reSampledImageData[index + 1], reSampledImageData[index + 2]);
+                    _ledWrapper->setPixelColor(row, col,  ledColor);
                     index += 3;
-
                 }
             }
 
-
+            Ws2811Wrapper::waitMillSec(gif->gce.delay * 10);
             _ledWrapper->show();
 
             delete [] reSampledImageData;
+
         }
 
-    }
+        gd_rewind(gif);
 
+        if (_running == false) break;
+     }
 
-
-
+     delete [] imageData;
+     gd_close_gif(gif);
 }
 
 

@@ -3069,7 +3069,6 @@ unsigned char *decompress_jpeg_image_from_stream(jpeg_decoder_stream *pStream, i
   if ((req_comps != 1) && (req_comps != 3) && (req_comps != 4))
     return NULL;
 
-  fprintf(stderr, "GROWL\n");
   jpeg_decoder decoder(pStream);
   if (decoder.get_error_code() != JPGD_SUCCESS)
     return NULL;
