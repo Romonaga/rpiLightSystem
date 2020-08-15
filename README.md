@@ -34,9 +34,26 @@ Features.
 
 </b>
 
+
+
 Everything that is needed to build and run this project is or will be included in this repository. This will save you time finding the repos needed.  Please follow the build instructions and install instructions for all libs that I have used.  While we have attempted to document as best as possible, it is always best to follow the directions provided by package owner.
 
 <b>These instructions are for Rasperry Pi Buster. It is assumed you are using the latest version of buster.</b>
+
+First Some machine prep.
+
+We want to block the sound card as it can be problematic with DMA addressing.
+
+cd /etc/modprobe.d
+sudo vi alsa-blacklist.conf
+Enter the following line
+blacklist snd_bcm2835
+Save the file.
+
+sudo raspi-config
+If you are wanting to use the LUX Sensor, it uses the i2c bus, you will want to enable that.
+If you plan un using the SPI bus to drive LEDS, you will need to enable SPI.
+
 
 1. sudo apt install git qt5-default libqt5sql5-mysql build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev wiringpi libi2c-dev libcppunit-dev
 2. sudo apt install scons (Needed for Ws2811lib.)
