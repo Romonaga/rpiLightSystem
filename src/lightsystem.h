@@ -19,6 +19,10 @@
 #include "lightluxfeature.h"
 #include "mqttpublisher.h"
 
+
+using rgb_matrix::RGBMatrix;
+
+
 #define LIGHT_FEATURES(X)                                                  \
             X(0, None, "Why Are We Here?"),                           \
             X(1, MotionSensor, "Motion Sensor"),                           \
@@ -124,6 +128,7 @@ private:
     TimeFeature* _timeFeature;
     LightLuxFeature* _luxFeature;
 
+
 public slots:
     void processMsgReceived(QString msg);
     void processMsgReceivedTwitch(QString msg);
@@ -132,6 +137,7 @@ public slots:
     void lightStateChange(LightSensorFeature* feature, int state);
     void timeStateChange(TimeFeature* feature, int state);
     void lightLuxStateChange(LightLuxFeature* feature, quint32 lux);
+
 
 
 };

@@ -24,6 +24,8 @@ public:
 
     void setBrightness(int brightness);
 
+    int matrix2121Wiring() const;
+
 private:
     int _channelId;
     int _stripType;
@@ -35,6 +37,7 @@ private:
     int _brightness;
     int _matrixdirection;
     double _gamma;
+    int _matrix2121Wiring;
 
 };
 

@@ -191,6 +191,8 @@ void MatrixCreateDisplayFile::startShow()
 
             }
 
+            QFile(fileName).remove();
+
         }
     }
 }

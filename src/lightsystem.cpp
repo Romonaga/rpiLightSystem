@@ -71,6 +71,7 @@ LightSystem::LightSystem(QObject *parent) : QObject(parent)
     _statusPipe = nullptr;
 
 
+
 }
 
 
@@ -99,6 +100,9 @@ void LightSystem::stopFeatures()
         _luxFeature->stop();
         delete _luxFeature;
     }
+
+
+
 }
 
 LightSystem::~LightSystem()
@@ -509,7 +513,7 @@ void LightSystem::logShow(ILightShow* show)
 {
     if(false == _settings->getLogShows()) return;
 
-    QSqlDatabase database = QSqlDatabase::addDatabase("QMYSQL","logShow");
+    QSqlDatabase database = QSqlDatabase::database("rpiLightSystem");
     database.setHostName(_settings->getDBServer());
     database.setUserName(_settings->getDBUser());
     database.setPassword(_settings->getDBPwd());
@@ -610,8 +614,7 @@ void LightSystem::loadFeatures()
 
     std::stringstream info;
 
-    QSqlDatabase database = QSqlDatabase::addDatabase("QMYSQL","rpiLightFeatures");
-
+    QSqlDatabase database = QSqlDatabase::database("rpiLightSystem");
     database.setHostName(_settings->getInstance()->getDBServer());
     database.setUserName(_settings->getInstance()->getDBUser());
     database.setPassword(_settings->getInstance()->getDBPwd());
@@ -740,9 +743,19 @@ bool LightSystem::startSystem()
             channel->brightness() << ") MQTTBroker(" << _settings->getMqttBroker().toStdString().c_str() << ")";
 
 
+            ws2811_return_t renderResults;
             _logger->logInfo(info.str());
-            ws2811_return_t renderResults = _ledWrapper.initStrip( (ws2811Channel)channel->channelId(), channel->stripRows(), channel->stripColumns(),
-                                                       (LedStripType)channel->stripType(), channel->dma(), channel->gpio(), (matrixDirection)channel->matrixdirection());
+            if( (LedStripType)channel->stripType() != MATRIX_2121)
+            {
+                renderResults = _ledWrapper.initStrip( (ws2811Channel)channel->channelId(), channel->stripRows(), channel->stripColumns(),
+                                                           (LedStripType)channel->stripType(), channel->dma(), channel->gpio(), (matrixDirection)channel->matrixdirection());
+            }
+            else
+            {
+                renderResults = _ledWrapper.initStrip(channel->stripRows(), channel->stripColumns(), (LedStripType)channel->stripType(),
+                                                      (matrixDirection)channel->matrixdirection(), (Wiring2121)channel->matrix2121Wiring());
+            }
+
             if(renderResults != WS2811_SUCCESS)
             {
 

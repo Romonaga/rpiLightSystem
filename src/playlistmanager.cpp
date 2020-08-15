@@ -15,7 +15,6 @@ PlayListManager::PlayListManager(QObject *parent) : QObject(parent)
 {
     _settings = SystemSettings::getInstance();
     _logger = DNRLogger::instance();
-
 }
 
 PlayListManager::~PlayListManager()
@@ -78,7 +77,7 @@ QString PlayListManager::getPlayList(QJsonObject playList)
 
     std::stringstream info;
 
-    QSqlDatabase database = QSqlDatabase::addDatabase("QMYSQL","playListManager");
+    QSqlDatabase database = QSqlDatabase::database("rpiLightSystem");
     database.setHostName(_settings->getDBServer());
     database.setUserName(_settings->getDBUser());
     database.setPassword(_settings->getDBPwd());
@@ -108,7 +107,6 @@ QString PlayListManager::getPlayList(QJsonObject playList)
         _logger->logInfo(database.lastError().text().toStdString());
     }
 
-   // QSqlDatabase::removeDatabase("playListManager");
     return retPlayList;
 }
 
@@ -117,7 +115,7 @@ QString PlayListManager::getPlayList(int32_t playlistID)
     QString playList;
 
 
-    QSqlDatabase database = QSqlDatabase::addDatabase("QMYSQL","playListManager");
+    QSqlDatabase database = QSqlDatabase::database("rpiLightSystem");
     database.setHostName(_settings->getDBServer());
     database.setUserName(_settings->getDBUser());
     database.setPassword(_settings->getDBPwd());
@@ -145,7 +143,6 @@ QString PlayListManager::getPlayList(int32_t playlistID)
         _logger->logInfo(database.lastError().text().toStdString());
     }
 
-   // QSqlDatabase::removeDatabase("playListManager");
     return playList;
 }
 
@@ -155,7 +152,7 @@ QString PlayListManager::getArtShow(QJsonObject artShow)
     QString artShowResults;
 
 
-    QSqlDatabase database = QSqlDatabase::addDatabase("QMYSQL","playListManager");
+    QSqlDatabase database = QSqlDatabase::database("rpiLightSystem");
     database.setHostName(_settings->getDBServer());
     database.setUserName(_settings->getDBUser());
     database.setPassword(_settings->getDBPwd());
@@ -182,8 +179,6 @@ QString PlayListManager::getArtShow(QJsonObject artShow)
     {
         _logger->logInfo(database.lastError().text().toStdString());
     }
-
-   // QSqlDatabase::removeDatabase("playListManager");
     return artShowResults;
 }
 

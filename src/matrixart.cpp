@@ -16,6 +16,13 @@ void MatrixArt::startShow()
 
     QJsonObject jsonObject;
     QJsonObject jsonPixels;
+    int index = 0;
+    unsigned char red = 0;
+    unsigned char green = 0;
+    unsigned char blue = 0;
+    ws2811_led_t color = 0;
+
+
     QJsonDocument doc = QJsonDocument::fromJson(_showParms.toUtf8());
 
     if(!doc.isNull())
@@ -26,7 +33,9 @@ void MatrixArt::startShow()
 
              if(jsonObject["pixles"].isObject())
              {
-                 jsonPixels = jsonObject["pixles"].toObject();
+
+                jsonPixels = jsonObject["pixles"].toObject();
+
                  foreach(const QJsonValue &value, jsonPixels)
                  {
                      try
@@ -40,6 +49,45 @@ void MatrixArt::startShow()
                      }
                  }
 
+                //build old image
+                int columns = (jsonObject["stripColumns"].isString()) ? jsonObject["stripColumns"].toString().toInt() : _ledWrapper->getColumns();
+                int rows = (int)(jsonPixels.length() / columns);
+                snapShot(0, rows);
+                unsigned char* imageData = new unsigned char[getSnapShotBufferSize() * 3];
+                unsigned int bufferIndex = 0;
+                for(int counter = 0; counter < jsonPixels.length(); counter++)
+                {
+                     color = _image[counter];
+
+                     red =  _ledWrapper->Red(color);
+                     imageData[bufferIndex++] = red;
+
+                     green =  _ledWrapper->Green(color);
+                     imageData[bufferIndex++] = green;
+
+                     blue =  _ledWrapper->Blue(color);
+                     imageData[bufferIndex++] = blue;
+                }
+
+                //resample it
+                unsigned char* reSampledImageData = resample(_settings->getChannels()[_channelId]->stripColumns() ,_settings->getChannels()[_channelId]->stripRows() , columns, rows, imageData);
+                if(reSampledImageData != nullptr)
+                {
+                     for(int row = 0; row < _settings->getChannels()[_channelId]->stripRows(); row++)
+                     {
+                         for(int col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col++)
+                         {
+                             ws2811_led_t ledColor = _ledWrapper->Color(reSampledImageData[index], reSampledImageData[index + 1], reSampledImageData[index + 2]);
+                             _ledWrapper->setPixelColor(row, col,  ledColor);
+                             index += 3;
+                         }
+                     }
+
+                     delete [] reSampledImageData;
+                }
+
+                 deleteSnapShot();
+                 delete [] imageData;
                  _ledWrapper->show();
              }
              else

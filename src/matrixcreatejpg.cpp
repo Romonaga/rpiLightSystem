@@ -21,6 +21,9 @@ MatrixCreateJpg::MatrixCreateJpg(Ws2811Wrapper* ledWrapper, const LedLightShows 
 
 void MatrixCreateJpg::startShow()
 {
+    char tmpFile[] = "/art_XXXXXX";
+    int tmp = 0;
+
     unsigned char red = 0;
     unsigned char green = 0;
     unsigned char blue = 0;
@@ -53,13 +56,11 @@ void MatrixCreateJpg::startShow()
     };
 
 
-     unsigned char* reSampled = resample(_settings->getChannels()[_channelId]->stripColumns() * 20,_settings->getChannels()[_channelId]->stripRows() * 20, _settings->getChannels()[_channelId]->stripColumns(), _settings->getChannels()[_channelId]->stripRows(), imageData);
+    unsigned char* reSampled = resample(_settings->getChannels()[_channelId]->stripColumns() * 20,_settings->getChannels()[_channelId]->stripRows() * 20, _settings->getChannels()[_channelId]->stripColumns(), _settings->getChannels()[_channelId]->stripRows(), imageData);
     TooJpeg::writeJpeg(this, jpgConverter, reSampled, _settings->getChannels()[_channelId]->stripColumns() * 20 ,_settings->getChannels()[_channelId]->stripRows() * 20, true, 100, false, nullptr);
-    //TooJpeg::writeJpeg(this, jpgConverter, imageData, _settings->getChannels()[_channelId]->stripColumns(), _settings->getChannels()[_channelId]->stripRows(), true, 100, false, nullptr);
 
 
-    char tmpFile[] = "/art_XXXXXX";
-    int tmp = mkstemp(tmpFile);
+    tmp = mkstemp(tmpFile);
     close(tmp);
 
     QString outFileName(_settings->getUserArtDirectory());
@@ -74,6 +75,7 @@ void MatrixCreateJpg::startShow()
         outFile.close();
     }
 
+    _jpgBuffer.clear();
     deleteSnapShot();
     delete [] imageData;
     delete [] reSampled;

@@ -47,6 +47,8 @@ public:
 
     QString getUserArtDirectory() const;
 
+    int getMatrix2121Wiring() const;
+
 private:
     SystemSettings();
     static SystemSettings* _instance;
@@ -68,6 +70,7 @@ private:
     int _mqttRetryDelay;
     bool _dbgLog;
     QString _userArtDirectory;
+    int _matrix2121Wiring;
 
     DNRLogger* _logger;
 

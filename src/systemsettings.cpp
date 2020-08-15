@@ -14,10 +14,16 @@ SystemSettings::SystemSettings()
 {
     _mmConfFile =  "/etc/rpilightsystem.conf";
 
+
     _logger = DNRLogger::instance();
     _logger->setDebugOut(true);
 
 
+}
+
+int SystemSettings::getMatrix2121Wiring() const
+{
+    return _matrix2121Wiring;
 }
 
 QString SystemSettings::getUserArtDirectory() const
@@ -90,15 +96,24 @@ int SystemSettings::getSystemId() const
 
 bool SystemSettings::loadSystemSettings()
 {
-    QSqlDatabase database = QSqlDatabase::addDatabase("QMYSQL","rpiLightSystem");
-    bool retVal =  false;
-    std::stringstream info;
 
+    QSqlDatabase database;
+    if(!QSqlDatabase::contains("rpiLightSystem"))
+        database =  QSqlDatabase::addDatabase("QMYSQL","rpiLightSystem");
+    else
+        database = QSqlDatabase::database("rpiLightSystem");
 
     database.setHostName(_server);
     database.setUserName(_user);
     database.setPassword(_pwd);
     database.setDatabaseName(_dataBase);
+
+
+    bool retVal =  false;
+    std::stringstream info;
+
+
+
     if(database.open())
     {
         char name[100];

@@ -121,6 +121,7 @@ LIBS += -lMQTTMessageBus
 LIBS += -lDNRLogger
 LIBS += -lwiringPi
 LIBS += -li2c
+LIBS += -lrgbmatrix
 
 unix {
     target.path = /lumawin

@@ -12,6 +12,7 @@ ChannelSettings::ChannelSettings(QSqlQuery qry)
     _gamma = qry.value("gamma").toDouble();
     _matrixdirection = qry.value("matrixDirection").toInt();
     _channelId = qry.value("channelId").toInt() - 1;
+    _matrix2121Wiring = qry.value("matrix2121Wiring").toInt();
 
 }
 
@@ -65,4 +66,9 @@ int ChannelSettings::channelId() const
 void ChannelSettings::setBrightness(int brightness)
 {
     _brightness = brightness;
+}
+
+int ChannelSettings::matrix2121Wiring() const
+{
+    return _matrix2121Wiring;
 }
