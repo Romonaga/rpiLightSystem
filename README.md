@@ -51,6 +51,7 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
             Save the file.
             
          b) I would also suggest editing /boot/config.txt look for line dtparam=audio=on and set it to dtparam=audio=off, if the line does not exist, add it.
+         
          c) One Wire GPIO, should be turned off, in raspi-config, under interfaces, it will cause interference with the Pannels.
          
    3. If you want to make use of the LUX, in raspi-config, under interfaces, turn on i2c.
