@@ -75,48 +75,34 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
             if(_showParmsJson.value("matrixText").isString())
                 _matrixText = _showParmsJson.value("matrixText").toString();
 
-           if(_showParmsJson["colors"].isObject())
+           if(_showParmsJson["c"].isObject())
            {
-               jsonColors = _showParmsJson["colors"].toObject();
+               jsonColors = _showParmsJson["c"].toObject();
 
-               if(jsonColors["color4"].isObject())
+               if(jsonColors["c4"].isString())
                {
-                   jsonColor = jsonColors["color4"].toObject();
-                   _r = jsonColor.value("r").toInt();
-                   _g = jsonColor.value("g").toInt();
-                   _b = jsonColor.value("b").toInt();
-
-                  _color4 = _ledWrapper->Color(_r, _g, _b);
+                  _color4 = std::stoul(jsonColors["c4"].toString().replace("#","0x").toStdString().c_str(), nullptr, 16);
 
                }
 
-               if(jsonColors["color3"].isObject())
+               if(jsonColors["c3"].isString())
                {
-                   jsonColor = jsonColors["color3"].toObject();
-                   _r = jsonColor.value("r").toInt();
-                   _g = jsonColor.value("g").toInt();
-                   _b = jsonColor.value("b").toInt();
-                  _color3 = _ledWrapper->Color(_r, _g, _b);
-
+                  _color3 = std::stoul(jsonColors["c3"].toString().replace("#","0x").toStdString().c_str(), nullptr, 16);
                }
 
-               if(jsonColors["color2"].isObject())
+               if(jsonColors["c2"].isString())
                {
-                   jsonColor = jsonColors["color2"].toObject();
-                   _r = jsonColor.value("r").toInt();
-                   _g = jsonColor.value("g").toInt();
-                   _b = jsonColor.value("b").toInt();
-                  _color2 = _ledWrapper->Color(_r, _g, _b);
-
+                  _color2 = std::stoul(jsonColors["c2"].toString().replace("#","0x").toStdString().c_str(), nullptr, 16);
                }
 
-               if(jsonColors["color1"].isObject())
+               if(jsonColors["c1"].isString())
                {
-                   jsonColor = jsonColors["color1"].toObject();
-                   _r = jsonColor.value("r").toInt();
-                   _g = jsonColor.value("g").toInt();
-                   _b = jsonColor.value("b").toInt();
-                  _color1 = _ledWrapper->Color(_r, _g, _b);
+                   jsonColor = jsonColors["c1"].toObject();
+                  _color1 = std::stoul(jsonColors["c1"].toString().replace("#","0x").toStdString().c_str(), nullptr, 16);
+
+                  _r  =_ledWrapper->Red(_color1);
+                  _g = _ledWrapper->Green(_color1);
+                  _b = _ledWrapper->Blue(_color1);
 
                }
 
