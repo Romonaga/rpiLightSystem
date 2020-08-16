@@ -37,7 +37,7 @@ Everything that is needed to build and run this project is or will be included i
 
 <b>These instructions are for Rasperry Pi Buster. It is assumed you are using the latest version of buster.</b>
 
-<B>* First Some machine prep.</b>
+<b>* First Some machine prep.</b> <BR>
 Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you will need to understand a few things.
     1. rpiLights should not be ran under a GUI, it should be headless with the bare requirements to run.  
     2. The Pi running rpiLights, should have the following disabled.
