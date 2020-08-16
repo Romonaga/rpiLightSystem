@@ -12,7 +12,7 @@
 #include "systemsettings.h"
 #include "dnrlogger.h"
 
-#include "font7x6ext.h"
+#include "pixalfonts.h"
 
 #include  <condition_variable>
 
@@ -112,9 +112,9 @@ protected:
     void scrollText(QString msg, int maxRows, int maxCols, int rowStart, int drawCol, ws2811_led_t color,  ws2811_led_t * snapShotBuffer, int delay);
 
     //You ARE responsable for this memory allocation!
-    ws2811_led_t* snapShot(int rowStart, int maxRows, uint32_t *snapShotBufferSize);
+    ws2811_led_t* snapShot(int rowStart, int maxRows, int numCols, uint32_t *snapShotBufferSize);
 
-    void replaySnapShot(int rowStart, int maxRows, ws2811_led_t* snapShotBuffer);
+    void replaySnapShot(int rowStart, int maxRows, int numCols, ws2811_led_t* snapShotBuffer);
 
     //You ARE responsable for this memory allocation!
     unsigned char* resampleRGB(int newWidth, int newHeight, int width, int height, unsigned char* imageData);

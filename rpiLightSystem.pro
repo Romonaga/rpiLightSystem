@@ -68,7 +68,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 HEADERS += \
     src/channelsettings.h \
-    src/font7x6ext.h \
     src/gifdec.h \
     src/ilightshow.h \
     src/jpgd.h \
@@ -86,6 +85,7 @@ HEADERS += \
     src/matrixtrip.h \
     src/motionlightsfeature.h \
     src/mqttreceiver.h \
+    src/pixalfonts.h \
     src/playlistmanager.h \
     src/showblink.h \
     src/showbouncingballs.h \

@@ -3,7 +3,7 @@
 #include <math.h>
 #include <QDebug>
 
-#include "font7x6ext.h"
+#include "pixalfonts.h"
 
 
 MatrixTrip::MatrixTrip(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
@@ -23,7 +23,7 @@ void MatrixTrip::startShow()
     while(_endTime > time(nullptr))
     {
 
-        for(int counter = (MAXROWS + 1); counter > 0; counter--)
+        for(int counter = (rowMid + 1); counter > 0; counter--)
         {
             do
             {

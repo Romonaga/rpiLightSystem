@@ -474,19 +474,19 @@ void ILightShow::shiftColumns(int maxRows, int rowStart, ws2811_led_t color, ws2
 
 //all we are doing here is captruing our drawing area.  As it is defined,
 // we dont need to deal with the complete matrix..  Just what we touch.
-ws2811_led_t *ILightShow::snapShot(int rowStart, int maxRows, uint32_t* snapShotBufferSize)
+ws2811_led_t *ILightShow::snapShot(int rowStart, int maxRows, int numCols, uint32_t* snapShotBufferSize)
 {
     ws2811_led_t* snapShotBuffer = nullptr;
 
     //We only care about what we might overlay.
-    *snapShotBufferSize = maxRows * _settings->getChannels()[_channelId]->stripColumns();
+    *snapShotBufferSize = maxRows * numCols;
     if(*snapShotBufferSize > 0)
     {
         snapShotBuffer = new ws2811_led_t[*snapShotBufferSize];
-        for(int col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col++)
+        for(int col = 0; col < numCols; col++)
         {
             for(int row = 0; row < maxRows ; row++)
-                snapShotBuffer[ (row  * _settings->getChannels()[_channelId]->stripColumns()) + col]  = _ledWrapper->getPixelColor(row + rowStart, col);
+                snapShotBuffer[ (row  * numCols) + col]  = _ledWrapper->getPixelColor(row + rowStart, col);
         }
     }
 
@@ -496,14 +496,14 @@ ws2811_led_t *ILightShow::snapShot(int rowStart, int maxRows, uint32_t* snapShot
 //This will reprint the snapshot so to speak.  Here we will
 //simply get the picture and repaint it, to put the picture back to how
 //it was before we touched it
-void ILightShow::replaySnapShot(int rowStart, int maxRows, ws2811_led_t *snapShotBuffer)
+void ILightShow::replaySnapShot(int rowStart, int maxRows, int numCols, ws2811_led_t *snapShotBuffer)
 {
     if(snapShotBuffer == nullptr) return;
 
-    for(int col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col++)
+    for(int col = 0; col < numCols; col++)
     {
         for(int row = 0; row < maxRows; row++)
-            _ledWrapper->setPixelColor(row + rowStart, col, snapShotBuffer[ (row  * _settings->getChannels()[_channelId]->stripColumns()) + col]);
+            _ledWrapper->setPixelColor(row + rowStart, col, snapShotBuffer[ (row  * numCols) + col]);
 
     }
 
@@ -632,7 +632,7 @@ void ILightShow::scrollText(QString msg, int maxRows, int maxCols, int rowStart,
             for(int row = 0; row < maxRows; row++)
             {
 
-                if(letterMatrix[(int)msg.toStdString().c_str()[letter] - 32][row * maxCols + (col - maxCols)] == 1) //should this pixal be on?
+                if(textMatrix[(int)msg.toStdString().c_str()[letter] - 32][row * maxCols + (col - maxCols)] == 1) //should this pixal be on?
                     _ledWrapper->setPixelColor(row + rowStart, drawCol , color);
             }
 

@@ -34,7 +34,7 @@ void MatrixCreateJpg::startShow()
     unsigned char* reSampled = nullptr;
     uint32_t snapShotbufferSize = 0;
 
-    snapShotBuffer = snapShot(0, _settings->getChannels()[_channelId]->stripRows(), &snapShotbufferSize);
+    snapShotBuffer = snapShot(0, _settings->getChannels()[_channelId]->stripRows(), _settings->getChannels()[_channelId]->stripColumns(), &snapShotbufferSize);
     unsigned char* imageData = new unsigned char[snapShotbufferSize * 3];
 
 

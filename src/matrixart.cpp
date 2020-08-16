@@ -18,6 +18,104 @@ void MatrixArt::startShow()
     QJsonObject jsonObject;
     QJsonObject jsonPixels;
     int index = 0;
+    bool resizeNeeded  = false;
+
+    ws2811_led_t* snapShotBuffer = nullptr;
+    ws2811_led_t* reSampledImageData = nullptr;
+
+    uint32_t snapShotbufferSize = 0;
+
+
+    QJsonDocument doc = QJsonDocument::fromJson(_showParms.toUtf8());
+    if(!doc.isNull() && doc.isObject())
+    {
+         jsonObject = doc.object();
+
+         //lets paint
+         if(jsonObject["pixles"].isObject() == true)
+         {
+
+             jsonPixels = jsonObject["pixles"].toObject();
+             foreach(const QJsonValue &value, jsonPixels)
+             {
+                 try
+                 {
+                    _ledWrapper->setPixelColor(value["r"].toInt(), value["c"].toInt(), std::stoul(value["co"].toString().replace("#","0x").toStdString().c_str(), nullptr, 16));
+                 }
+                 catch (const std::invalid_argument&)
+                 {
+                     _logger->logInfo("MatrixArt could not decode value, stoppping.");
+                     return;
+                 }
+             }
+
+            //build old image from json
+            uint32_t columns = (jsonObject["stripColumns"].isString()) ? jsonObject["stripColumns"].toString().toInt() : _ledWrapper->getColumns();
+            uint32_t rows = (int)(jsonPixels.length() / columns);
+            snapShotBuffer = snapShot(0, rows, columns, &snapShotbufferSize);
+
+            if(snapShotBuffer != nullptr)
+            {
+                //will it if, or do we make it ugly?  Always shrink, never expand.
+                resizeNeeded =  (columns > _ledWrapper->getColumns() || rows > _ledWrapper->getRows());
+                if(resizeNeeded == true)
+                {
+
+                    reSampledImageData = resampleColor(_ledWrapper->getColumns(), _ledWrapper->getRows(), columns, rows, snapShotBuffer);
+
+                    columns     = _ledWrapper->getColumns();
+                    rows        =  _ledWrapper->getRows();
+
+                    delete [] snapShotBuffer;
+                    if(reSampledImageData != nullptr)
+                        snapShotBuffer = reSampledImageData;
+                }
+
+                //Well now that we are done playing, lets display it.
+                if(snapShotBuffer != nullptr)
+                {
+
+                     for(uint32_t row = 0; row < rows; row++)
+                     {
+                         for(uint32_t col = 0; col < columns; col++)
+                         {
+                             _ledWrapper->setPixelColor(row, col,  snapShotBuffer[index]);
+                             index++;
+                         }
+                     }
+
+                     delete [] snapShotBuffer;
+                     _ledWrapper->show();
+
+                }
+                else
+                {
+                    _logger->logError("MatrixArt No Resample Buffer!");
+                }
+
+            }
+            else
+            {
+                _logger->logError("MatrixArt No SnapshotBuffer!");
+            }
+
+        }
+        else
+        {
+             _logger->logInfo("MatrixArt We have no pixals!");
+        }
+
+    }
+    else
+    {
+          _logger->logWarning("ShowMatrix Document is not Valid");
+    }
+
+
+/*
+    QJsonObject jsonObject;
+    QJsonObject jsonPixels;
+    int index = 0;
     ws2811_led_t* snapShotBuffer = nullptr;
     uint32_t snapShotbufferSize = 0;
 
@@ -48,7 +146,7 @@ void MatrixArt::startShow()
             int columns = (jsonObject["stripColumns"].isString()) ? jsonObject["stripColumns"].toString().toInt() : _ledWrapper->getColumns();
             int rows = (int)(jsonPixels.length() / columns);
 
-            snapShotBuffer = snapShot(0, rows, &snapShotbufferSize);
+            snapShotBuffer = snapShot(0, rows, columns, &snapShotbufferSize);
             if(snapShotBuffer != nullptr)
             {
                 //resample it
@@ -92,7 +190,7 @@ void MatrixArt::startShow()
     {
           _logger->logWarning("ShowMatrix Document is not Valid");
     }
-
+*/
 }
 
 /*

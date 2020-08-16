@@ -1,16 +1,16 @@
 #include "showbouncingballs.h"
-#include <QVector>
-#include <QFileInfo>
-#include <math.h>
 #include <QDebug>
 
-extern "C"
-{
-    #include "gifdec.h"
-}
+
+#include <QDateTime>
+#include <QTime>
+
+
+#include "pixalfonts.h"
 
 
 using namespace std;
+
 
 
 ShowBouncingBalls::ShowBouncingBalls(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
@@ -20,77 +20,127 @@ ShowBouncingBalls::ShowBouncingBalls(Ws2811Wrapper* ledWrapper, const LedLightSh
 
 }
 
-
 void ShowBouncingBalls::startShow()
 {
 
+    QJsonObject jsonObject;
+    QJsonObject jsonPixels;
+    int index = 0;
+    ws2811_led_t* snapShotBuffer = nullptr;
+    uint32_t snapShotbufferSize = 0;
+
+
+    QJsonDocument doc = QJsonDocument::fromJson(_showParms.toUtf8());
+    if(!doc.isNull() && doc.isObject())
+    {
+         jsonObject = doc.object();
+
+         if(jsonObject["pixles"].isObject() == true)
+         {
+
+             jsonPixels = jsonObject["pixles"].toObject();
+             foreach(const QJsonValue &value, jsonPixels)
+             {
+                 try
+                 {
+                    _ledWrapper->setPixelColor(value["r"].toInt(), value["c"].toInt(), std::stoul(value["co"].toString().replace("#","0x").toStdString().c_str(), nullptr, 16));
+                 }
+                 catch (const std::invalid_argument&)
+                 {
+                     _logger->logInfo("MatrixArt could not decode value, stoppping.");
+                     return;
+                 }
+             }
+
+            //build old image
+            int columns = (jsonObject["stripColumns"].isString()) ? jsonObject["stripColumns"].toString().toInt() : _ledWrapper->getColumns();
+            int rows = (int)(jsonPixels.length() / columns);
+
+            snapShotBuffer = snapShot(0, rows, columns, &snapShotbufferSize);
+
+             for(int row = 0; row < rows; row++)
+             {
+                 for(int col = 0; col < columns; col++)
+                 {
+                     _ledWrapper->setPixelColor(row, col,  snapShotBuffer[index]);
+                     index++;
+                 }
+             }
+
+            _ledWrapper->show();
+
+            }
+            else
+             {
+                 _logger->logInfo("MatrixArt We have no pixals!");
+             }
+
+    }
+    else
+    {
+          _logger->logWarning("ShowMatrix Document is not Valid");
+    }
 
 }
 
-
 /*
-
 void ShowBouncingBalls::startShow()
 {
-    int width = 0;
-    int height = 0;
-    int comps = 3;
-    int index = 0;
+    uint32_t snapshotBufferSize = 0;
+    int  drawCol  = 0;
+    _rowStart = 0;
+    ws2811_led_t* snapShotBuffer = nullptr;
+    QString sendPad;
 
 
-//    unsigned char* data = jpgd::decompress_jpeg_image_from_file("/home/hellweek/code/userArt/art_Hk0cN5.jpg", &width, &hight, &comps, 3 );
-//    qDebug() << "w: " << width << " h: " << hight;
+    QTime qtime;
+    QString timeStr;
 
-//    unsigned char* image =  resample(_settings->getChannels()[_channelId]->stripColumns(),_settings->getChannels()[_channelId]->stripRows(), width, hight, data);
-
-
-//    for(int row = 0; row < _settings->getChannels()[_channelId]->stripRows(); row++)
-//    {
-
-//        for(int col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col++)
-//        {
-
-
-//            _ledWrapper->setPixelColor(row, col, image[index], image[index + 1], image[index + 2] );
-//            index += 3;
-
-//            //_ledWrapper->setPixalColor(row, col, image[index++]);
-
-//        }
-//    }
-
-//    _ledWrapper->show();
-//    delete [] data;
-//    delete [] image;
-
-
-    unsigned error;
-    unsigned char* image1 = nullptr;
-    unsigned width1, height1 = 0;
-
-    error = lodepng_decode24_file(&image1, &width1, &height1, "/home/hellweek/code/userArt/greenthing.png");
-    unsigned char* image =  resample(_settings->getChannels()[_channelId]->stripColumns(),_settings->getChannels()[_channelId]->stripRows(), width1, height1, image1);
-    free(image1);
-
-  //  qDebug() << "grwol width: " << width1 << " h: " << height1 << " error: " << error << " buf size: " << bufferSize << "my calc: " << (width1 * height1) * 3;
-
-    index = 0;
-    for(int row = 0; row < _settings->getChannels()[_channelId]->stripRows(); row++)
+    snapShotBuffer = snapShot(_rowStart, CLOCKMAXROWS, &snapshotBufferSize);
+    if(snapShotBuffer != nullptr)
     {
+        drawCol = _settings->getChannels()[_channelId]->stripColumns() - 1;
 
-        for(int col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col++)
+
+        while(_endTime > time(nullptr) && _running == true)
         {
+            timeStr = qtime.currentTime().toString().toStdString().c_str();
+            for(int pad = 0; pad < _settings->getChannels()[_channelId]->stripColumns() / CLOCKMAXCOLS; pad++)       //pad the string so it will scroll off the screen
+                sendPad.append(" ");
+
+            timeStr.append(sendPad);
+            for(int letter = 0; letter < timeStr.length(); letter++)
+            {
+
+                if((int)timeStr.toStdString().c_str()[letter] < 48 || (int)timeStr.toStdString().c_str()[letter] > 59) //only attempt to print what we know.
+                    continue;
 
 
-            _ledWrapper->setPixelColor(row, col, image[index], image[index + 1], image[index + 2] );
-            index += 3;
+                for(int col = CLOCKMAXCOLS; col < (CLOCKMAXCOLS * 2); col++)
+                {
+                    for(int row = 0; row < CLOCKMAXROWS; row++)
+                    {
 
-            //_ledWrapper->setPixalColor(row, col, image[index++]);
+
+                        if(clockMatrix[(int)timeStr.toStdString().c_str()[letter] - 48][row * CLOCKMAXCOLS + (col - CLOCKMAXCOLS)] == 1) //should this pixal be on?
+                        {
+                            _ledWrapper->setPixelColor(row + _rowStart, drawCol , _color1);
+                        }
+                    }
+
+                    _ledWrapper->show();
+
+                    Ws2811Wrapper::waitMillSec(_wait);
+
+                    shiftColumns(CLOCKMAXROWS, _rowStart, _color1, snapShotBuffer);
+
+                }
+            }
 
         }
-    }
 
-    _ledWrapper->show();
+        delete [] snapShotBuffer;
+    }
 
 
 }
