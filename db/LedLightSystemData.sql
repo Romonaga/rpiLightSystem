@@ -16,74 +16,113 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Dumping data for table `lDirection`
+-- Table structure for table `lDirection`
 --
 
-LOCK TABLES `lDirection` WRITE;
-/*!40000 ALTER TABLE `lDirection` DISABLE KEYS */;
-INSERT INTO `lDirection` VALUES (1,'Up'),(2,'Right'),(3,'Down'),(4,'Left');
-/*!40000 ALTER TABLE `lDirection` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `lDirection`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `lDirection` (
+  `ID` int NOT NULL,
+  `description` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `lLightSystemFeatures`
+-- Table structure for table `lLightSystemFeatures`
 --
 
-LOCK TABLES `lLightSystemFeatures` WRITE;
-/*!40000 ALTER TABLE `lLightSystemFeatures` DISABLE KEYS */;
-INSERT INTO `lLightSystemFeatures` VALUES (1,'Lights By Motion'),(2,'Lights By Light'),(3,'Lights by Time'),(4,'Lights By Lux');
-/*!40000 ALTER TABLE `lLightSystemFeatures` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `lLightSystemFeatures`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `lLightSystemFeatures` (
+  `ID` int NOT NULL,
+  `featureName` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `lMatrixShapes`
+-- Table structure for table `lMatrixShapes`
 --
 
-LOCK TABLES `lMatrixShapes` WRITE;
-/*!40000 ALTER TABLE `lMatrixShapes` DISABLE KEYS */;
-INSERT INTO `lMatrixShapes` VALUES (1,'Circle'),(2,'Square'),(3,'Rectangle'),(4,'Triangle');
-/*!40000 ALTER TABLE `lMatrixShapes` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `lMatrixShapes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `lMatrixShapes` (
+  `ID` int NOT NULL,
+  `Description` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `ID_UNIQUE` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `lMatrixTypes`
+-- Table structure for table `lMatrixTypes`
 --
 
-LOCK TABLES `lMatrixTypes` WRITE;
-/*!40000 ALTER TABLE `lMatrixTypes` DISABLE KEYS */;
-INSERT INTO `lMatrixTypes` VALUES (0,'None'),(1,'Matrix Art'),(2,'Matrix Text'),(3,'Matrix Show'),(4,'Matrix Shape'),(5,'Matrix Display File');
-/*!40000 ALTER TABLE `lMatrixTypes` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `lMatrixTypes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `lMatrixTypes` (
+  `ID` int NOT NULL,
+  `Description` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `ID_UNIQUE` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `lPosition`
+-- Table structure for table `lPosition`
 --
 
-LOCK TABLES `lPosition` WRITE;
-/*!40000 ALTER TABLE `lPosition` DISABLE KEYS */;
-INSERT INTO `lPosition` VALUES (1,'Top'),(2,'Center'),(3,'Bottom');
-/*!40000 ALTER TABLE `lPosition` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `lPosition`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `lPosition` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `description` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `lStripType`
+-- Table structure for table `lStripType`
 --
 
-LOCK TABLES `lStripType` WRITE;
-/*!40000 ALTER TABLE `lStripType` DISABLE KEYS */;
-INSERT INTO `lStripType` VALUES (1,'NEO_WS2811_STRIP_RGB'),(2,'NEO_WS2811_STRIP_RBG'),(3,'NEO_WS2811_STRIP_GRB'),(4,'NEO_WS2811_STRIP_GBR'),(5,'NEO_WS2811_STRIP_BRG'),(6,'NEO_WS2811_STRIP_BGR'),(7,'NEO_SK6812_STRIP_RGBW'),(8,'NEO_SK6812_STRIP_GRBW');
-/*!40000 ALTER TABLE `lStripType` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `lStripType`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `lStripType` (
+  `ID` int NOT NULL,
+  `stripName` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `lightShows`
+-- Table structure for table `lightShows`
 --
 
-LOCK TABLES `lightShows` WRITE;
-/*!40000 ALTER TABLE `lightShows` DISABLE KEYS */;
-INSERT INTO `lightShows` VALUES (1,'Blink',1,0,1,0,1,0,18,0,0),(2,'Chaser',1,1,1,0,1,0,13,0,0),(3,'Theater Chase',1,0,1,0,1,0,2,0,0),(4,'Theater Chase Rainbow',1,0,1,0,1,0,3,0,0),(5,'Color 3 Reverse',1,3,1,0,1,0,14,0,0),(6,'Cylon',1,1,1,1,1,0,15,0,0),(7,'Color Wipe',1,1,1,0,1,0,16,0,0),(8,'Half n Half',1,2,0,0,0,0,9,0,0),(9,'Rainbow',1,0,1,0,1,0,7,0,0),(10,'Rainbow Cycle',1,0,1,0,1,0,4,0,0),(11,'Neorand',1,0,0,0,1,0,5,0,0),(12,'Flame',1,1,1,0,1,0,8,0,0),(13,'Color 1/3 ',1,3,0,0,0,0,10,0,0),(14,'Color 1/4',1,4,0,0,0,0,11,0,0),(15,'Tri-Color Chaser',1,3,1,0,1,0,6,0,0),(16,'Display Color',1,1,0,0,0,0,1,0,0),(17,'Color Every',1,1,0,0,0,1,12,0,0),(18,'Twinkle Overlay',1,2,1,0,1,0,17,0,0),(19,'Pulse Overlay',1,0,1,0,1,0,19,0,0),(20,'Scanner',1,1,1,1,1,0,20,0,0),(21,'Bouncing Balls',1,4,0,0,0,0,30,0,0),(22,'Fade',0,0,1,1,1,0,31,0,0),(23,'Matrix Art',1,0,0,0,0,0,32,1,0),(24,'Matrix Text',1,1,1,0,1,0,32,2,0),(25,'Delay Show',1,0,1,0,0,0,33,0,0),(26,'Matrix Trip',1,1,1,0,1,0,32,3,0),(27,'Circle',1,1,0,0,0,0,40,4,1),(28,'Square',1,1,0,0,0,0,40,4,2),(29,'Triangle',1,1,0,0,0,0,40,4,4),(30,'Art to JPG',1,0,0,0,0,0,40,0,0),(31,'Display File JPG/PNG',1,0,0,0,0,0,40,5,0);
-/*!40000 ALTER TABLE `lightShows` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `lightShows`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `lightShows` (
+  `ID` int NOT NULL,
+  `showName` varchar(100) DEFAULT NULL,
+  `enabled` int DEFAULT NULL,
+  `numColors` int DEFAULT NULL,
+  `hasDelay` tinyint DEFAULT NULL,
+  `hasWidth` tinyint DEFAULT NULL,
+  `hasMinutes` tinyint DEFAULT '1',
+  `colorEvery` tinyint DEFAULT '0',
+  `showOrder` tinyint DEFAULT NULL,
+  `matrixType` tinyint DEFAULT '0',
+  `matrixShape` tinyint DEFAULT '0',
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -94,4 +133,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-14  8:27:46
+-- Dump completed on 2020-08-15 20:24:10

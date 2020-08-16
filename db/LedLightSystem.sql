@@ -143,6 +143,7 @@ CREATE TABLE `lightSystemChannels` (
   `gamma` double DEFAULT NULL,
   `enabled` tinyint DEFAULT NULL,
   `matrixDirection` int DEFAULT '0',
+  `matrix2121Wiring` int DEFAULT '0',
   PRIMARY KEY (`channelId`,`lightSystemId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -186,8 +187,9 @@ CREATE TABLE `lightSystems` (
   `mqttRetryDelay` int DEFAULT '2500',
   `twitchMqttQueue` varchar(45) DEFAULT '',
   `userArtDirectory` varchar(255) DEFAULT NULL,
+  `logShows` tinyint DEFAULT '1',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=124 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=126 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -224,9 +226,10 @@ CREATE TABLE `matrixArt` (
   `userID` int DEFAULT NULL,
   `artName` varchar(50) DEFAULT NULL,
   `showParms` json DEFAULT NULL,
+  `savedPixalsWidth` int DEFAULT '0',
   `enabled` tinyint DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -244,7 +247,7 @@ CREATE TABLE `showsRan` (
   `showParms` json DEFAULT NULL,
   `timeStamp` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=1114 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -304,4 +307,4 @@ CREATE TABLE `userPlaylist` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-14  8:26:51
+-- Dump completed on 2020-08-15 20:23:31
