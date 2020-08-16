@@ -55,6 +55,8 @@
 
 LightSystem::LightSystem(QObject *parent) : QObject(parent)
 {
+    _logger = DNRLogger::instance();
+
     _settings = SystemSettings::getInstance();
 
     _started = false;
@@ -62,21 +64,52 @@ LightSystem::LightSystem(QObject *parent) : QObject(parent)
     _mqq = nullptr;
     _twitch = nullptr;
 
-    _logger = DNRLogger::instance();
-    _logger->setDebugOut(_settings->getDbgLog());
     _motionFeature = nullptr;
     _lightSensorFeature = nullptr;
     _timeFeature = nullptr;
     _luxFeature = nullptr;
     _statusPipe = nullptr;
 
+    const int core_id = 3;
+    const pid_t pid = getpid();
+    cpu_set_t cpuset;
+    CPU_ZERO(&cpuset);
+    CPU_SET(core_id, &cpuset);
 
+    _logger->logInfo("*** LightSystem Starting Up ***");
+
+    const int set_result = sched_setaffinity(pid, sizeof(cpu_set_t), &cpuset);
+    if (set_result != 0)
+    {
+        _logger->logInfo("*LightSystem Could Not Schedual Processor Affinity CPU 3");
+
+    }
+
+    const int get_affinity = sched_getaffinity(pid, sizeof(cpu_set_t), &cpuset);
+    if (get_affinity != 0)
+    {
+      _logger->logInfo("*LightSystem Could Not Set Processor Affinity CPU 3");
+      return;
+    }
+
+    if (CPU_ISSET(core_id, &cpuset))
+    {
+      _logger->logInfo("*LightSystem Successfully set thread to affinity to CPU 3");
+
+    }
+    else
+    {
+        _logger->logInfo("*LightSystem Failed to set thread to affinity to CPU 3");
+        return;
+
+    }
 
 }
 
 
 void LightSystem::stopFeatures()
 {
+    _logger->logInfo("LightSystem::stopFeatures()");
     if(_motionFeature)
     {
         _motionFeature->stop();
@@ -112,7 +145,7 @@ LightSystem::~LightSystem()
     stopSystem();
     _ledWrapper.clearLeds();
 
-    _logger->logInfo("~LightSystem Offline");
+    _logger->logInfo("*** ~LightSystem Offline ***");
 
 }
 
@@ -130,7 +163,7 @@ void LightSystem::startShows()
     _running = true;
     runShow();
 
-    _logger->logInfo("LightSystem::startShows Started");
+    _logger->logInfo("*** LightSystem::startShows Started ***");
 
 }
 
@@ -154,20 +187,22 @@ void LightSystem::playPlayList(QString playList)
 {
 
     QJsonDocument doc = QJsonDocument::fromJson(playList.toUtf8());
+    _logger->logInfo("LightSystem::playPlayList");
 
-    if(!doc.isNull())
+    if(!doc.isNull() && doc.isArray())
     {
-        if(doc.isArray())
+
+        QJsonArray jsonArray = doc.array();
+        foreach (QJsonValue info, jsonArray)
         {
-
-            QJsonArray jsonArray = doc.array();
-            foreach (QJsonValue info, jsonArray)
-            {
-                QString msg = QJsonDocument::fromVariant(info.toVariant()).toJson(QJsonDocument::Compact);
-                processMsgReceived(msg);
-            }
-
+            QString msg = QJsonDocument::fromVariant(info.toVariant()).toJson(QJsonDocument::Compact);
+            processMsgReceived(msg);
         }
+
+    }
+    else
+    {
+         _logger->logInfo("LightSystem::playPlayList Invalid Json");
     }
 }
 
@@ -261,6 +296,7 @@ void LightSystem::sendSystemInfo()
     QJsonObject statusObject;
     QString payload;
 
+    _logger->logInfo("LightSystem::sendSystemInfo");
     statusObject.insert("systemName", _settings->getSystemName());
     statusObject.insert("systemTemp", getSystemTemp());
 
@@ -513,6 +549,7 @@ void LightSystem::logShow(ILightShow* show)
 {
     if(false == _settings->getLogShows()) return;
 
+    _logger->logInfo("LightSystem::logShow");
     QSqlDatabase database = QSqlDatabase::database("rpiLightSystem");
     database.setHostName(_settings->getDBServer());
     database.setUserName(_settings->getDBUser());
@@ -610,8 +647,7 @@ void LightSystem::showComplete(ILightShow* show)
 
 void LightSystem::loadFeatures()
 {
-    _logger->logInfo("loadFeatures");
-
+    _logger->logInfo("LightSystem::loadFeatures");
     std::stringstream info;
 
     QSqlDatabase database = QSqlDatabase::database("rpiLightSystem");
@@ -709,33 +745,9 @@ bool LightSystem::startSystem()
     _started = _settings->loadSettings();
     if(_started)
     {
-
-        _logger->logInfo("Setting Up MQTT");
-        _mqq = new MqttReceiver(_settings->getMqttBroker(), _settings->getHostName(), 0);
-        connect(_mqq, SIGNAL(msgReceived(QString)), this, SLOT(processMsgReceived(QString)));
-
-
-        _logger->logInfo("Setting Up MQTT System Status");
-        queue << _settings->getHostName().toStdString().c_str() << "/SystemStatus";
-        _statusPipe = new MQTTPublisher(_settings->getMqttBroker().toStdString(),queue.str(),0, _settings->getMqttRetryDelay(), _settings->getMqttRetries());
-        _statusPipe->Start();
-
-        if(_settings->getTwitchSupport())
-        {
-            _logger->logInfo("Setting Up Twitch Support");
-            queue.str("");
-            queue << _settings->getHostName().toStdString().c_str() << "/" << _settings->getMqttTwitchQueue().toStdString().c_str();
-            _twitch  = new MqttReceiver(_settings->getMqttBroker(), queue.str().c_str(), 0,queue.str().c_str());
-            connect(_twitch, SIGNAL(msgReceived(QString)), this, SLOT(processMsgReceivedTwitch(QString)));
-
-        }
-
-
-        _logger->logInfo("Configuring LED Channels");
+        _logger->logInfo("LightSystem::startSystem Initilizing Led channels");
         foreach(ChannelSettings* channel,  _settings->getChannels())
         {
-            _logger->logInfo("Setting Up Led Channel");
-
             info.str("");
             info << "start() Settings Host(" << _settings->getHostName().toStdString().c_str() << ") Channel(" << channel->channelId() << ") DMA(" << channel->dma() << ") GPIO(" <<
             channel->gpio() << ") sType(" << channel->stripColumns() << ") Rows(" <<
@@ -773,10 +785,28 @@ bool LightSystem::startSystem()
 
         _ledWrapper.setClearOnExit(true);
 
+        _logger->logInfo("LightSystem::startSystem Setting Up MQTT");
+        _mqq = new MqttReceiver(_settings->getMqttBroker(), _settings->getHostName(), 0);
+        connect(_mqq, SIGNAL(msgReceived(QString)), this, SLOT(processMsgReceived(QString)));
+
+
+        _logger->logInfo("LightSystem::startSystem Setting Up MQTT System Status");
+        queue << _settings->getHostName().toStdString().c_str() << "/SystemStatus";
+        _statusPipe = new MQTTPublisher(_settings->getMqttBroker().toStdString(),queue.str(),0, _settings->getMqttRetryDelay(), _settings->getMqttRetries());
+        _statusPipe->Start();
+
+        if(_settings->getTwitchSupport())
+        {
+            _logger->logInfo("LightSystem::startSystem Setting Up Twitch Support");
+            queue.str("");
+            queue << _settings->getHostName().toStdString().c_str() << "/" << _settings->getMqttTwitchQueue().toStdString().c_str();
+            _twitch  = new MqttReceiver(_settings->getMqttBroker(), queue.str().c_str(), 0,queue.str().c_str());
+            connect(_twitch, SIGNAL(msgReceived(QString)), this, SLOT(processMsgReceivedTwitch(QString)));
+
+        }
+
         loadFeatures();
         startShows();
-
-
     }
     else
     {
@@ -843,7 +873,7 @@ void LightSystem::lightStateChange(LightSensorFeature *feature, int state)
 {
     std::stringstream info;
 
-    info << "lightStateChange: " << state;
+    info << "LightSystem::lightStateChange: " << state;
     _logger->logInfo(info.str());
 
     if(state == 0 && _runningShows.count() == 0)
@@ -873,7 +903,7 @@ void LightSystem::timeStateChange(TimeFeature *feature, int state)
 {
     std::stringstream info;
 
-    info << "timeStateChange: " << state;
+    info << "LightSystem::timeStateChange: " << state;
     _logger->logInfo(info.str());
 
     if(state == 1 && _runningShows.count() == 0)
@@ -889,11 +919,11 @@ void LightSystem::timeStateChange(TimeFeature *feature, int state)
     }
     else if(state == 0)
     {
-        info.str("");
+       info.str("");
        info << "timeStateChange Stop Lights";
        _logger->logInfo(info.str());
-        stopShows();
-        _ledWrapper.clearLeds();
+       stopShows();
+       _ledWrapper.clearLeds();
     }
 }
 
@@ -908,7 +938,7 @@ void LightSystem::lightLuxStateChange(LightLuxFeature *feature, quint32 lux)
         if(_runningShows.count() == 0)
         {
 
-                info << "lightLuxStateChange Run PlayList(" << feature->getFeaturePlayList() << ") Lux(" << lux << ") ThreshHold(" << feature->getLuxThreshHold() <<")";
+                info << "LightSystem::lightLuxStateChange Run PlayList(" << feature->getFeaturePlayList() << ") Lux(" << lux << ") ThreshHold(" << feature->getLuxThreshHold() <<")";
                 _logger->logInfo(info.str());
 
                 PlayListManager pmanager;
@@ -918,7 +948,7 @@ void LightSystem::lightLuxStateChange(LightLuxFeature *feature, quint32 lux)
         }
         else
         {
-            info << "lightLuxStateChange Show Running Lux(" << lux << ") ThreshHold(" << feature->getLuxThreshHold() <<")";
+            info << "LightSystem::lightLuxStateChange Show Running Lux(" << lux << ") ThreshHold(" << feature->getLuxThreshHold() <<")";
             _logger->logInfo(info.str());
 
         }

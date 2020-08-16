@@ -11,91 +11,91 @@ MatrixArt::MatrixArt(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, 
 
 }
 
-/*
+
 void MatrixArt::startShow()
 {
 
     QJsonObject jsonObject;
     QJsonObject jsonPixels;
     int index = 0;
-    unsigned char red = 0;
-    unsigned char green = 0;
-    unsigned char blue = 0;
-    ws2811_led_t color = 0;
+    ws2811_led_t* snapShotBuffer = nullptr;
+    uint32_t snapShotbufferSize = 0;
 
 
     QJsonDocument doc = QJsonDocument::fromJson(_showParms.toUtf8());
-
-    if(!doc.isNull())
+    if(!doc.isNull() && doc.isObject())
     {
-        if(doc.isObject())
-        {
-             jsonObject = doc.object();
+         jsonObject = doc.object();
 
-             if(jsonObject["pixles"].isObject())
+         if(jsonObject["pixles"].isObject() == true)
+         {
+
+             jsonPixels = jsonObject["pixles"].toObject();
+             foreach(const QJsonValue &value, jsonPixels)
              {
-
-                jsonPixels = jsonObject["pixles"].toObject();
-
-                 foreach(const QJsonValue &value, jsonPixels)
+                 try
                  {
-                     try
-                     {
-                        _ledWrapper->setPixelColor(value["r"].toInt(), value["c"].toInt(), std::stoul(value["co"].toString().replace("#","0x").toStdString().c_str(), nullptr, 16));
-                     }
-                     catch (const std::invalid_argument&)
-                     {
-                         _logger->logInfo("MatrixArt could not decode value, stoppping.");
-                         return;
-                     }
+                    _ledWrapper->setPixelColor(value["r"].toInt(), value["c"].toInt(), std::stoul(value["co"].toString().replace("#","0x").toStdString().c_str(), nullptr, 16));
                  }
+                 catch (const std::invalid_argument&)
+                 {
+                     _logger->logInfo("MatrixArt could not decode value, stoppping.");
+                     return;
+                 }
+             }
 
-                //build old image
-                int columns = (jsonObject["stripColumns"].isString()) ? jsonObject["stripColumns"].toString().toInt() : _ledWrapper->getColumns();
-                int rows = (int)(jsonPixels.length() / columns);
-                snapShot(0, rows);
+            //build old image
+            int columns = (jsonObject["stripColumns"].isString()) ? jsonObject["stripColumns"].toString().toInt() : _ledWrapper->getColumns();
+            int rows = (int)(jsonPixels.length() / columns);
 
+            snapShotBuffer = snapShot(0, rows, &snapShotbufferSize);
+            if(snapShotBuffer != nullptr)
+            {
                 //resample it
-                unsigned char* reSampledImageData = (unsigned char*)resampleNew(_settings->getChannels()[_channelId]->stripColumns() ,_settings->getChannels()[_channelId]->stripRows() , columns, rows, (unsigned char*)_image);
+                ws2811_led_t* reSampledImageData = resampleColor(_settings->getChannels()[_channelId]->stripColumns() ,
+                                                                 _settings->getChannels()[_channelId]->stripRows() , columns, rows, snapShotBuffer);
+                delete [] snapShotBuffer;
+                //draw it
                 if(reSampledImageData != nullptr)
                 {
                      for(int row = 0; row < _settings->getChannels()[_channelId]->stripRows(); row++)
                      {
                          for(int col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col++)
                          {
-                             //ws2811_led_t ledColor = _ledWrapper->Color(reSampledImageData[index], reSampledImageData[index + 1], reSampledImageData[index + 2]);
                              _ledWrapper->setPixelColor(row, col,  reSampledImageData[index]);
                              index++;
                          }
                      }
 
                      delete [] reSampledImageData;
+                     _ledWrapper->show();
+
                 }
+                else
+                {
+                    _logger->logInfo("MatrixArt reSampledImageData buffer could Not be Created");
+                }
+            }
+            else
+            {
 
-                 deleteSnapShot();
-                 //delete [] imageData;
-                 _ledWrapper->show();
-             }
-             else
-             {
+                _logger->logInfo("MatrixArt snapShot buffer could Not be Created");
+            }
+         }
+         else
+         {
+             _logger->logInfo("MatrixArt We have no pixals!");
+         }
 
-                 _logger->logInfo("MatrixArt We have no pixals!");
-             }
-
-        }
-        else
-        {
-            _logger->logInfo("ShowMatrix Invalid JSON");
-        }
     }
     else
     {
-          _logger->logWarning("ShowMatrix Document is not an object");
+          _logger->logWarning("ShowMatrix Document is not Valid");
     }
 
 }
 
-*/
+/*
 
 void MatrixArt::startShow()
 {
@@ -156,7 +156,7 @@ void MatrixArt::startShow()
                 }
 
                 //resample it
-                unsigned char* reSampledImageData = resample(_settings->getChannels()[_channelId]->stripColumns() ,_settings->getChannels()[_channelId]->stripRows() , columns, rows, imageData);
+                unsigned char* reSampledImageData = resampleRGB(_settings->getChannels()[_channelId]->stripColumns() ,_settings->getChannels()[_channelId]->stripRows() , columns, rows, imageData);
                 if(reSampledImageData != nullptr)
                 {
                      for(int row = 0; row < _settings->getChannels()[_channelId]->stripRows(); row++)
@@ -195,3 +195,4 @@ void MatrixArt::startShow()
 
 }
 
+*/

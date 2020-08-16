@@ -28,17 +28,19 @@ void MatrixCreateJpg::startShow()
     unsigned char green = 0;
     unsigned char blue = 0;
     ws2811_led_t color = 0;
-
-    snapShot(0, _settings->getChannels()[_channelId]->stripRows());
-
-    unsigned char* imageData = new unsigned char[getSnapShotBufferSize() * 3];
-
-
     unsigned int bufferIndex = 0;
+
+    ws2811_led_t* snapShotBuffer = nullptr;
+    unsigned char* reSampled = nullptr;
+    uint32_t snapShotbufferSize = 0;
+
+    snapShotBuffer = snapShot(0, _settings->getChannels()[_channelId]->stripRows(), &snapShotbufferSize);
+    unsigned char* imageData = new unsigned char[snapShotbufferSize * 3];
+
 
     for(unsigned int counter = 0; counter < _ledWrapper->getNumberLeds(); counter++)
     {
-        color = _image[counter];
+        color = snapShotBuffer[counter];
 
         red =  _ledWrapper->Red(color);
         imageData[bufferIndex++] = red;
@@ -50,34 +52,40 @@ void MatrixCreateJpg::startShow()
         imageData[bufferIndex++] = blue;
     }
 
-    auto jpgConverter = [](void* caller, unsigned char byte)
+    delete [] snapShotBuffer;
+    reSampled = resampleRGB(_settings->getChannels()[_channelId]->stripColumns() * 20,_settings->getChannels()[_channelId]->stripRows() * 20, _settings->getChannels()[_channelId]->stripColumns(), _settings->getChannels()[_channelId]->stripRows(), imageData);
+    delete [] imageData;
+
+    if(reSampled != nullptr)
     {
-        ((MatrixCreateJpg*)caller)->_jpgBuffer.push_back(byte);
-    };
+        auto jpgConverter = [](void* caller, unsigned char byte)
+        {
+            ((MatrixCreateJpg*)caller)->_jpgBuffer.push_back(byte);
+        };
 
+        TooJpeg::writeJpeg(this, jpgConverter, reSampled, _settings->getChannels()[_channelId]->stripColumns() * 20 ,_settings->getChannels()[_channelId]->stripRows() * 20, true, 100, false, nullptr);
 
-    unsigned char* reSampled = resample(_settings->getChannels()[_channelId]->stripColumns() * 20,_settings->getChannels()[_channelId]->stripRows() * 20, _settings->getChannels()[_channelId]->stripColumns(), _settings->getChannels()[_channelId]->stripRows(), imageData);
-    TooJpeg::writeJpeg(this, jpgConverter, reSampled, _settings->getChannels()[_channelId]->stripColumns() * 20 ,_settings->getChannels()[_channelId]->stripRows() * 20, true, 100, false, nullptr);
+        if(reSampled != nullptr)
+        {
+            tmp = mkstemp(tmpFile);
+            close(tmp);
 
+            QString outFileName(_settings->getUserArtDirectory());
+            outFileName.append(tmpFile);
+            outFileName.append(".jpg");
 
-    tmp = mkstemp(tmpFile);
-    close(tmp);
+            qDebug() << outFileName.toStdString().c_str();
+            std::ofstream outFile(outFileName.toStdString().c_str(), std::ios::binary );
+            if(outFile.is_open())
+            {
+                outFile.write((const char*) _jpgBuffer.data(), _jpgBuffer.size());
+                outFile.close();
+            }
 
-    QString outFileName(_settings->getUserArtDirectory());
-    outFileName.append(tmpFile);
-    outFileName.append(".jpg");
-
-    qDebug() << outFileName.toStdString().c_str();
-    std::ofstream outFile(outFileName.toStdString().c_str(), std::ios::binary );
-    if(outFile.is_open())
-    {
-        outFile.write((const char*) _jpgBuffer.data(), _jpgBuffer.size());
-        outFile.close();
+            delete [] reSampled;
+        }
     }
 
     _jpgBuffer.clear();
-    deleteSnapShot();
-    delete [] imageData;
-    delete [] reSampled;
 
 }

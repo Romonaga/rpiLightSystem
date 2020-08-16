@@ -108,21 +108,17 @@ protected:
     void drawline(int x1, int y1, int x2, int y2);
     void drawTriangle(int startRow, int startCol, int size, int direction);
 
-    void shiftColumns();
-    void scrollText(QString msg, bool noDelay);
-
-    //void snapShot(unsigned int snapShotBufferSize);
-    void snapShot(int rowStart, int maxRows);
-    void replaySnapShot(int rowStart, int maxRows);
-    void deleteSnapShot();
+    void shiftColumns(int maxRows, int rowStart, ws2811_led_t color, ws2811_led_t * snapShotBuffer);
+    void scrollText(QString msg, int maxRows, int maxCols, int rowStart, int drawCol, ws2811_led_t color,  ws2811_led_t * snapShotBuffer, int delay);
 
     //You ARE responsable for this memory allocation!
-    unsigned char* resample(int newWidth, int newHeight, int width, int height, unsigned char* imageData);
-    unsigned char * resampleNew(int oldw, int oldh, int neww,  int newh, unsigned char* imageData);
-    unsigned int getSnapShotBufferSize() const;
+    ws2811_led_t* snapShot(int rowStart, int maxRows, uint32_t *snapShotBufferSize);
 
+    void replaySnapShot(int rowStart, int maxRows, ws2811_led_t* snapShotBuffer);
 
-
+    //You ARE responsable for this memory allocation!
+    unsigned char* resampleRGB(int newWidth, int newHeight, int width, int height, unsigned char* imageData);
+    ws2811_led_t* resampleColor(int newWidth,  int newHeight, int width, int height, ws2811_led_t* imageData);
 
 protected:
     SystemSettings* _settings;
@@ -163,9 +159,6 @@ protected:
 
     int _rowStart;
     int _drawCol;
-    ws2811_led_t* _image;
-    unsigned int _snapShotBufferSize;
-
 
 
 protected:

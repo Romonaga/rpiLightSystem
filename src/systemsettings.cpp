@@ -142,7 +142,6 @@ bool SystemSettings::loadSystemSettings()
             sql.append(QString().number(_systemId));
 
             QSqlQuery chanQry = database.exec(sql);
-            _logger->logInfo(sql.toStdString());
             if(chanQry.lastError().type() == QSqlError::NoError && chanQry.numRowsAffected() > 0)
             {
                 while(chanQry.next())

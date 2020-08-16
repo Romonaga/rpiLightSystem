@@ -57,7 +57,7 @@ void MatrixCreateDisplayFile::startShow()
                 error = lodepng_decode24_file(&imageData, &width, &height, fileName.toStdString().c_str());
                 if(error == 0 && width > 0 && height > 0 && imageData != nullptr)
                 {
-                    reSampledImageData =  resample(_settings->getChannels()[_channelId]->stripColumns(),_settings->getChannels()[_channelId]->stripRows(), width, height, imageData);
+                    reSampledImageData =  resampleRGB(_settings->getChannels()[_channelId]->stripColumns(),_settings->getChannels()[_channelId]->stripRows(), width, height, imageData);
                     free(imageData);
                 }
 
@@ -70,7 +70,7 @@ void MatrixCreateDisplayFile::startShow()
                 if(imageData != nullptr && width > 0 && height > 0 )
                 {
                     error = 0;
-                    reSampledImageData =  resample(_settings->getChannels()[_channelId]->stripColumns(),_settings->getChannels()[_channelId]->stripRows(), width, height, imageData);
+                    reSampledImageData =  resampleRGB(_settings->getChannels()[_channelId]->stripColumns(),_settings->getChannels()[_channelId]->stripRows(), width, height, imageData);
                     delete [] imageData;
                 }
 
@@ -91,7 +91,7 @@ void MatrixCreateDisplayFile::startShow()
                     {
 
                         gd_render_frame(gif, imageData);
-                        reSampledImageData =  resample(_settings->getChannels()[_channelId]->stripColumns(),_settings->getChannels()[_channelId]->stripRows(), gif->width, gif->height, imageData);
+                        reSampledImageData =  resampleRGB(_settings->getChannels()[_channelId]->stripColumns(),_settings->getChannels()[_channelId]->stripRows(), gif->width, gif->height, imageData);
                         index = 0;
 
                         for(int row = 0; row < _settings->getChannels()[_channelId]->stripRows(); row++)

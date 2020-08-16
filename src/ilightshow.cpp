@@ -35,9 +35,8 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
 
     QJsonObject jsonColors;
     QJsonObject jsonColor;
-    _image = nullptr;
 
-   QJsonDocument doc = QJsonDocument::fromJson(showParms.toUtf8());
+    QJsonDocument doc = QJsonDocument::fromJson(showParms.toUtf8());
 
    if(!doc.isNull())
    {
@@ -124,7 +123,7 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
 
 ILightShow::~ILightShow()
 {
-    deleteSnapShot();
+
 }
 
 void ILightShow::run()
@@ -440,28 +439,29 @@ void ILightShow::drawBox(int startRow, int startcol, int length, int height)
 }
 
 
-
 //logic is clear, but we are walking from where we drew the row
 //and we are moving that row forward, and preserving the original color, if it is not a letter's color
-void ILightShow::shiftColumns()
+void ILightShow::shiftColumns(int maxRows, int rowStart, ws2811_led_t color, ws2811_led_t *snapShotBuffer)
 {
     ws2811_led_t drawColor;
+
+    if(snapShotBuffer == nullptr) return;
 
     int past = 0;
     for(int current = 0; current  < _settings->getChannels()[_channelId]->stripColumns() - 1 ; current ++)
     {
 
-        for(int row = _rowStart; row < (MAXROWS + _rowStart); row++)
+        for(int row = _rowStart; row < (maxRows + rowStart); row++)
         {
             past = current + 1;
 
             drawColor = _ledWrapper->getPixelColor(row, past);                                                              //init drawColor to past color
 
-            if( (drawColor != _color1 && _ledWrapper->getPixelColor(row, current) != _color1) )                             //replay saved color if needed
-                drawColor = _image[( (row - _rowStart) * _settings->getChannels()[_channelId]->stripColumns()) + current];
+            if( (drawColor != color && _ledWrapper->getPixelColor(row, current) != color) )                             //replay saved color if needed
+                drawColor = snapShotBuffer[( (row - rowStart) * _settings->getChannels()[_channelId]->stripColumns()) + current];
 
             _ledWrapper->setPixelColor(row , current, drawColor);                                                           // move to present
-            _ledWrapper->setPixelColor(row , past, _image[( (row - _rowStart) * _settings->getChannels()[_channelId]->stripColumns()) + past]);     //set  past's past color to saved color (yes, I know)..
+            _ledWrapper->setPixelColor(row , past, snapShotBuffer[( (row - rowStart) * _settings->getChannels()[_channelId]->stripColumns()) + past]);     //set  past's past color to saved color (yes, I know)..
 
 
         }
@@ -470,67 +470,47 @@ void ILightShow::shiftColumns()
     _ledWrapper->show();
 }
 
-//all we are doing here is captruing our drawing area.  As it is defined,
-// we dont need to deal with the complete matrix..  Just what we touch.
-/*void ILightShow::snapShot(unsigned int snapShotBufferSize)
-{
-    //We only care about what we might overlay.
-    _snapShotBufferSize = snapShotBufferSize;
-    _image = new ws2811_led_t[_snapShotBufferSize];
 
-    for(int col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col++)
-    {
-        for(int row = 0; row < MAXROWS ; row++)
-            _image[ (row  * _settings->getChannels()[_channelId]->stripColumns()) + col]  = _ledWrapper->getPixelColor(row + _rowStart, col);
-    }
-}
-*/
 
 //all we are doing here is captruing our drawing area.  As it is defined,
 // we dont need to deal with the complete matrix..  Just what we touch.
-void ILightShow::snapShot(int rowStart, int maxRows)
+ws2811_led_t *ILightShow::snapShot(int rowStart, int maxRows, uint32_t* snapShotBufferSize)
 {
+    ws2811_led_t* snapShotBuffer = nullptr;
+
     //We only care about what we might overlay.
-    _snapShotBufferSize = maxRows * _settings->getChannels()[_channelId]->stripColumns();
-
-    _image = new ws2811_led_t[_snapShotBufferSize];
-
-    for(int col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col++)
+    *snapShotBufferSize = maxRows * _settings->getChannels()[_channelId]->stripColumns();
+    if(*snapShotBufferSize > 0)
     {
-        for(int row = 0; row < maxRows ; row++)
-            _image[ (row  * _settings->getChannels()[_channelId]->stripColumns()) + col]  = _ledWrapper->getPixelColor(row + rowStart, col);
+        snapShotBuffer = new ws2811_led_t[*snapShotBufferSize];
+        for(int col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col++)
+        {
+            for(int row = 0; row < maxRows ; row++)
+                snapShotBuffer[ (row  * _settings->getChannels()[_channelId]->stripColumns()) + col]  = _ledWrapper->getPixelColor(row + rowStart, col);
+        }
     }
+
+    return snapShotBuffer;
 }
 
 //This will reprint the snapshot so to speak.  Here we will
 //simply get the picture and repaint it, to put the picture back to how
 //it was before we touched it
-void ILightShow::replaySnapShot(int rowStart, int maxRows)
+void ILightShow::replaySnapShot(int rowStart, int maxRows, ws2811_led_t *snapShotBuffer)
 {
+    if(snapShotBuffer == nullptr) return;
+
     for(int col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col++)
     {
         for(int row = 0; row < maxRows; row++)
-            _ledWrapper->setPixelColor(row + rowStart, col, _image[ (row  * _settings->getChannels()[_channelId]->stripColumns()) + col]);
+            _ledWrapper->setPixelColor(row + rowStart, col, snapShotBuffer[ (row  * _settings->getChannels()[_channelId]->stripColumns()) + col]);
 
     }
 
     _ledWrapper->show();
-
-
 }
 
-//used to free memory allocated durring snapshot process.
-void ILightShow::deleteSnapShot()
-{
-    if(_image == nullptr)
-    {
-        delete [] _image;
-        _image = nullptr;
-    }
-
-}
-
-unsigned char* ILightShow::resampleNew(int neww,  int newh, int oldw, int oldh, unsigned char* imageData)
+ws2811_led_t*  ILightShow::resampleColor(int newWidth,  int newHeight, int width, int height, ws2811_led_t* imageData)
 {
     int i;
     int j;
@@ -542,38 +522,43 @@ unsigned char* ILightShow::resampleNew(int neww,  int newh, int oldw, int oldh, 
     float d1, d2, d3, d4;
     u_int p1, p2, p3, p4; /* nearby pixels */
     u_char red, green, blue;
+    ws2811_led_t *imageDataOut = nullptr;
 
-    unsigned char *b = new unsigned char[neww * newh];
+    //sanity checks to prevent crashes, one never knows with my math.
+    if(newWidth * newHeight <= 0) return imageDataOut;
+    if(width * height <= 0) return imageDataOut;
+    if(imageData == nullptr) return imageDataOut;
 
-    for (i = 0; i < newh; i++)
+    imageDataOut = new ws2811_led_t[newWidth * newHeight];
+    for (i = 0; i < newHeight; i++)
     {
-        for (j = 0; j < neww; j++)
+        for (j = 0; j < newWidth; j++)
         {
 
-            tmp = (float) (i) / (float) (newh - 1) * (oldh - 1);
+            tmp = (float) (i) / (float) (newHeight - 1) * (height - 1);
             l = (int) floor(tmp);
             if (l < 0)
             {
                 l = 0;
             } else
             {
-                if (l >= oldh - 1)
+                if (l >= height - 1)
                 {
-                    l = oldh - 2;
+                    l = height - 2;
                 }
             }
 
             u = tmp - l;
-            tmp = (float) (j) / (float) (neww - 1) * (oldw - 1);
+            tmp = (float) (j) / (float) (newWidth - 1) * (width - 1);
             c = (int) floor(tmp);
             if (c < 0)
             {
                 c = 0;
             } else
             {
-                if (c >= oldw - 1)
+                if (c >= width - 1)
                 {
-                    c = oldw - 2;
+                    c = width - 2;
                 }
             }
             t = tmp - c;
@@ -585,10 +570,10 @@ unsigned char* ILightShow::resampleNew(int neww,  int newh, int oldw, int oldh, 
             d4 = (1 - t) * u;
 
             /* nearby pixels: a[i][j] */
-            p1 = *((u_int*)imageData + (l * oldw) + c);
-            p2 = *((u_int*)imageData + (l * oldw) + c + 1);
-            p3 = *((u_int*)imageData + ((l + 1)* oldw) + c + 1);
-            p4 = *((u_int*)imageData + ((l + 1)* oldw) + c);
+            p1 = *((u_int*)imageData + (l * width) + c);
+            p2 = *((u_int*)imageData + (l * width) + c + 1);
+            p3 = *((u_int*)imageData + ((l + 1)* width) + c + 1);
+            p4 = *((u_int*)imageData + ((l + 1)* width) + c);
 
             /* color components */
             blue = (u_char)p1 * d1 + (u_char)p2 * d2 + (u_char)p3 * d3 + (u_char)p4 * d4;
@@ -596,17 +581,17 @@ unsigned char* ILightShow::resampleNew(int neww,  int newh, int oldw, int oldh, 
             red = (u_char)(p1 >> 16) * d1 + (u_char)(p2 >> 16) * d2 + (u_char)(p3 >> 16) * d3 + (u_char)(p4 >> 16) * d4;
 
             /* new pixel R G B  */
-            *((u_int*)b + (i * neww) + j) = (red << 16) | (green << 8) | (blue);
+            *((u_int*)imageDataOut + (i * newWidth) + j) = (red << 16) | (green << 8) | (blue);
         }
     }
-    return b;
+    return imageDataOut;
 }
 
 //You ARE responsable for this memory allocation!
-unsigned char* ILightShow::resample(int newWidth, int newHeight, int width, int height, unsigned char* imageData)
+unsigned char* ILightShow::resampleRGB(int newWidth, int newHeight, int width, int height, unsigned char* imageData)
 {
     if(imageData == nullptr) return nullptr;
-    //
+
     // Get a new buuffer to interpolate into
     unsigned char* newData = new unsigned char [newWidth * newHeight * 3];
 
@@ -626,23 +611,14 @@ unsigned char* ILightShow::resample(int newWidth, int newHeight, int width, int 
         }
     }
 
-
-
     return newData;
-
 }
 
 
-unsigned int ILightShow::getSnapShotBufferSize() const
-{
-    return _snapShotBufferSize;
-}
-
-
-
-void ILightShow::scrollText(QString msg, bool noDelay)
+void ILightShow::scrollText(QString msg, int maxRows, int maxCols, int rowStart, int drawCol, ws2811_led_t color,  ws2811_led_t *snapShotBuffer, int delay)
 {
 
+    if(snapShotBuffer == nullptr) return;
 
     for(int letter = 0; letter < msg.length(); letter++)
     {
@@ -651,22 +627,21 @@ void ILightShow::scrollText(QString msg, bool noDelay)
             continue;
 
 
-        for(int col = MAXCOLS; col < (MAXCOLS * 2); col++)
+        for(int col = maxCols; col < (maxCols * 2); col++)
         {
-            for(int row = 0; row < MAXROWS; row++)
+            for(int row = 0; row < maxRows; row++)
             {
 
-                if(letterMatrix[(int)msg.toStdString().c_str()[letter] - 32][row * MAXCOLS + (col - MAXCOLS)] == 1) //should this pixal be on?
-                    _ledWrapper->setPixelColor(row + _rowStart, _drawCol , _color1);
+                if(letterMatrix[(int)msg.toStdString().c_str()[letter] - 32][row * maxCols + (col - maxCols)] == 1) //should this pixal be on?
+                    _ledWrapper->setPixelColor(row + rowStart, drawCol , color);
             }
 
 
             _ledWrapper->show();
 
-            if(noDelay == false)
-                Ws2811Wrapper::waitMillSec(_wait);
+            Ws2811Wrapper::waitMillSec(delay);
 
-            shiftColumns();
+            shiftColumns(maxRows, rowStart, color, snapShotBuffer);
 
         }
     }

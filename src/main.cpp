@@ -109,7 +109,7 @@ void parseargs(int argc, char **argv)
 
 int main(int argc, char *argv[])
 {
-     QCoreApplication a(argc, argv);
+    QCoreApplication a(argc, argv);
 
     parseargs(argc, argv);
     catchUnixSignals({SIGQUIT, SIGINT, SIGTERM, SIGHUP});
@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
         fprintf(stderr,"Not Forking\r\n");
     }
 
-    _lightSystem = new LightSystem;
+    _lightSystem = new LightSystem();
 
     if(false == _lightSystem->startSystem())
         return 1;
