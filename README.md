@@ -37,20 +37,26 @@ Everything that is needed to build and run this project is or will be included i
 
 <b>These instructions are for Rasperry Pi Buster. It is assumed you are using the latest version of buster.</b>
 
-First Some machine prep.
-
-We want to block the sound card as it can be problematic with DMA addressing.
-
-cd /etc/modprobe.d
-sudo vi alsa-blacklist.conf
-Enter the following line
-blacklist snd_bcm2835
-Save the file.
-
-sudo raspi-config
-If you are wanting to use the LUX Sensor, it uses the i2c bus, you will want to enable that.
-If you plan un using the SPI bus to drive LEDS, you will need to enable SPI.
-
+<B>* First Some machine prep.</b>
+Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you will need to understand a few things.
+    1. rpiLights should not be ran under a GUI, it should be headless with the bare requirements to run.  
+    2. The Pi running rpiLights, should have the following disabled.
+        a) Sound card.
+            cd /etc/modprobe.d
+            sudo vi alsa-blacklist.conf
+            Enter the following line
+            blacklist snd_bcm2835
+            Save the file.
+            
+            I would also suggest editing /boot/config.txt
+            look for line dtparam=audio=on and set it to dtparam=audio=off, if the line does not exist, add it.
+            
+        b) One Wire GPIO, should be turned off, in raspi-config, under interfaces, it will cause interference with the Pannels.
+   3. If you want to make use of the LUX, in raspi-config, under interfaces, turn on i2c.
+   4. If you want to use the spi to drive the LEDS, in raspi-config, under interfaces, turn on spi.
+   5. The ws281X LEDS, will consume far less CPU, then the 2121 will, so if you are using these panels, number 1, is even more important.
+   6. Drving the 2121 boards from teh Pi can be done, but expect flickering and colors that are not as true.  To overcome this, you can create the required buffer chips to boost the signal lines from 3.3V to 5V.  Or you can purchase a Matrix Hat that will provide the buffers for you.
+   
 
 1. sudo apt install git qt5-default libqt5sql5-mysql build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev wiringpi libi2c-dev libcppunit-dev
 2. sudo apt install scons (Needed for Ws2811lib.)
