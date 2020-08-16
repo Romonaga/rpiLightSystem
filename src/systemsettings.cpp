@@ -136,6 +136,7 @@ bool SystemSettings::loadSystemSettings()
             _mqttRetryDelay = qry.value("mqttRetryDelay").toInt();
             _mqttTwitchQueue = qry.value("twitchMqttQueue").toString();
             _userArtDirectory = qry.value("userArtDirectory").toString();
+            _logShows = qry.value("logShows").toBool();
 
             sql = "SELECT * FROM LedLightSystem.lightSystemChannels where enabled = 1 and lightSystemId = ";
             sql.append(QString().number(_systemId));
@@ -201,7 +202,6 @@ bool SystemSettings::loadSettings()
 
             _mqttBroker = settings.value("MQTTBroker","").toString();
             _dbgLog = settings.value("DBGLOG",false).toBool();
-            _logShows = settings.value("LOGSHOWS", false).toBool();
             settings.endGroup();
 
             retVal = loadSystemSettings();

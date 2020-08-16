@@ -5,6 +5,10 @@
 #include <random>
 #include <math.h>
 
+#include <stdio.h>
+#include <sys/types.h>
+
+
 
 ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString& showParms) :
         _ledWrapper(ledWrapper), _lightShow(lightShow), _showParms(showParms)
@@ -538,6 +542,78 @@ void ILightShow::deleteSnapShot()
         _image = nullptr;
     }
 
+}
+
+unsigned char* ILightShow::resampleNew(int neww,  int newh, int oldw, int oldh, unsigned char* imageData)
+{
+    int i;
+    int j;
+    int l;
+    int c;
+    float t;
+    float u;
+    float tmp;
+    float d1, d2, d3, d4;
+    u_int p1, p2, p3, p4; /* nearby pixels */
+    u_char red, green, blue;
+
+    unsigned char *b = new unsigned char[neww * newh];
+
+    for (i = 0; i < newh; i++)
+    {
+        for (j = 0; j < neww; j++)
+        {
+
+            tmp = (float) (i) / (float) (newh - 1) * (oldh - 1);
+            l = (int) floor(tmp);
+            if (l < 0)
+            {
+                l = 0;
+            } else
+            {
+                if (l >= oldh - 1)
+                {
+                    l = oldh - 2;
+                }
+            }
+
+            u = tmp - l;
+            tmp = (float) (j) / (float) (neww - 1) * (oldw - 1);
+            c = (int) floor(tmp);
+            if (c < 0)
+            {
+                c = 0;
+            } else
+            {
+                if (c >= oldw - 1)
+                {
+                    c = oldw - 2;
+                }
+            }
+            t = tmp - c;
+
+            /* coefficients */
+            d1 = (1 - t) * (1 - u);
+            d2 = t * (1 - u);
+            d3 = t * u;
+            d4 = (1 - t) * u;
+
+            /* nearby pixels: a[i][j] */
+            p1 = *((u_int*)imageData + (l * oldw) + c);
+            p2 = *((u_int*)imageData + (l * oldw) + c + 1);
+            p3 = *((u_int*)imageData + ((l + 1)* oldw) + c + 1);
+            p4 = *((u_int*)imageData + ((l + 1)* oldw) + c);
+
+            /* color components */
+            blue = (u_char)p1 * d1 + (u_char)p2 * d2 + (u_char)p3 * d3 + (u_char)p4 * d4;
+            green = (u_char)(p1 >> 8) * d1 + (u_char)(p2 >> 8) * d2 + (u_char)(p3 >> 8) * d3 + (u_char)(p4 >> 8) * d4;
+            red = (u_char)(p1 >> 16) * d1 + (u_char)(p2 >> 16) * d2 + (u_char)(p3 >> 16) * d3 + (u_char)(p4 >> 16) * d4;
+
+            /* new pixel R G B  */
+            *((u_int*)b + (i * neww) + j) = (red << 16) | (green << 8) | (blue);
+        }
+    }
+    return b;
 }
 
 //You ARE responsable for this memory allocation!

@@ -118,6 +118,7 @@ protected:
 
     //You ARE responsable for this memory allocation!
     unsigned char* resample(int newWidth, int newHeight, int width, int height, unsigned char* imageData);
+    unsigned char * resampleNew(int oldw, int oldh, int neww,  int newh, unsigned char* imageData);
     unsigned int getSnapShotBufferSize() const;
 
 
