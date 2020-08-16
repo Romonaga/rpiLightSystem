@@ -42,6 +42,7 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
     
    1. rpiLights should not be ran under a GUI, it should be headless with the bare requirements to run. 
    2. The Pi running rpiLights, should have the following disabled.
+   
         a) Sound card.
             cd /etc/modprobe.d
             sudo vi alsa-blacklist.conf
