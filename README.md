@@ -39,14 +39,16 @@ Everything that is needed to build and run this project is or will be included i
 
 <b>* First Some machine prep.</b> <BR>
 Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you will need to understand a few things.
-    1. rpiLights should not be ran under a GUI, it should be headless with the bare requirements to run.  
-    2. The Pi running rpiLights, should have the following disabled.
+    
+   1. rpiLights should not be ran under a GUI, it should be headless with the bare requirements to run. 
+   2. The Pi running rpiLights, should have the following disabled.
         a) Sound card.
             cd /etc/modprobe.d
             sudo vi alsa-blacklist.conf
             Enter the following line
             blacklist snd_bcm2835
             Save the file.
+            
          b) I would also suggest editing /boot/config.txt look for line dtparam=audio=on and set it to dtparam=audio=off, if the line does not exist, add it.
          c) One Wire GPIO, should be turned off, in raspi-config, under interfaces, it will cause interference with the Pannels.
          
