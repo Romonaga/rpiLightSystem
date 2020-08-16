@@ -47,11 +47,9 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
             Enter the following line
             blacklist snd_bcm2835
             Save the file.
-            
-            I would also suggest editing /boot/config.txt
-            look for line dtparam=audio=on and set it to dtparam=audio=off, if the line does not exist, add it.
-            
-        b) One Wire GPIO, should be turned off, in raspi-config, under interfaces, it will cause interference with the Pannels.
+         b) I would also suggest editing /boot/config.txt look for line dtparam=audio=on and set it to dtparam=audio=off, if the line does not exist, add it.
+         c) One Wire GPIO, should be turned off, in raspi-config, under interfaces, it will cause interference with the Pannels.
+         
    3. If you want to make use of the LUX, in raspi-config, under interfaces, turn on i2c.
    4. If you want to use the spi to drive the LEDS, in raspi-config, under interfaces, turn on spi.
    5. The ws281X LEDS, will consume far less CPU, then the 2121 will, so if you are using these panels, number 1, is even more important.
