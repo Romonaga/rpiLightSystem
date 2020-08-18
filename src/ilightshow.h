@@ -50,7 +50,8 @@
             X(28, MatrixS, "Square"),                   \
             X(29, MatrixT, "Triangle"),                   \
             X(30, MatrixJpg, "Create Art JPG"),                   \
-            X(31, MatrixDF, "Display File JPG/PNG")                   \
+            X(31, MatrixDF, "Display File JPG/PNG"),                   \
+            X(32, MatrixVB, "Matrix Vol Bars")                   \
 
 
 #define LIGHT_SHOWS_ENUM(type, name, txt) name = type

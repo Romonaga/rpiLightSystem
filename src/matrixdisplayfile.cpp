@@ -86,6 +86,7 @@ void MatrixCreateDisplayFile::startShow()
                 loopCount = (gif->loop_count <= 20) ? 20 : gif->loop_count;
                 for (unsigned looped = 0; loopCount > looped; looped++)
                 {
+                    if (_running == false) break;
 
                     while (gd_get_frame(gif))
                     {
@@ -107,14 +108,13 @@ void MatrixCreateDisplayFile::startShow()
 
                         delete [] reSampledImageData;
 
-                        Ws2811Wrapper::waitMillSec(gif->gce.delay * 10);
-                        _ledWrapper->show();
+                       _ledWrapper->show();
+                       Ws2811Wrapper::waitMillSec( (_wait == 1) ? (gif->gce.delay * 10) : _wait);
 
                     }
 
                     gd_rewind(gif);
 
-                    if (_running == false) break;
                  }
 
                  delete [] imageData;

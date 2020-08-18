@@ -235,6 +235,8 @@ void ILightShow::drawCircle(int xCenter, int yCenter, int radius)
         case 5:
         case 7:
         case 8:
+        case 9:
+        case 10:
             circleBres(xCenter, yCenter, radius);
             break;
 

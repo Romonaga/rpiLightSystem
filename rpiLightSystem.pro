@@ -25,6 +25,7 @@ SOURCES += src/ilightshow.cpp \
     src/matrixtcircle.cpp \
     src/matrixtriangle.cpp \
     src/matrixtrip.cpp \
+    src/matrixvolbars.cpp \
     src/motionlightsfeature.cpp \
     src/mqttreceiver.cpp \
     src/playlistmanager.cpp \
@@ -83,6 +84,7 @@ HEADERS += \
     src/matrixsquare.h \
     src/matrixtriangle.h \
     src/matrixtrip.h \
+    src/matrixvolbars.h \
     src/motionlightsfeature.h \
     src/mqttreceiver.h \
     src/pixalfonts.h \
