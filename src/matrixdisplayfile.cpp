@@ -170,7 +170,7 @@ void MatrixCreateDisplayFile::startShow()
                     if(database.open())
                     {
                         std::stringstream sql;
-                        sql << "insert into matrixArt(userId, artName, showParms, enabled) values('1','" << file.baseName().toStdString().c_str() << "','" << jsondoc.toJson().toStdString().c_str() << "','1');";
+                        sql << "insert into matrixArt(userId, artName, showParms, enabled) values('1','" << file.baseName().toStdString().c_str() << "','" << jsondoc.toJson(QJsonDocument::Compact).toStdString().c_str() << "','1');";
                         QSqlQuery result(sql.str().c_str(), database);
                         if(result.lastError().type() != QSqlError::NoError)
                         {

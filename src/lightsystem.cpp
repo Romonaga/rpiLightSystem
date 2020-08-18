@@ -206,11 +206,23 @@ void LightSystem::playPlayList(QString playList)
     }
 }
 
+
 void LightSystem::playArtShow(QJsonObject jsonObject)
 {
     PlayListManager pmanager;
-    QString artShow = pmanager.getArtShow(jsonObject);
+
+    QJsonDocument doc = QJsonDocument::fromJson(pmanager.getArtShow(jsonObject).toUtf8());
+    QJsonObject sc = doc.object();
+
+
+    sc["sc"] = jsonObject.value("sc").toInt();
+    sc["clearStart"] = jsonObject.value("clearStart");
+    sc["clearFinish"] = jsonObject.value("clearFinish");
+    doc.setObject(sc);
+    QString artShow = doc.toJson(QJsonDocument::Compact);
+
     processMsgReceived(artShow);
+
 }
 
 
@@ -750,7 +762,7 @@ bool LightSystem::startSystem()
         {
             info.str("");
             info << "start() Settings Host(" << _settings->getHostName().toStdString().c_str() << ") Channel(" << channel->channelId() << ") DMA(" << channel->dma() << ") GPIO(" <<
-            channel->gpio() << ") sType(" << channel->stripColumns() << ") Rows(" <<
+            channel->gpio() << ") sType(" << channel->stripType() << ") Rows(" <<
             channel->stripRows() << ") Columns(" << channel->stripColumns() << ") Brightness(" <<
             channel->brightness() << ") MQTTBroker(" << _settings->getMqttBroker().toStdString().c_str() << ")";
 
