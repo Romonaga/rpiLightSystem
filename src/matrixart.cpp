@@ -41,20 +41,19 @@ void MatrixArt::startShow()
              shiftCols = jsonObject["sc"].toInt();
 
              moveLeft = (shiftCols >= 0) ? true : false;
-
              foreach(const QJsonValue &value, jsonPixels)
              {
                  try
                  {
                       if(moveLeft == true && value["c"].toInt() < shiftCols) continue; //some ability to correct art, will add other shifts soon.
-                      if(moveLeft == false && (value["c"].toInt() + -shiftCols ) > (_ledWrapper->getColumns() - 1 )) continue;
+                      if(moveLeft == false && (value["c"].toInt() + -shiftCols ) > (int)(_ledWrapper->getColumns() - 1 )) continue;
 
                       _ledWrapper->setPixelColor(value["r"].toInt(), value["c"].toInt() + -shiftCols, std::stoul(value["co"].toString().replace("#","0x").toStdString().c_str(), nullptr, 16));
                  }
                  catch (const std::invalid_argument&)
                  {
                      _logger->logInfo("MatrixArt could not decode value, stoppping.");
-                     return;
+                     break;
                  }
              }
 
@@ -86,9 +85,9 @@ void MatrixArt::startShow()
 
                      for(uint32_t row = 0; row < rows; row++)
                      {
-                         for(uint32_t col = 0; col < columns; col++)
+                         for(uint32_t col = 0 ; col < columns; col++)
                          {
-                             _ledWrapper->setPixelColor(row, col,  snapShotBuffer[index]);
+                             _ledWrapper->setPixelColor(row, col ,  snapShotBuffer[index]);
                              index++;
                          }
                      }

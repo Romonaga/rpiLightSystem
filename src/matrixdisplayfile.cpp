@@ -93,8 +93,8 @@ void MatrixCreateDisplayFile::startShow()
 
                         gd_render_frame(gif, imageData);
                         reSampledImageData =  resampleRGB(_settings->getChannels()[_channelId]->stripColumns(),_settings->getChannels()[_channelId]->stripRows(), gif->width, gif->height, imageData);
-                        index = 0;
 
+                        index = 0;
                         for(int row = 0; row < _settings->getChannels()[_channelId]->stripRows(); row++)
                         {
 
@@ -111,6 +111,7 @@ void MatrixCreateDisplayFile::startShow()
                        _ledWrapper->show();
                        Ws2811Wrapper::waitMillSec( (_wait == 1) ? (gif->gce.delay * 10) : _wait);
 
+                       if (_running == false) break;
                     }
 
                     gd_rewind(gif);
@@ -120,10 +121,8 @@ void MatrixCreateDisplayFile::startShow()
                  delete [] imageData;
                  gd_close_gif(gif);
 
-                 return;
-
+                 return; // we are done here.
             }
-
 
 
             if(error == 0 && reSampledImageData != nullptr)
@@ -170,7 +169,8 @@ void MatrixCreateDisplayFile::startShow()
                     if(database.open())
                     {
                         std::stringstream sql;
-                        sql << "insert into matrixArt(userId, artName, showParms, enabled) values('1','" << file.baseName().toStdString().c_str() << "','" << jsondoc.toJson(QJsonDocument::Compact).toStdString().c_str() << "','1');";
+                        sql << "insert into matrixArt(userId, artName, showParms, savedPixalsWidth, enabled) values('1','" <<
+                               file.baseName().toStdString().c_str() << "','" << jsondoc.toJson(QJsonDocument::Compact).toStdString().c_str() << "'," << _ledWrapper->getColumns() << "'1')";
                         QSqlQuery result(sql.str().c_str(), database);
                         if(result.lastError().type() != QSqlError::NoError)
                         {

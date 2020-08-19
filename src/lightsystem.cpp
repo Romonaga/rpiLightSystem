@@ -220,6 +220,7 @@ void LightSystem::playArtShow(QJsonObject jsonObject)
     sc["sc"] = jsonObject.value("sc").toInt();
     sc["clearStart"] = jsonObject.value("clearStart");
     sc["clearFinish"] = jsonObject.value("clearFinish");
+
     doc.setObject(sc);
     QString artShow = doc.toJson(QJsonDocument::Compact);
 
