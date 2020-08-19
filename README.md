@@ -37,6 +37,10 @@ Features.
 
 Everything that is needed to build and run this project is or will be included in this repository. This will save you time finding the repos needed.  Please follow the build instructions and install instructions for all libs that I have used.  While we have attempted to document as best as possible, it is always best to follow the directions provided by package owner.
 
+    1. DB instructions are needed.  However, if you are willing to build the system, I have to assume you can install MySql.
+    2. The etc config file needs some parms.  this should be self explanitory when you look at it.  Yes, it needs to be in etc.
+    3. Apache2 needs to be installed as well. 
+
 <b>These instructions are for Rasperry Pi Buster. It is assumed you are using the latest version of buster.</b>
 
 <b>* First Some machine prep.</b> <BR>
