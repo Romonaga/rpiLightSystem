@@ -39,7 +39,14 @@ Everything that is needed to build and run this project is or will be included i
 
     1. DB instructions are needed.  However, if you are willing to build the system, I have to assume you can install MySql.
     2. The etc config file needs some parms.  this should be self explanitory when you look at it.  Yes, it needs to be in etc.
-    3. Apache2 needs to be installed as well. 
+    3. Apache2 needs to be installed as well. I will get to instructions but you will need the following.
+        a) mqtt-client 
+        b) pecl install Mosquitto-alpha for MQTT support https://github.com/mgdm/Mosquitto-PHP
+        c) <Mysql PHP support directions needed>
+    4. The website must be installed in you apache directory.  While I do have a form of Myrana's work, it is best to take from her directly as it is always current.
+    5. rpiLights must be ran as root, unless you are just going to use SPI ws2811 Lib.
+    6 Configuration is not complex, there is a config screen.  Matrix direction is a trial and erroor, you have to just play with the settings.  However, you should find settings that will work.  If stuck leave an issue for me.  I check often.  I will provide more detail instructions as time permits.
+
 
 <b>These instructions are for Rasperry Pi Buster. It is assumed you are using the latest version of buster.</b>
 
