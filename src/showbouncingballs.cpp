@@ -17,7 +17,7 @@ ShowBouncingBalls::ShowBouncingBalls(Ws2811Wrapper* ledWrapper, const LedLightSh
     ILightShow(ledWrapper, lightShow, showParms)
 {
 
-    width_ = _ledWrapper->getColumns();
+ /*   width_ = _ledWrapper->getColumns();
     height_ = _ledWrapper->getRows();
 
     // Allocate memory
@@ -55,10 +55,12 @@ ShowBouncingBalls::ShowBouncingBalls(Ws2811Wrapper* ledWrapper, const LedLightSh
         break;
       }
     }
+    */
 }
 
 ShowBouncingBalls::~ShowBouncingBalls()
 {
+    /*
     for (int x=0; x<width_; ++x) {
       delete [] values_[x];
     }
@@ -67,8 +69,14 @@ ShowBouncingBalls::~ShowBouncingBalls()
       delete [] newValues_[x];
     }
     delete [] newValues_;
+    */
 
 }
+
+
+
+/*
+
 void ShowBouncingBalls::startShow()
 {
     while(_endTime > time(nullptr) && _running == true)
@@ -90,6 +98,7 @@ void ShowBouncingBalls::startShow()
         Ws2811Wrapper::waitMillSec(_wait);
     }
 }
+*/
 
 int ShowBouncingBalls::numAliveNeighbours(int x, int y)
 {
@@ -163,7 +172,7 @@ void ShowBouncingBalls::updateValues()
 
 
 
-/*
+
 
 void ShowBouncingBalls::startShow()
 {
@@ -171,13 +180,15 @@ void ShowBouncingBalls::startShow()
     int  drawCol  = 0;
     _rowStart = 0;
     ws2811_led_t* snapShotBuffer = nullptr;
-
-
+    QString sendPad;
 
     QTime qtime;
     QString timeStr;
 
-    snapShotBuffer = snapShot(_rowStart, CLOCKMAXROWS, &snapshotBufferSize);
+    for(int pad = 0; pad < _settings->getChannels()[_channelId]->stripColumns() / CLOCKMAXCOLS; pad++)       //pad the string so it will scroll off the screen
+       sendPad.append(" ");
+
+    snapShotBuffer = snapShot(_rowStart, CLOCKMAXROWS, CLOCKMAXCOLS, &snapshotBufferSize);
     if(snapShotBuffer != nullptr)
     {
         drawCol = _settings->getChannels()[_channelId]->stripColumns() - 1;
@@ -186,12 +197,12 @@ void ShowBouncingBalls::startShow()
         while(_endTime > time(nullptr) && _running == true)
         {
             timeStr = qtime.currentTime().toString().toStdString().c_str();
+            timeStr.append(sendPad);
 
             for(int letter = 0; letter < timeStr.length(); letter++)
             {
 
-                qDebug() << "val: " << (int)timeStr.toStdString().c_str()[letter] << "let: " << (int)/*timeStr.toStdString().c_str()[letter]
-                if((int)timeStr.toStdString().c_str()[letter] < 48 || (int)timeStr.toStdString().c_str()[letter] > 59) //only attempt to print what we know.
+                if((int)timeStr.toStdString().c_str()[letter] < 32 || (int)timeStr.toStdString().c_str()[letter] > 59) //only attempt to print what we know.
                     continue;
 
                 for(int col = CLOCKMAXCOLS; col < (CLOCKMAXCOLS * 2); col++)
@@ -199,8 +210,7 @@ void ShowBouncingBalls::startShow()
                     for(int row = 0; row < CLOCKMAXROWS; row++)
                     {
 
-
-                        if(clockMatrix[(int)timeStr.toStdString().c_str()[letter] - 48][row * CLOCKMAXCOLS + (col - CLOCKMAXCOLS)] == 1) //should this pixal be on?
+                        if(timeMatrix[(int)timeStr.toStdString().c_str()[letter] - 32][row * CLOCKMAXCOLS + (col - CLOCKMAXCOLS)] == 1) //should this pixal be on?
                         {
                             _ledWrapper->setPixelColor(row + _rowStart, drawCol , _color1);
                         }
@@ -208,9 +218,7 @@ void ShowBouncingBalls::startShow()
 
 
                     _ledWrapper->show();
-
                     Ws2811Wrapper::waitMillSec(_wait);
-
                     shiftColumns(CLOCKMAXROWS, _rowStart, _color1, snapShotBuffer);
 
                 }
@@ -225,4 +233,4 @@ void ShowBouncingBalls::startShow()
 }
 
 
-*/
+
