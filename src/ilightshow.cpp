@@ -10,6 +10,31 @@
 
 
 
+ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow) :
+        _ledWrapper(ledWrapper), _lightShow(lightShow)
+{
+    _logger = DNRLogger::instance();
+    _settings = SystemSettings::getInstance();
+
+    srand(time(nullptr));
+    _userId = 1;
+    _running = false;
+    _wait = 100;
+    _clearOnStart = false;
+    _clearOnFinish = false;
+    _numMins = 1;
+    _width = 5;
+    _colorEvery = 2;
+    _channelId = 0;
+    _color1 = _ledWrapper->Color(125, 125, 125);
+    _color2 = _ledWrapper->Color(0, 125, 125);
+    _color3 = _ledWrapper->Color(125, 125, 0);
+    _color4 = _ledWrapper->Color(125, 0, 125);
+    _rowStart = 0;
+    _drawCol = 0;
+
+}
+
 ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString& showParms) :
         _ledWrapper(ledWrapper), _lightShow(lightShow), _showParms(showParms)
 {
@@ -120,6 +145,7 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
    }
 
 }
+
 
 ILightShow::~ILightShow()
 {

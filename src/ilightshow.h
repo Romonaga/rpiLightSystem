@@ -78,7 +78,8 @@ class ILightShow : public QThread
     Q_OBJECT
 
 public:
-    explicit ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString& showParms);
+    ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString& showParms);
+    ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow);
     ~ILightShow();
     void stopShow();
 
@@ -174,6 +175,12 @@ signals:
 
 Q_DECLARE_INTERFACE(ILightShow,"ILightShow")
 #endif // ILIGHTSHOW_H
+
+// the types of the class factories
+//Please see the example provided as to how to implement this.
+typedef ILightShow* create_t(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow);
+typedef void destroy_t(ILightShow*);
+
 
 
 
