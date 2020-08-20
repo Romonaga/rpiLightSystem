@@ -3,6 +3,7 @@
 
 ChannelSettings::ChannelSettings(QSqlQuery qry)
 {
+    _systemId = qry.value("lightSystemId").toUInt();
     _stripType = qry.value("stripType").toUInt();
     _stripColumns = qry.value("stripColumns").toUInt();
     _stripRows = qry.value("stripRows").toUInt();

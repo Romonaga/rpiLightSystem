@@ -15,6 +15,7 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
 {
     _logger = DNRLogger::instance();
     _settings = SystemSettings::getInstance();
+    _running = false;
 
     srand(time(nullptr));
     _userId = 1;

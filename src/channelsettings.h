@@ -1,3 +1,7 @@
+// jpge.h - C++ class for JPEG compression.
+// Public domain, LumaWin <robertwinslow@comcast.net>
+
+
 #ifndef CHANNELSETTINGS_H
 #define CHANNELSETTINGS_H
 
