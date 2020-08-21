@@ -64,28 +64,26 @@ void MatrixCreateJpg::startShow()
         };
 
         TooJpeg::writeJpeg(this, jpgConverter, reSampled, _settings->getChannels()[_channelId]->stripColumns() * 20 ,_settings->getChannels()[_channelId]->stripRows() * 20, true, 100, false, nullptr);
+        delete [] reSampled;
 
-        if(reSampled != nullptr)
+        tmp = mkstemp(tmpFile);
+        close(tmp);
+
+        QString outFileName(_settings->getUserArtDirectory());
+        outFileName.append(tmpFile);
+        outFileName.append(".jpg");
+
+        qDebug() << outFileName.toStdString().c_str();
+        std::ofstream outFile(outFileName.toStdString().c_str(), std::ios::binary );
+        if(outFile.is_open())
         {
-            tmp = mkstemp(tmpFile);
-            close(tmp);
-
-            QString outFileName(_settings->getUserArtDirectory());
-            outFileName.append(tmpFile);
-            outFileName.append(".jpg");
-
-            qDebug() << outFileName.toStdString().c_str();
-            std::ofstream outFile(outFileName.toStdString().c_str(), std::ios::binary );
-            if(outFile.is_open())
-            {
-                outFile.write((const char*) _jpgBuffer.data(), _jpgBuffer.size());
-                outFile.close();
-            }
-
-            delete [] reSampled;
+            outFile.write((const char*) _jpgBuffer.data(), _jpgBuffer.size());
+            outFile.close();
         }
     }
 
     _jpgBuffer.clear();
 
 }
+
+

@@ -2,7 +2,7 @@
 #include <QVector>
 #include <math.h>
 #include <QDebug>
-
+#include <sstream>
 
 
 MatrixArt::MatrixArt(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
@@ -10,7 +10,6 @@ MatrixArt::MatrixArt(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, 
 {
 
 }
-
 
 void MatrixArt::startShow()
 {
@@ -52,7 +51,9 @@ void MatrixArt::startShow()
                  }
                  catch (const std::invalid_argument&)
                  {
-                     _logger->logInfo("MatrixArt could not decode value, stoppping.");
+                     std::stringstream info;
+                     info << "MatrixArt could not decode value, stoppping. row: " << value["r"].toInt() << " col: " << value["c"].toInt() + -shiftCols;
+                     _logger->logInfo(info.str());
                      break;
                  }
              }

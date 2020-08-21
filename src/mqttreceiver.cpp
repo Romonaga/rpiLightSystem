@@ -37,7 +37,7 @@ void MqttReceiver::init(const QString& clientID)
 
     auto mqttSubCallBack = [](void *caller, mqtt::const_message_ptr msg)
     {
-        ((MqttReceiver*)caller)->callbackFunction(msg);
+        static_cast<MqttReceiver*>(caller)->callbackFunction(msg);
     };
 
     _data->connectCallback(mqttSubCallBack, this);

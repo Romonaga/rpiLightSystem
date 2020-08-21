@@ -1,11 +1,11 @@
 QT += core sql
+CONFIG += console
+CONFIG -= app_bundle
 QT -= gui
 
 CONFIG += c++11
 
 TARGET = rpiLightSystem
-CONFIG += console
-CONFIG -= app_bundle
 
 TEMPLATE = app
 SOURCES += src/ilightshow.cpp \
@@ -116,7 +116,8 @@ HEADERS += \
     src/showtwinkle.h \
     src/systemsettings.h \
     src/timefeature.h \
-    src/toojpeg.h
+    src/toojpeg.h \
+
 
 LIBS += -lWs2811Wrapper
 LIBS += -lws2811

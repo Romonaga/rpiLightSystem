@@ -123,6 +123,13 @@ void MatrixCreateDisplayFile::startShow()
 
                  return; // we are done here.
             }
+            else if(file.suffix().toUpper() == "WEBP")
+            {
+
+
+
+                return;
+            }
 
 
             if(error == 0 && reSampledImageData != nullptr)
