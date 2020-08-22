@@ -27,8 +27,8 @@ LightSensorFeature::~LightSensorFeature()
 
 void LightSensorFeature::run()
 {
-    int pinRead;
-    int pinLastState = 1;
+    short pinRead;
+    short    pinLastState = 1;
     std::mutex mtx;
     std::unique_lock<std::mutex> lck(mtx);
     time_t nextTrip = 0;
@@ -53,7 +53,6 @@ void LightSensorFeature::run()
                     emit lightSensorStateChange(this, pinLastState);
                     nextTrip = time(nullptr) + 120;
                 }
-
         }
 
     }

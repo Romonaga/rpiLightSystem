@@ -123,9 +123,6 @@ struct Row<0>
 {
   static void idct(int* pTemp, const jpgd_block_t* pSrc)
   {
-#ifdef _MSC_VER
-    pTemp; pSrc;
-#endif
   }
 };
 
@@ -876,7 +873,7 @@ void *jpeg_decoder::alloc(size_t nSize, bool zero)
   if (!rv)
   {
     int capacity = JPGD_MAX(32768 - 256, (nSize + 2047) & ~2047);
-    mem_block *b = (mem_block*)jpgd_malloc(sizeof(mem_block) + capacity);
+    mem_block *b = static_cast<mem_block*>(jpgd_malloc(sizeof(mem_block) + capacity));
     if (!b) { stop_decoding(JPGD_NOTENOUGHMEM); }
     b->m_pNext = m_pMem_blocks; m_pMem_blocks = b;
     b->m_used_count = nSize;
@@ -2580,7 +2577,7 @@ void jpeg_decoder::init_frame()
 // thing in RAM.
 jpeg_decoder::coeff_buf* jpeg_decoder::coeff_buf_open(int block_num_x, int block_num_y, int block_len_x, int block_len_y)
 {
-  coeff_buf* cb = (coeff_buf*)alloc(sizeof(coeff_buf));
+  coeff_buf* cb = static_cast<coeff_buf*>(alloc(sizeof(coeff_buf)));
 
   cb->block_num_x = block_num_x;
   cb->block_num_y = block_num_y;

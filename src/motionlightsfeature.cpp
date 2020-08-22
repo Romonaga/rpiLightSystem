@@ -27,9 +27,9 @@ MotionLightsFeature::~MotionLightsFeature()
 
 void MotionLightsFeature::run()
 {
-    int pinRead;
-    int pinLastState = 0;
-    int resetLogCount = 1;
+    short pinRead;
+    short pinLastState = 0;
+    short resetLogCount = 1;
 
     std::mutex mtx;
     std::unique_lock<std::mutex> lck(mtx);
