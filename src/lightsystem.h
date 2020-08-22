@@ -115,14 +115,14 @@ private: //shows
     void triChaser(ws2811_led_t c1, ws2811_led_t c2, ws2811_led_t c3, u_int32_t delay);
 
     void queueShow(const LedLightShows& show, const QString& showParms);
-
-    //TWITCH
-    LedLightShows getShowId(const QString& twitchId);
     double getSystemTemp();
     void getSysInfo(QJsonObject* statusObject);
     void getVoltageInfo(QJsonObject *statusObject);
 
     void sendSystemInfo();
+
+    //TWITCH
+    LedLightShows getShowId(const QString& twitchId);
 
 
 private:

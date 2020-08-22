@@ -54,6 +54,9 @@
 #include "matrixdisplayfile.h"
 #include "matrixvolbars.h"
 #include "matrixscrolltime.h"
+#include "matrixantart.h"
+#include "matrixkaleidoscope.h"
+#include "matrixcolorevolution.h"
 
 
 LightSystem::LightSystem(QObject *parent) : QObject(parent)
@@ -555,6 +558,18 @@ void LightSystem::queueShow(const LedLightShows& show, const QString& showParms)
             _runningShows.append(new MatrixScrollTime(&_ledWrapper, show, showParms));
             break;
 
+        case MatrixAntShow:
+            _runningShows.append(new MatrixAntArt(&_ledWrapper, show, showParms));
+            break;
+
+        case MatrixKScope:
+            _runningShows.append(new MatrixKaleidoscope(&_ledWrapper, show, showParms));
+            break;
+
+        case MatrixColorEvo:
+            _runningShows.append(new MatricColorEvolution(&_ledWrapper, show, showParms));
+        break;
+
         default:
             _logger->logWarning("Unknown Show");
 
@@ -608,7 +623,6 @@ void LightSystem::logShow(ILightShow* show)
 
     }
 
-
 }
 
 
@@ -637,9 +651,7 @@ void LightSystem::runShow()
 
 void LightSystem::cleanUpShow(ILightShow* show)
 {
-
     std::stringstream info;
-
 
     if(show != nullptr) delete show;
 
@@ -649,8 +661,6 @@ void LightSystem::cleanUpShow(ILightShow* show)
 
     info << "LightSystem::cleanUpShow Show(" <<  show->getShowName().toStdString().c_str() << ") Queue(" << _runningShows.count() << ")";
     _logger->logInfo(info.str());
-
-
 
 }
 

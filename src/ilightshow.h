@@ -65,7 +65,10 @@
             X(30, MatrixJpg, "Create Art JPG"),                   \
             X(31, MatrixDF, "Display File JPG/PNG"),                   \
             X(32, MatrixVB, "Matrix Vol Bars"),                   \
-            X(33, MatrixTimeS, "Matrix Scroll Time")                   \
+            X(33, MatrixTimeS, "Matrix Scroll Time"),                   \
+            X(34, MatrixAntShow, "Matrix Ant Art") ,                  \
+            X(35, MatrixKScope, "Matrix Kaleidoscope"),                   \
+            X(36, MatrixColorEvo, "Matrix Color Evolution")                   \
 
 
 #define LIGHT_SHOWS_ENUM(type, name, txt) name = type

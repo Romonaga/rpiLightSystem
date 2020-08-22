@@ -1,236 +1,138 @@
 #include "showbouncingballs.h"
 #include <QDebug>
 
-
-#include <QDateTime>
-#include <QTime>
-
-
-#include "pixalfonts.h"
-
-
-using namespace std;
-
-
-
 ShowBouncingBalls::ShowBouncingBalls(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
     ILightShow(ledWrapper, lightShow, showParms)
 {
+   popSize_ = _ledWrapper->getColumns() * _ledWrapper->getRows();
 
- /*   width_ = _ledWrapper->getColumns();
-    height_ = _ledWrapper->getRows();
-
-    // Allocate memory
-    values_ = new int*[width_];
-    for (int x=0; x<width_; ++x) {
-      values_[x] = new int[height_];
-    }
-    newValues_ = new int*[width_];
-    for (int x=0; x<width_; ++x) {
-      newValues_[x] = new int[height_];
-    }
-
-    // Init values randomly
-    srand(time(NULL));
-    for (int x=0; x<width_; ++x) {
-      for (int y=0; y<height_; ++y) {
-        values_[x][y]=rand()%2;
-      }
-    }
-    r_ = rand()%255;
-    g_ = rand()%255;
-    b_ = rand()%255;
-
-    if (r_<150 && g_<150 && b_<150) {
-      int c = rand()%3;
-      switch (c) {
-      case 0:
-        r_ = 200;
-        break;
-      case 1:
-        g_ = 200;
-        break;
-      case 2:
-        b_ = 200;
-        break;
-      }
-    }
-    */
+   // Allocate memory
+   children_ = new citizen[popSize_];
+   parents_ = new citizen[popSize_];
+   srand(time(NULL));
 }
 
 ShowBouncingBalls::~ShowBouncingBalls()
 {
-    /*
-    for (int x=0; x<width_; ++x) {
-      delete [] values_[x];
-    }
-    delete [] values_;
-    for (int x=0; x<width_; ++x) {
-      delete [] newValues_[x];
-    }
-    delete [] newValues_;
-    */
-
+    delete [] children_;
+    delete [] parents_;
 }
 
 
+  /// fitness here is how "similar" the color is to the target
+int ShowBouncingBalls::calcFitness(const int value, const int target)
+{
+    // Count the number of differing bits
+    int diffBits = 0;
+    for (unsigned int diff = value ^ target; diff; diff &= diff - 1)
+    {
+      ++diffBits;
+    }
+    return diffBits;
+}
 
-/*
+void ShowBouncingBalls::mate()
+{
+    // Adjust these for fun and profit
+    const float eliteRate = 0.30f;
+    const float mutationRate = 0.20f;
+
+    const int numElite = popSize_ * eliteRate;
+    for (int i = 0; i < numElite; ++i) {
+      children_[i] = parents_[i];
+    }
+
+    for (int i = numElite; i < popSize_; ++i) {
+      //select the parents randomly
+      const float sexuallyActive = 1.0 - eliteRate;
+      const int p1 = rand() % (int)(popSize_ * sexuallyActive);
+      const int p2 = rand() % (int)(popSize_ * sexuallyActive);
+      const unsigned matingMask = (~0u) << (rand() % bitsPerPixel);
+
+      // Make a baby
+      unsigned baby = (parents_[p1].dna & matingMask)
+        | (parents_[p2].dna & ~matingMask);
+      children_[i].dna = baby;
+
+      // Mutate randomly based on mutation rate
+      if ((rand() / (float)RAND_MAX) < mutationRate) {
+        mutate(children_[i]);
+      }
+    }
+  }
+
+  /// parents make children,
+  /// children become parents,
+  /// and they make children...
+void ShowBouncingBalls::swap()
+  {
+    citizen* temp = parents_;
+    parents_ = children_;
+    children_ = temp;
+  }
+
+  void ShowBouncingBalls::mutate(citizen& c)
+  {
+    // Flip a random bit
+    c.dna ^= 1 << (rand() % bitsPerPixel);
+  }
+
+  /// can adjust this threshold to make transition to new target seamless
+  bool ShowBouncingBalls::is85PercentFit()
+  {
+    int numFit = 0;
+    for (int i = 0; i < popSize_; ++i) {
+      if (calcFitness(children_[i].dna, target_) < 1)
+      {
+        ++numFit;
+      }
+    }
+    return ((numFit / (float)popSize_) > 0.85f);
+  }
+
 
 void ShowBouncingBalls::startShow()
 {
-    while(_endTime > time(nullptr) && _running == true)
+    target_ = rand() & 0xFFFFFF;
+
+    // Create the first generation of random children_
+    for (int i = 0; i < popSize_; ++i)
     {
+      children_[i].dna = rand() & 0xFFFFFF;
+    }
 
-        updateValues();
-        for (int x=0; x<width_; ++x)
+    while (_running && _endTime > time(nullptr))
+    {
+        swap();
+        sort();
+        mate();
+        std::random_shuffle (children_, children_ + popSize_, rnd);
+
+        // Draw citizens to canvas
+        for(int i=0; i < popSize_; i++)
         {
-            for (int y=0; y<height_; ++y)
-            {
-                if (values_[x][y])
-                    _ledWrapper->setPixelColor(y, x, r_, g_, b_);
-                else
-                    _ledWrapper->setPixelColor(y, x, 0, 0, 0);
-            }
-        }
+            int c = children_[i].dna;
+            int x = i % _ledWrapper->getColumns();
+            int y = (int)(i / _ledWrapper->getColumns());
+            _ledWrapper->setPixelColor(y, x, _ledWrapper->Red(c), _ledWrapper->Green(c), _ledWrapper->Blue(c));
 
+        }
         _ledWrapper->show();
-        Ws2811Wrapper::waitMillSec(_wait);
-    }
-}
-*/
 
-int ShowBouncingBalls::numAliveNeighbours(int x, int y)
-{
-  int num=0;
-  if (torus_) {
-    // Edges are connected (torus)
-    num += values_[(x-1+width_)%width_][(y-1+height_)%height_];
-    num += values_[(x-1+width_)%width_][y                    ];
-    num += values_[(x-1+width_)%width_][(y+1        )%height_];
-    num += values_[(x+1       )%width_][(y-1+height_)%height_];
-    num += values_[(x+1       )%width_][y                    ];
-    num += values_[(x+1       )%width_][(y+1        )%height_];
-    num += values_[x                  ][(y-1+height_)%height_];
-    num += values_[x                  ][(y+1        )%height_];
-  }
-  else {
-    // Edges are not connected (no torus)
-    if (x>0) {
-      if (y>0)
-        num += values_[x-1][y-1];
-      if (y<height_-1)
-        num += values_[x-1][y+1];
-      num += values_[x-1][y];
-    }
-    if (x<width_-1) {
-      if (y>0)
-        num += values_[x+1][y-1];
-      if (y<31)
-        num += values_[x+1][y+1];
-      num += values_[x+1][y];
-    }
-    if (y>0)
-      num += values_[x][y-1];
-    if (y<height_-1)
-      num += values_[x][y+1];
-  }
-  return num;
-}
-
-void ShowBouncingBalls::updateValues()
-{
-  // Copy values to newValues
-  for (int x=0; x<width_; ++x) {
-    for (int y=0; y<height_; ++y) {
-      newValues_[x][y] = values_[x][y];
-    }
-  }
-  // update newValues based on values
-  for (int x=0; x<width_; ++x) {
-    for (int y=0; y<height_; ++y) {
-      int num = numAliveNeighbours(x,y);
-      if (values_[x][y]) {
-        // cell is alive
-        if (num < 2 || num > 3)
-          newValues_[x][y] = 0;
-      }
-      else {
-        // cell is dead
-        if (num == 3)
-          newValues_[x][y] = 1;
-      }
-    }
-  }
-  // copy newValues to values
-  for (int x=0; x<width_; ++x) {
-    for (int y=0; y<height_; ++y) {
-      values_[x][y] = newValues_[x][y];
-    }
-  }
-}
-
-
-
-
-
-void ShowBouncingBalls::startShow()
-{
-    uint32_t snapshotBufferSize = 0;
-    int  drawCol  = 0;
-    _rowStart = 0;
-    ws2811_led_t* snapShotBuffer = nullptr;
-    QString sendPad;
-
-    QTime qtime;
-    QString timeStr;
-
-    for(int pad = 0; pad < _settings->getChannels()[_channelId]->stripColumns() / CLOCKMAXCOLS; pad++)       //pad the string so it will scroll off the screen
-       sendPad.append(" ");
-
-    snapShotBuffer = snapShot(_rowStart, CLOCKMAXROWS, CLOCKMAXCOLS, &snapshotBufferSize);
-    if(snapShotBuffer != nullptr)
-    {
-        drawCol = _settings->getChannels()[_channelId]->stripColumns() - 1;
-
-
-        while(_endTime > time(nullptr) && _running == true)
+        // When we reach the 85% fitness threshold...
+        if(is85PercentFit())
         {
-            timeStr = qtime.currentTime().toString().toStdString().c_str();
-            timeStr.append(sendPad);
+            // ...set a new random target_
+            target_ = rand() & 0xFFFFFF;
 
-            for(int letter = 0; letter < timeStr.length(); letter++)
+            // Randomly mutate everyone for sake of new colors
+            for (int i = 0; i < popSize_; ++i)
             {
-
-                if((int)timeStr.toStdString().c_str()[letter] < 32 || (int)timeStr.toStdString().c_str()[letter] > 59) //only attempt to print what we know.
-                    continue;
-
-                for(int col = CLOCKMAXCOLS; col < (CLOCKMAXCOLS * 2); col++)
-                {
-                    for(int row = 0; row < CLOCKMAXROWS; row++)
-                    {
-
-                        if(timeMatrix[(int)timeStr.toStdString().c_str()[letter] - 32][row * CLOCKMAXCOLS + (col - CLOCKMAXCOLS)] == 1) //should this pixal be on?
-                        {
-                            _ledWrapper->setPixelColor(row + _rowStart, drawCol , _color1);
-                        }
-                    }
-
-
-                    _ledWrapper->show();
-                    Ws2811Wrapper::waitMillSec(_wait);
-                    shiftColumns(CLOCKMAXROWS, _rowStart, _color1, snapShotBuffer);
-
-                }
+                mutate(children_[i]);
             }
-
         }
 
-        delete [] snapShotBuffer;
+        _ledWrapper->waitMillSec(_wait);
+
     }
-
-
 }
-
-
-

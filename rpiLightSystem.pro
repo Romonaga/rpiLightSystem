@@ -17,9 +17,12 @@ SOURCES += src/ilightshow.cpp \
     src/lightsystem.cpp \
     src/lodepng.cpp \
     src/main.cpp \
+    src/matrixantart.cpp \
     src/matrixart.cpp \
+    src/matrixcolorevolution.cpp \
     src/matrixcreatejpg.cpp \
     src/matrixdisplayfile.cpp \
+    src/matrixkaleidoscope.cpp \
     src/matrixscrolltext.cpp \
     src/matrixscrolltime.cpp \
     src/matrixsquare.cpp \
@@ -77,10 +80,13 @@ HEADERS += \
     src/lightsensorfeature.h \
     src/lightsystem.h \
     src/lodepng.h \
+    src/matrixantart.h \
     src/matrixart.h \
     src/matrixcircle.h \
+    src/matrixcolorevolution.h \
     src/matrixcreatejpg.h \
     src/matrixdisplayfile.h \
+    src/matrixkaleidoscope.h \
     src/matrixscrolltext.h \
     src/matrixscrolltime.h \
     src/matrixsquare.h \
