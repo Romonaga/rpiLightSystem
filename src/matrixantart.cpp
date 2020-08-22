@@ -41,7 +41,7 @@ void MatrixAntArt::startShow()
     }
 
 
-    while (_running == true && _endTime > time(nullptr))
+    while (_running == true)
     {
         // LLRR
         switch (_colRowData[_antX][_antY])
