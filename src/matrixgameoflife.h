@@ -9,19 +9,19 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// robert Winslow- Ported from demo example in  rpi-led-rgp-matrix.
+// robert Winslow - Ported from demo example in  rpi-led-rgp-matrix.
 
-#ifndef ShowBouncingBalls_H
-#define ShowBouncingBalls_H
+#ifndef MatrixGameOfLife_H
+#define MatrixGameOfLife_H
 
 #include "ilightshow.h"
 
-class ShowBouncingBalls : public ILightShow
+class MatrixGameOfLife : public ILightShow
 {
     Q_OBJECT
 public:
-    ShowBouncingBalls(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
-    ~ShowBouncingBalls();
+    MatrixGameOfLife(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
+    ~MatrixGameOfLife();
 
 private:
     void updateValues();
@@ -38,4 +38,4 @@ private:
 
 };
 
-#endif // ShowBouncingBalls_H
+#endif // MatrixGameOfLife_H

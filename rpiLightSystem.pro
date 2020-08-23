@@ -22,6 +22,7 @@ SOURCES += src/ilightshow.cpp \
     src/matrixcolorevolution.cpp \
     src/matrixcreatejpg.cpp \
     src/matrixdisplayfile.cpp \
+    src/matrixgameoflife.cpp \
     src/matrixkaleidoscope.cpp \
     src/matrixscrolltext.cpp \
     src/matrixscrolltime.cpp \
@@ -86,6 +87,7 @@ HEADERS += \
     src/matrixcolorevolution.h \
     src/matrixcreatejpg.h \
     src/matrixdisplayfile.h \
+    src/matrixgameoflife.h \
     src/matrixkaleidoscope.h \
     src/matrixscrolltext.h \
     src/matrixscrolltime.h \

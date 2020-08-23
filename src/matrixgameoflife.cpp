@@ -1,7 +1,7 @@
-#include "showbouncingballs.h"
+#include "matrixgameoflife.h"
 #include <QDebug>
 
-ShowBouncingBalls::ShowBouncingBalls(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
+MatrixGameOfLife::MatrixGameOfLife(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
     ILightShow(ledWrapper, lightShow, showParms)
 {
 
@@ -11,7 +11,6 @@ ShowBouncingBalls::ShowBouncingBalls(Ws2811Wrapper* ledWrapper, const LedLightSh
     _values = new int*[_ledWrapper->getColumns()];
     _newValues = new int*[_ledWrapper->getColumns()];
 
-    srand(time(NULL));
     for (uint32_t x=0; x <_ledWrapper->getColumns(); ++x)
     {
         _values[x] = new int[_ledWrapper->getRows()];
@@ -19,13 +18,13 @@ ShowBouncingBalls::ShowBouncingBalls(Ws2811Wrapper* ledWrapper, const LedLightSh
 
         for (uint32_t y=0; y<_ledWrapper->getRows(); ++y)
         {
-            _values[x][y] = rand() % 2;
+            _values[x][y] = genRand(0, time(nullptr)) % 2;
         }
 
     }
 }
 
-ShowBouncingBalls::~ShowBouncingBalls()
+MatrixGameOfLife::~MatrixGameOfLife()
 {
     for (uint32_t x=0; x <_ledWrapper->getColumns(); ++x)
         delete [] _values[x];
@@ -36,7 +35,7 @@ ShowBouncingBalls::~ShowBouncingBalls()
     delete [] _newValues;
 }
 
-int ShowBouncingBalls::numAliveNeighbours(int x, int y)
+int MatrixGameOfLife::numAliveNeighbours(int x, int y)
 {
     int num=0;
     if (_torus)
@@ -81,7 +80,7 @@ int ShowBouncingBalls::numAliveNeighbours(int x, int y)
     return num;
 }
 
-void ShowBouncingBalls::updateValues()
+void MatrixGameOfLife::updateValues()
 {
 
 
@@ -120,7 +119,7 @@ void ShowBouncingBalls::updateValues()
 
 }
 
-void ShowBouncingBalls::startShow()
+void MatrixGameOfLife::startShow()
 {
     while (_running && _endTime > time(nullptr))
     {

@@ -68,7 +68,8 @@
             X(33, MatrixTimeS, "Matrix Scroll Time"),                   \
             X(34, MatrixAntShow, "Matrix Ant Art") ,                  \
             X(35, MatrixKScope, "Matrix Kaleidoscope"),                   \
-            X(36, MatrixColorEvo, "Matrix Color Evolution")                   \
+            X(36, MatrixColorEvo, "Matrix Color Evolution"),                   \
+            X(37, MatrixGameLife, "Matrix Game Of Life")                   \
 
 
 #define LIGHT_SHOWS_ENUM(type, name, txt) name = type
