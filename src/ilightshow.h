@@ -95,8 +95,8 @@ class ILightShow : public QThread
     Q_OBJECT
 
 public:
-    ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString& showParms);
-    ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow);
+    explicit ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString& showParms);
+    explicit ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow);
     ~ILightShow();
     void stopShow();
 

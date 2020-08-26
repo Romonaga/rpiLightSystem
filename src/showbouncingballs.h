@@ -24,17 +24,12 @@ public:
     ~ShowBouncingBalls();
 
 private:
-    void updateValues();
-    int numAliveNeighbours(int x, int y);
 
     // ILightShow interface
 public:
     void startShow();
 
 private:
-    int** _values;
-    int** _newValues;
-    bool _torus;
 
 };
 
