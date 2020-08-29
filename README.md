@@ -58,7 +58,7 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
    
         a) Sound card.
             cd /etc/modprobe.d
-            sudo vi alsa-blacklist.conf
+            sudo nano alsa-blacklist.conf
             Enter the following line
             blacklist snd_bcm2835
             Save the file.
