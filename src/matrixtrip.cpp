@@ -16,6 +16,8 @@ MatrixTrip::MatrixTrip(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
 
 void MatrixTrip::startShow()
 {
+    if(_settings->getChannels()[_channelId]->matrixdirection() == 0) return;
+
     int rowMid =_settings->getChannels()[_channelId]->stripRows() / 2;
     int colMid = _settings->getChannels()[_channelId]->stripColumns() / 2;
     ws2811_led_t lastColor = 0;

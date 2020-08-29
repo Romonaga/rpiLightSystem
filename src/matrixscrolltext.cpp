@@ -25,6 +25,9 @@ MatrixScrollText::~MatrixScrollText()
 void MatrixScrollText::startShow()
 {
 
+    if(_settings->getChannels()[_channelId]->matrixdirection() == 0) return;
+
+
     QString sendPad;
     uint32_t snapshotBufferSize;
     ws2811_led_t* snapShotBuffer = nullptr;

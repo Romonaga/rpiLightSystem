@@ -24,6 +24,9 @@ MatrixAntArt::~MatrixAntArt()
 
 void MatrixAntArt::startShow()
 {
+
+    if(_settings->getChannels()[_channelId]->matrixdirection() == 0) return;
+
     _antX = _ledWrapper->getColumns() / 2;
     _antY = (_ledWrapper->getRows() / 2) - 3;
     _antDirection = genRand(0, 3);

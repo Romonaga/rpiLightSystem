@@ -93,6 +93,9 @@ void MatrixKaleidoscope::updateValues()
 
 void MatrixKaleidoscope::startShow()
 {
+    if(_settings->getChannels()[_channelId]->matrixdirection() == 0) return;
+
+
     while (_running && _endTime > time(nullptr))
     {
         _values[_width/2][_height/2]++;

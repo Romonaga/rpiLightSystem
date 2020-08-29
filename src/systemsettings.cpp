@@ -165,14 +165,14 @@ bool SystemSettings::loadSystemSettings()
         }
         else
         {
-           info << "loadSystemSettings Cant Load Settings: " << qry.lastError().text().toStdString().c_str();
+           info << "loadSystemSettings Query Error: " << qry.lastError().text().toStdString().c_str();
            _logger->logInfo(info.str());
         }
         database.close();
     }
     else
     {
-        info << "loadSystemSettings Cant Load Settings: " << database.lastError().text().toStdString().c_str();
+        info << "loadSystemSettings Cant Open Database: " << database.lastError().text().toStdString().c_str();
         _logger->logInfo(info.str());
 
     }

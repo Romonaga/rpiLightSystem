@@ -58,6 +58,7 @@
 #include "matrixkaleidoscope.h"
 #include "matrixcolorevolution.h"
 #include "matrixgameoflife.h"
+#include "matrixmazecreator.h"
 
 
 LightSystem::LightSystem(QObject *parent) : QObject(parent)
@@ -573,6 +574,10 @@ void LightSystem::queueShow(const LedLightShows& show, const QString& showParms)
 
         case MatrixGameLife:
             _runningShows.append(new MatrixGameOfLife(&_ledWrapper, show, showParms));
+        break;
+
+        case MatrixMaze:
+            _runningShows.append(new MatrixMazeCreator(&_ledWrapper, show, showParms));
         break;
 
         default:

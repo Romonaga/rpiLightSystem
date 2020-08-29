@@ -11,29 +11,43 @@
 //
 // robert Winslow- Ported from demo example in  rpi-led-rgp-matrix.
 
-#ifndef ShowBouncingBalls_H
-#define ShowBouncingBalls_H
+#ifndef MatrixMazeCreator_H
+#define MatrixMazeCreator_H
 
 #include "ilightshow.h"
 #include <random>
 
+typedef enum
+{
+    Wall = 0,
+    Passage = 1
+} mazePathObjects;
 
-class ShowBouncingBalls : public ILightShow
+typedef enum
+{
+    N = 0,
+    E = 1,
+    S = 2,
+    W = 3
+} mazeDirections;
+
+class MatrixMazeCreator : public ILightShow
 {
     Q_OBJECT
 public:
-    ShowBouncingBalls(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
-    ~ShowBouncingBalls();
+    MatrixMazeCreator(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms);
 
 private:
+    void genMaze(uint32_t row, uint32_t col);
 
     // ILightShow interface
 public:
     void startShow();
 
 private:
+    std::vector<std::vector<uint32_t>> _surface;
 
 
 };
 
-#endif // ShowBouncingBalls_H
+#endif // MatrixMazeCreator_H

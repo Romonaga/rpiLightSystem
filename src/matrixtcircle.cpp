@@ -16,6 +16,9 @@ MatrixCircle::MatrixCircle(Ws2811Wrapper* ledWrapper, const LedLightShows &light
 
 void MatrixCircle::startShow()
 {
+    if(_settings->getChannels()[_channelId]->matrixdirection() == 0) return;
+
+
     QJsonDocument doc = QJsonDocument::fromJson(_showParms.toUtf8());
 
     int startRow = doc["startRow"].toString().toInt();

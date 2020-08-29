@@ -29,6 +29,9 @@ MatrixCreateDisplayFile::MatrixCreateDisplayFile(Ws2811Wrapper* ledWrapper, cons
 void MatrixCreateDisplayFile::startShow()
 {
 
+    if(_settings->getChannels()[_channelId]->matrixdirection() == 0) return;
+
+
     unsigned char* imageData = nullptr;
     unsigned char* reSampledImageData = nullptr;
     unsigned loopCount = 0;

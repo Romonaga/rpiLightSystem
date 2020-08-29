@@ -61,6 +61,9 @@ void MatrixScrollTime::scrollTime(QString msg, int maxRows, int maxCols, int row
 void MatrixScrollTime::startShow()
 {
 
+    if(_settings->getChannels()[_channelId]->matrixdirection() == 0) return;
+
+
     QString sendPad;
     uint32_t snapshotBufferSize;
     ws2811_led_t* snapShotBuffer = nullptr;

@@ -121,6 +121,9 @@ void MatrixGameOfLife::updateValues()
 
 void MatrixGameOfLife::startShow()
 {
+    if(_settings->getChannels()[_channelId]->matrixdirection() == 0) return;
+
+
     while (_running && _endTime > time(nullptr))
     {
         updateValues();

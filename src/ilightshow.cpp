@@ -499,6 +499,33 @@ void ILightShow::shiftColumns(int maxRows, int rowStart, ws2811_led_t color, ws2
     _ledWrapper->show();
 }
 
+void ILightShow::shiftColumns(int maxRows, int rowStart, ws2811_led_t *snapShotBuffer)
+{
+    ws2811_led_t drawColor;
+
+    if(snapShotBuffer == nullptr) return;
+
+    int past = 0;
+    for(int current = 0; current  < _settings->getChannels()[_channelId]->stripColumns() - 1 ; current ++)
+    {
+
+        for(int row = _rowStart; row < (maxRows + rowStart); row++)
+        {
+            past = current + 1;
+
+            //drawColor = _ledWrapper->getPixelColor(row, past);                                                              //init drawColor to past color
+
+            drawColor = snapShotBuffer[( (row - rowStart) * _settings->getChannels()[_channelId]->stripColumns()) + current];
+
+            _ledWrapper->setPixelColor(row , current, drawColor);                                                           // move to present
+            _ledWrapper->setPixelColor(row , past, snapShotBuffer[( (row - rowStart) * _settings->getChannels()[_channelId]->stripColumns()) + past]);     //set  past's past color to saved color (yes, I know)..
+
+
+        }
+    }
+
+    _ledWrapper->show();
+}
 
 
 //all we are doing here is captruing our drawing area.  As it is defined,

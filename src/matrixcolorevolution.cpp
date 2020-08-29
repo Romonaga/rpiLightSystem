@@ -95,6 +95,8 @@ bool MatricColorEvolution::is85PercentFit()
 
 void MatricColorEvolution::startShow()
 {
+    if(_settings->getChannels()[_channelId]->matrixdirection() == 0) return;
+
     target_ = rand() & 0xFFFFFF;
 
     // first generation of children_

@@ -21,6 +21,9 @@ void MatrixVolBars::drawBarRow(int bar, int y, ws2811_led_t color)
 
 void MatrixVolBars::startShow()
 {
+    if(_settings->getChannels()[_channelId]->matrixdirection() == 0) return;
+
+
     int heightGreen;
     int heightYellow;
     int heightOrange;

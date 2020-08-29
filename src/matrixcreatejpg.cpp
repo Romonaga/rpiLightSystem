@@ -21,6 +21,10 @@ MatrixCreateJpg::MatrixCreateJpg(Ws2811Wrapper* ledWrapper, const LedLightShows 
 
 void MatrixCreateJpg::startShow()
 {
+
+    if(_settings->getChannels()[_channelId]->matrixdirection() == 0) return;
+
+
     char tmpFile[] = "/art_XXXXXX";
     int tmp = 0;
 

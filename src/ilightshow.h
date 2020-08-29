@@ -69,7 +69,8 @@
             X(34, MatrixAntShow, "Matrix Ant Art") ,                  \
             X(35, MatrixKScope, "Matrix Kaleidoscope"),                   \
             X(36, MatrixColorEvo, "Matrix Color Evolution"),                   \
-            X(37, MatrixGameLife, "Matrix Game Of Life")                   \
+            X(37, MatrixGameLife, "Matrix Game Of Life"),                   \
+            X(38, MatrixMaze, "Matrix Maze Runner")                   \
 
 
 #define LIGHT_SHOWS_ENUM(type, name, txt) name = type
@@ -129,6 +130,7 @@ protected:
     void drawTriangle(int startRow, int startCol, int size, int direction);
 
     void shiftColumns(int maxRows, int rowStart, ws2811_led_t color, ws2811_led_t * snapShotBuffer);
+    void shiftColumns(int maxRows, int rowStart, ws2811_led_t *snapShotBuffer);
     void scrollText(QString msg, int maxRows, int maxCols, int rowStart, int drawCol, ws2811_led_t color,  ws2811_led_t * snapShotBuffer, int delay);
 
     //You ARE responsable for this memory allocation!
