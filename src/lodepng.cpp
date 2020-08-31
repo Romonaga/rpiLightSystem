@@ -2497,11 +2497,11 @@ unsigned lodepng_chunk_create(unsigned char** out, size_t* outlength, unsigned l
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
-/* / Color types and such                                                   / */
+/* / color types and such                                                   / */
 /* ////////////////////////////////////////////////////////////////////////// */
 
 /*return type is a LodePNG error code*/
-static unsigned checkColorValidity(LodePNGColorType colortype, unsigned bd) /*bd = bitdepth*/
+static unsigned checkcolorValidity(LodePNGcolorType colortype, unsigned bd) /*bd = bitdepth*/
 {
   switch(colortype)
   {
@@ -2515,7 +2515,7 @@ static unsigned checkColorValidity(LodePNGColorType colortype, unsigned bd) /*bd
   return 0; /*allowed color type / bits combination*/
 }
 
-static unsigned getNumColorChannels(LodePNGColorType colortype)
+static unsigned getNumcolorChannels(LodePNGcolorType colortype)
 {
   switch(colortype)
   {
@@ -2528,15 +2528,15 @@ static unsigned getNumColorChannels(LodePNGColorType colortype)
   return 0; /*unexisting color type*/
 }
 
-static unsigned lodepng_get_bpp_lct(LodePNGColorType colortype, unsigned bitdepth)
+static unsigned lodepng_get_bpp_lct(LodePNGcolorType colortype, unsigned bitdepth)
 {
   /*bits per pixel is amount of channels * bits per channel*/
-  return getNumColorChannels(colortype) * bitdepth;
+  return getNumcolorChannels(colortype) * bitdepth;
 }
 
 /* ////////////////////////////////////////////////////////////////////////// */
 
-void lodepng_color_mode_init(LodePNGColorMode* info)
+void lodepng_color_mode_init(LodePNGcolorMode* info)
 {
   info->key_defined = 0;
   info->key_r = info->key_g = info->key_b = 0;
@@ -2546,12 +2546,12 @@ void lodepng_color_mode_init(LodePNGColorMode* info)
   info->palettesize = 0;
 }
 
-void lodepng_color_mode_cleanup(LodePNGColorMode* info)
+void lodepng_color_mode_cleanup(LodePNGcolorMode* info)
 {
   lodepng_palette_clear(info);
 }
 
-unsigned lodepng_color_mode_copy(LodePNGColorMode* dest, const LodePNGColorMode* source)
+unsigned lodepng_color_mode_copy(LodePNGcolorMode* dest, const LodePNGcolorMode* source)
 {
   size_t i;
   lodepng_color_mode_cleanup(dest);
@@ -2565,7 +2565,7 @@ unsigned lodepng_color_mode_copy(LodePNGColorMode* dest, const LodePNGColorMode*
   return 0;
 }
 
-static int lodepng_color_mode_equal(const LodePNGColorMode* a, const LodePNGColorMode* b)
+static int lodepng_color_mode_equal(const LodePNGcolorMode* a, const LodePNGcolorMode* b)
 {
   size_t i;
   if(a->colortype != b->colortype) return 0;
@@ -2585,13 +2585,13 @@ static int lodepng_color_mode_equal(const LodePNGColorMode* a, const LodePNGColo
   return 1;
 }
 
-void lodepng_palette_clear(LodePNGColorMode* info)
+void lodepng_palette_clear(LodePNGcolorMode* info)
 {
   if(info->palette) myfree(info->palette);
   info->palettesize = 0;
 }
 
-unsigned lodepng_palette_add(LodePNGColorMode* info,
+unsigned lodepng_palette_add(LodePNGcolorMode* info,
                              unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
   unsigned char* data;
@@ -2613,33 +2613,33 @@ unsigned lodepng_palette_add(LodePNGColorMode* info,
   return 0;
 }
 
-unsigned lodepng_get_bpp(const LodePNGColorMode* info)
+unsigned lodepng_get_bpp(const LodePNGcolorMode* info)
 {
   /*calculate bits per pixel out of colortype and bitdepth*/
   return lodepng_get_bpp_lct(info->colortype, info->bitdepth);
 }
 
-unsigned lodepng_get_channels(const LodePNGColorMode* info)
+unsigned lodepng_get_channels(const LodePNGcolorMode* info)
 {
-  return getNumColorChannels(info->colortype);
+  return getNumcolorChannels(info->colortype);
 }
 
-unsigned lodepng_is_greyscale_type(const LodePNGColorMode* info)
+unsigned lodepng_is_greyscale_type(const LodePNGcolorMode* info)
 {
   return info->colortype == LCT_GREY || info->colortype == LCT_GREY_ALPHA;
 }
 
-unsigned lodepng_is_alpha_type(const LodePNGColorMode* info)
+unsigned lodepng_is_alpha_type(const LodePNGcolorMode* info)
 {
   return (info->colortype & 4) != 0; /*4 or 6*/
 }
 
-unsigned lodepng_is_palette_type(const LodePNGColorMode* info)
+unsigned lodepng_is_palette_type(const LodePNGcolorMode* info)
 {
   return info->colortype == LCT_PALETTE;
 }
 
-unsigned lodepng_has_palette_alpha(const LodePNGColorMode* info)
+unsigned lodepng_has_palette_alpha(const LodePNGcolorMode* info)
 {
   size_t i;
   for(i = 0; i < info->palettesize; i++)
@@ -2649,19 +2649,19 @@ unsigned lodepng_has_palette_alpha(const LodePNGColorMode* info)
   return 0;
 }
 
-unsigned lodepng_can_have_alpha(const LodePNGColorMode* info)
+unsigned lodepng_can_have_alpha(const LodePNGcolorMode* info)
 {
   return info->key_defined
       || lodepng_is_alpha_type(info)
       || lodepng_has_palette_alpha(info);
 }
 
-size_t lodepng_get_raw_size(unsigned w, unsigned h, const LodePNGColorMode* color)
+size_t lodepng_get_raw_size(unsigned w, unsigned h, const LodePNGcolorMode* color)
 {
   return (w * h * lodepng_get_bpp(color) + 7) / 8;
 }
 
-size_t lodepng_get_raw_size_lct(unsigned w, unsigned h, LodePNGColorType colortype, unsigned bitdepth)
+size_t lodepng_get_raw_size_lct(unsigned w, unsigned h, LodePNGcolorType colortype, unsigned bitdepth)
 {
   return (w * h * lodepng_get_bpp_lct(colortype, bitdepth) + 7) / 8;
 }
@@ -2909,7 +2909,7 @@ void lodepng_info_swap(LodePNGInfo* a, LodePNGInfo* b)
 /* ////////////////////////////////////////////////////////////////////////// */
 
 /*index: bitgroup index, bits: bitgroup size(1, 2 or 4, in: bitgroup value, out: octet array to add bits to*/
-static void addColorBits(unsigned char* out, size_t index, unsigned bits, unsigned in)
+static void addcolorBits(unsigned char* out, size_t index, unsigned bits, unsigned in)
 {
   /*p = the partial index in the byte, e.g. with 4 palettebits it is 0 for first half or 1 for second half*/
   unsigned p = index % (8 / bits);
@@ -2919,7 +2919,7 @@ static void addColorBits(unsigned char* out, size_t index, unsigned bits, unsign
   else out[index * bits / 8] |= in;
 }
 
-typedef struct ColorTree ColorTree;
+typedef struct colorTree colorTree;
 
 /*
 One node of a color tree
@@ -2928,30 +2928,30 @@ index for a color. It's a bit like an octree for RGB bits, except that a node ha
 children and there is one level of the tree per color channel. This may use more memory
 than an octree, but this is only used to count up to 256 so it's good enough.
 */
-struct ColorTree
+struct colorTree
 {
-  ColorTree* next; /*null, or array of 256 pointers to ColorTree of next level*/
+  colorTree* next; /*null, or array of 256 pointers to colorTree of next level*/
   int index; /*the payload. Only has a meaningful value if this is in the 4th level*/
 };
 
-static void color_tree_make_next(ColorTree* tree);
+static void color_tree_make_next(colorTree* tree);
 
 /*next: whether to create the next array or not*/
-static void color_tree_init(ColorTree* tree, int next)
+static void color_tree_init(colorTree* tree, int next)
 {
   if(next) color_tree_make_next(tree);
   else tree->next = 0;
   tree->index = -1;
 }
 
-static void color_tree_make_next(ColorTree* tree)
+static void color_tree_make_next(colorTree* tree)
 {
   int i;
-  tree->next = (ColorTree*)mymalloc(256 * sizeof(ColorTree));
+  tree->next = (colorTree*)mymalloc(256 * sizeof(colorTree));
   for(i = 0; i < 256; i++) color_tree_init(&tree->next[i], 0);
 }
 
-static void color_tree_cleanup(ColorTree* tree)
+static void color_tree_cleanup(colorTree* tree)
 {
   if(tree->next)
   {
@@ -2962,7 +2962,7 @@ static void color_tree_cleanup(ColorTree* tree)
 }
 
 /*returns -1 if color not present, its index otherwise*/
-static int color_tree_get(ColorTree* tree, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+static int color_tree_get(colorTree* tree, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
   tree = &tree->next[r];
   if(tree->next == 0) return -1;
@@ -2976,14 +2976,14 @@ static int color_tree_get(ColorTree* tree, unsigned char r, unsigned char g, uns
 }
 
 #ifdef LODEPNG_COMPILE_ENCODER
-static int color_tree_has(ColorTree* tree, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+static int color_tree_has(colorTree* tree, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
   return color_tree_get(tree, r, g, b, a) >= 0;
 }
 #endif /*LODEPNG_COMPILE_ENCODER*/
 
 /*color is not allowed to already exist. Index should be >= 0 (it's signed to be compatible with using -1 for "doesn't exist")*/
-static void color_tree_add(ColorTree* tree, unsigned char r, unsigned char g, unsigned char b, unsigned char a, int index)
+static void color_tree_add(colorTree* tree, unsigned char r, unsigned char g, unsigned char b, unsigned char a, int index)
 {
   tree = &tree->next[r];
   if(tree->next == 0) color_tree_make_next(tree);
@@ -2998,7 +2998,7 @@ static void color_tree_add(ColorTree* tree, unsigned char r, unsigned char g, un
 
 /*put a pixel, given its RGBA color, into image of any color type*/
 static unsigned rgba8ToPixel(unsigned char* out, size_t i,
-                             const LodePNGColorMode* mode, ColorTree* tree /*for palette*/,
+                             const LodePNGcolorMode* mode, colorTree* tree /*for palette*/,
                              unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
   if(mode->colortype == LCT_GREY)
@@ -3010,7 +3010,7 @@ static unsigned rgba8ToPixel(unsigned char* out, size_t i,
     {
       /*take the most significant bits of grey*/
       grey = (grey >> (8 - mode->bitdepth)) & ((1 << mode->bitdepth) - 1);
-      addColorBits(out, i, mode->bitdepth, grey);
+      addcolorBits(out, i, mode->bitdepth, grey);
     }
   }
   else if(mode->colortype == LCT_RGB)
@@ -3033,7 +3033,7 @@ static unsigned rgba8ToPixel(unsigned char* out, size_t i,
     int index = color_tree_get(tree, r, g, b, a);
     if(index < 0) return 82; /*color not in palette*/
     if(mode->bitdepth == 8) out[i] = index;
-    else addColorBits(out, i, mode->bitdepth, index);
+    else addcolorBits(out, i, mode->bitdepth, index);
   }
   else if(mode->colortype == LCT_GREY_ALPHA)
   {
@@ -3072,7 +3072,7 @@ static unsigned rgba8ToPixel(unsigned char* out, size_t i,
 
 /*put a pixel, given its RGBA16 color, into image of any color 16-bitdepth type*/
 static unsigned rgba16ToPixel(unsigned char* out, size_t i,
-                              const LodePNGColorMode* mode,
+                              const LodePNGcolorMode* mode,
                               unsigned short r, unsigned short g, unsigned short b, unsigned short a)
 {
   if(mode->bitdepth != 16) return 85; /*must be 16 for this function*/
@@ -3115,8 +3115,8 @@ static unsigned rgba16ToPixel(unsigned char* out, size_t i,
 }
 
 /*Get RGBA8 color of pixel with index i (y * width + x) from the raw image with given color type.*/
-static unsigned getPixelColorRGBA8(unsigned char* r, unsigned char* g, unsigned char* b, unsigned char* a,
-                                   const unsigned char* in, size_t i, const LodePNGColorMode* mode)
+static unsigned getPixelcolorRGBA8(unsigned char* r, unsigned char* g, unsigned char* b, unsigned char* a,
+                                   const unsigned char* in, size_t i, const LodePNGcolorMode* mode)
 {
   if(mode->colortype == LCT_GREY)
   {
@@ -3206,8 +3206,8 @@ static unsigned getPixelColorRGBA8(unsigned char* r, unsigned char* g, unsigned 
 
 /*Get RGBA16 color of pixel with index i (y * width + x) from the raw image with
 given color type, but the given color type must be 16-bit itself.*/
-static unsigned getPixelColorRGBA16(unsigned short* r, unsigned short* g, unsigned short* b, unsigned short* a,
-                                    const unsigned char* in, size_t i, const LodePNGColorMode* mode)
+static unsigned getPixelcolorRGBA16(unsigned short* r, unsigned short* g, unsigned short* b, unsigned short* a,
+                                    const unsigned char* in, size_t i, const LodePNGcolorMode* mode)
 {
   if(mode->bitdepth != 16) return 85; /*error: this function only supports 16-bit input*/
 
@@ -3250,12 +3250,12 @@ the out buffer must have (w * h * bpp + 7) / 8 bytes, where bpp is the bits per 
 (lodepng_get_bpp) for < 8 bpp images, there may _not_ be padding bits at the end of scanlines.
 */
 unsigned lodepng_convert(unsigned char* out, const unsigned char* in,
-                         LodePNGColorMode* mode_out, LodePNGColorMode* mode_in,
+                         LodePNGcolorMode* mode_out, LodePNGcolorMode* mode_in,
                          unsigned w, unsigned h)
 {
   unsigned error = 0;
   size_t i;
-  ColorTree tree;
+  colorTree tree;
 
   if(lodepng_color_mode_equal(mode_out, mode_in))
   {
@@ -3282,7 +3282,7 @@ unsigned lodepng_convert(unsigned char* out, const unsigned char* in,
     for(i = 0; i < numpixels; i++)
     {
       unsigned short r = 0, g = 0, b = 0, a = 0;
-      error = getPixelColorRGBA16(&r, &g, &b, &a, in, i, mode_in);
+      error = getPixelcolorRGBA16(&r, &g, &b, &a, in, i, mode_in);
       if(error) return error;
       error = rgba16ToPixel(out, i, mode_out, r, g, b, a);
       if(error) return error;
@@ -3294,7 +3294,7 @@ unsigned lodepng_convert(unsigned char* out, const unsigned char* in,
     for(i = 0; i < numpixels; i++)
     {
       unsigned char r = 0, g = 0, b = 0, a = 0;
-      error = getPixelColorRGBA8(&r, &g, &b, &a, in, i, mode_in);
+      error = getPixelcolorRGBA8(&r, &g, &b, &a, in, i, mode_in);
       if(error) return error;
       error = rgba8ToPixel(out, i, mode_out, &tree, r, g, b, a);
       if(error) return error;
@@ -3311,7 +3311,7 @@ unsigned lodepng_convert(unsigned char* out, const unsigned char* in,
 
 #ifdef LODEPNG_COMPILE_ENCODER
 
-typedef struct ColorProfile
+typedef struct colorProfile
 {
   unsigned char sixteenbit; /*needs more than 8 bits per channel*/
   unsigned char sixteenbit_done;
@@ -3328,7 +3328,7 @@ typedef struct ColorProfile
   unsigned char alpha_done;
 
   unsigned numcolors;
-  ColorTree tree; /*for listing the counted colors, up to 256*/
+  colorTree tree; /*for listing the counted colors, up to 256*/
   unsigned char* palette; /*size 1024. Remember up to the first 256 RGBA colors*/
   unsigned maxnumcolors; /*if more than that amount counted*/
   unsigned char numcolors_done;
@@ -3336,9 +3336,9 @@ typedef struct ColorProfile
   unsigned greybits; /*amount of bits required for greyscale (1, 2, 4, 8). Does not take 16 bit into account.*/
   unsigned char greybits_done;
 
-} ColorProfile;
+} colorProfile;
 
-static void color_profile_init(ColorProfile* profile, LodePNGColorMode* mode)
+static void color_profile_init(colorProfile* profile, LodePNGcolorMode* mode)
 {
   profile->sixteenbit = 0;
   profile->sixteenbit_done = mode->bitdepth == 16 ? 0 : 1;
@@ -3365,14 +3365,14 @@ static void color_profile_init(ColorProfile* profile, LodePNGColorMode* mode)
   profile->greybits_done = lodepng_get_bpp(mode) == 1 ? 1 : 0;
 }
 
-static void color_profile_cleanup(ColorProfile* profile)
+static void color_profile_cleanup(colorProfile* profile)
 {
   color_tree_cleanup(&profile->tree);
   myfree(profile->palette);
 }
 
 /*function used for debug purposes with C++*/
-/*void printColorProfile(ColorProfile* p)
+/*void printcolorProfile(colorProfile* p)
 {
   std::cout << "sixteenbit: " << (int)p->sixteenbit << std::endl;
   std::cout << "sixteenbit_done: " << (int)p->sixteenbit_done << std::endl;
@@ -3402,9 +3402,9 @@ unsigned getValueRequiredBits(unsigned char value)
 
 /*profile must already have been inited with mode.
 It's ok to set some parameters of profile to done already.*/
-static unsigned get_color_profile(ColorProfile* profile,
+static unsigned get_color_profile(colorProfile* profile,
                                   const unsigned char* in, size_t numpixels,
-                                  LodePNGColorMode* mode)
+                                  LodePNGcolorMode* mode)
 {
   unsigned error = 0;
   size_t i;
@@ -3414,7 +3414,7 @@ static unsigned get_color_profile(ColorProfile* profile,
     for(i = 0; i < numpixels; i++)
     {
       unsigned short r, g, b, a;
-      error = getPixelColorRGBA16(&r, &g, &b, &a, in, i, mode);
+      error = getPixelcolorRGBA16(&r, &g, &b, &a, in, i, mode);
       if(error) break;
 
       /*a color is considered good for 8-bit if the first byte and the second byte are equal,
@@ -3497,7 +3497,7 @@ static unsigned get_color_profile(ColorProfile* profile,
     for(i = 0; i < numpixels; i++)
     {
       unsigned char r, g, b, a;
-      error = getPixelColorRGBA8(&r, &g, &b, &a, in, i, mode);
+      error = getPixelcolorRGBA8(&r, &g, &b, &a, in, i, mode);
       if(error) break;
 
       if(!profile->colored_done && (r != g || r != b))
@@ -3575,11 +3575,11 @@ static unsigned get_color_profile(ColorProfile* profile,
 
 /*updates values of mode with a potentially smaller color model. mode_out should
 contain the user chosen color model, but will be overwritten with the new chosen one.*/
-static unsigned doAutoChooseColor(LodePNGColorMode* mode_out,
-                                  const unsigned char* image, unsigned w, unsigned h, LodePNGColorMode* mode_in,
+static unsigned doAutoChoosecolor(LodePNGcolorMode* mode_out,
+                                  const unsigned char* image, unsigned w, unsigned h, LodePNGcolorMode* mode_in,
                                   LodePNGAutoConvert auto_convert)
 {
-  ColorProfile profile;
+  colorProfile profile;
   unsigned error = 0;
 
   if(auto_convert == LAC_ALPHA)
@@ -3799,7 +3799,7 @@ unsigned lodepng_inspect(unsigned* w, unsigned* h, LodePNGState* state,
   *w = lodepng_read32bitInt(&in[16]);
   *h = lodepng_read32bitInt(&in[20]);
   info->color.bitdepth = in[24];
-  info->color.colortype = (LodePNGColorType)in[25];
+  info->color.colortype = (LodePNGcolorType)in[25];
   info->compression_method = in[26];
   info->filter_method = in[27];
   info->interlace_method = in[28];
@@ -3821,7 +3821,7 @@ unsigned lodepng_inspect(unsigned* w, unsigned* h, LodePNGState* state,
   /*error: only interlace methods 0 and 1 exist in the specification*/
   if(info->interlace_method > 1) CERROR_RETURN_ERROR(state->error, 34);
 
-  state->error = checkColorValidity(info->color.colortype, info->color.bitdepth);
+  state->error = checkcolorValidity(info->color.colortype, info->color.bitdepth);
   return state->error;
 }
 
@@ -4512,7 +4512,7 @@ unsigned lodepng_decode(unsigned char** out, unsigned* w, unsigned* h,
 }
 
 unsigned lodepng_decode_memory(unsigned char** out, unsigned* w, unsigned* h, const unsigned char* in,
-                               size_t insize, LodePNGColorType colortype, unsigned bitdepth)
+                               size_t insize, LodePNGcolorType colortype, unsigned bitdepth)
 {
   unsigned error;
   LodePNGState state;
@@ -4536,7 +4536,7 @@ unsigned lodepng_decode24(unsigned char** out, unsigned* w, unsigned* h, const u
 
 #ifdef LODEPNG_COMPILE_DISK
 unsigned lodepng_decode_file(unsigned char** out, unsigned* w, unsigned* h, const char* filename,
-                             LodePNGColorType colortype, unsigned bitdepth)
+                             LodePNGcolorType colortype, unsigned bitdepth)
 {
   unsigned char* buffer;
   size_t buffersize;
@@ -4632,7 +4632,7 @@ static void writeSignature(ucvector* out)
 }
 
 static unsigned addChunk_IHDR(ucvector* out, unsigned w, unsigned h,
-                              LodePNGColorType colortype, unsigned bitdepth, unsigned interlace_method)
+                              LodePNGcolorType colortype, unsigned bitdepth, unsigned interlace_method)
 {
   unsigned error = 0;
   ucvector header;
@@ -4652,7 +4652,7 @@ static unsigned addChunk_IHDR(ucvector* out, unsigned w, unsigned h,
   return error;
 }
 
-static unsigned addChunk_PLTE(ucvector* out, const LodePNGColorMode* info)
+static unsigned addChunk_PLTE(ucvector* out, const LodePNGcolorMode* info)
 {
   unsigned error = 0;
   size_t i;
@@ -4669,7 +4669,7 @@ static unsigned addChunk_PLTE(ucvector* out, const LodePNGColorMode* info)
   return error;
 }
 
-static unsigned addChunk_tRNS(ucvector* out, const LodePNGColorMode* info)
+static unsigned addChunk_tRNS(ucvector* out, const LodePNGcolorMode* info)
 {
   unsigned error = 0;
   size_t i;
@@ -4949,7 +4949,7 @@ static void filterScanline(unsigned char* out, const unsigned char* scanline, co
 }
 
 static unsigned filter(unsigned char* out, const unsigned char* in, unsigned w, unsigned h,
-                       const LodePNGColorMode* info, const LodePNGEncoderSettings* settings)
+                       const LodePNGcolorMode* info, const LodePNGEncoderSettings* settings)
 {
   /*
   For PNG filter method 0
@@ -5348,7 +5348,7 @@ unsigned lodepng_encode(unsigned char** out, size_t* outsize,
 
   if(state->encoder.auto_convert != LAC_NO)
   {
-    state->error = doAutoChooseColor(&info.color, image, w, h, &state->info_raw,
+    state->error = doAutoChoosecolor(&info.color, image, w, h, &state->info_raw,
                                      state->encoder.auto_convert);
   }
   if(state->error) return state->error;
@@ -5366,9 +5366,9 @@ unsigned lodepng_encode(unsigned char** out, size_t* outsize,
     CERROR_RETURN_ERROR(state->error, 71); /*error: unexisting interlace mode*/
   }
   /*error: unexisting color type given*/
-  if((state->error = checkColorValidity(info.color.colortype, info.color.bitdepth))) return state->error;
+  if((state->error = checkcolorValidity(info.color.colortype, info.color.bitdepth))) return state->error;
   /*error: unexisting color type given*/
-  if((state->error = checkColorValidity(state->info_raw.colortype, state->info_raw.bitdepth))) return state->error;
+  if((state->error = checkcolorValidity(state->info_raw.colortype, state->info_raw.bitdepth))) return state->error;
 
   if(!lodepng_color_mode_equal(&state->info_raw, &info.color))
   {
@@ -5515,7 +5515,7 @@ unsigned lodepng_encode(unsigned char** out, size_t* outsize,
 }
 
 unsigned lodepng_encode_memory(unsigned char** out, size_t* outsize, const unsigned char* image,
-                               unsigned w, unsigned h, LodePNGColorType colortype, unsigned bitdepth)
+                               unsigned w, unsigned h, LodePNGcolorType colortype, unsigned bitdepth)
 {
   unsigned error;
   LodePNGState state;
@@ -5542,7 +5542,7 @@ unsigned lodepng_encode24(unsigned char** out, size_t* outsize, const unsigned c
 
 #ifdef LODEPNG_COMPILE_DISK
 unsigned lodepng_encode_file(const char* filename, const unsigned char* image, unsigned w, unsigned h,
-                             LodePNGColorType colortype, unsigned bitdepth)
+                             LodePNGcolorType colortype, unsigned bitdepth)
 {
   unsigned char* buffer;
   size_t buffersize;
@@ -5795,7 +5795,7 @@ State& State::operator=(const State& other)
 #ifdef LODEPNG_COMPILE_DECODER
 
 unsigned decode(std::vector<unsigned char>& out, unsigned& w, unsigned& h, const unsigned char* in,
-                size_t insize, LodePNGColorType colortype, unsigned bitdepth)
+                size_t insize, LodePNGcolorType colortype, unsigned bitdepth)
 {
   unsigned char* buffer;
   unsigned error = lodepng_decode_memory(&buffer, &w, &h, in, insize, colortype, bitdepth);
@@ -5812,7 +5812,7 @@ unsigned decode(std::vector<unsigned char>& out, unsigned& w, unsigned& h, const
 }
 
 unsigned decode(std::vector<unsigned char>& out, unsigned& w, unsigned& h,
-                const std::vector<unsigned char>& in, LodePNGColorType colortype, unsigned bitdepth)
+                const std::vector<unsigned char>& in, LodePNGcolorType colortype, unsigned bitdepth)
 {
   return decode(out, w, h, in.empty() ? 0 : &in[0], (unsigned)in.size(), colortype, bitdepth);
 }
@@ -5841,7 +5841,7 @@ unsigned decode(std::vector<unsigned char>& out, unsigned& w, unsigned& h,
 
 #ifdef LODEPNG_COMPILE_DISK
 unsigned decode(std::vector<unsigned char>& out, unsigned& w, unsigned& h, const std::string& filename,
-                LodePNGColorType colortype, unsigned bitdepth)
+                LodePNGcolorType colortype, unsigned bitdepth)
 {
   std::vector<unsigned char> buffer;
   load_file(buffer, filename);
@@ -5852,7 +5852,7 @@ unsigned decode(std::vector<unsigned char>& out, unsigned& w, unsigned& h, const
 
 #ifdef LODEPNG_COMPILE_ENCODER
 unsigned encode(std::vector<unsigned char>& out, const unsigned char* in, unsigned w, unsigned h,
-                LodePNGColorType colortype, unsigned bitdepth)
+                LodePNGcolorType colortype, unsigned bitdepth)
 {
   unsigned char* buffer;
   size_t buffersize;
@@ -5867,7 +5867,7 @@ unsigned encode(std::vector<unsigned char>& out, const unsigned char* in, unsign
 
 unsigned encode(std::vector<unsigned char>& out,
                 const std::vector<unsigned char>& in, unsigned w, unsigned h,
-                LodePNGColorType colortype, unsigned bitdepth)
+                LodePNGcolorType colortype, unsigned bitdepth)
 {
   if(lodepng_get_raw_size_lct(w, h, colortype, bitdepth) > in.size()) return 84;
   return encode(out, in.empty() ? 0 : &in[0], w, h, colortype, bitdepth);
@@ -5899,7 +5899,7 @@ unsigned encode(std::vector<unsigned char>& out,
 #ifdef LODEPNG_COMPILE_DISK
 unsigned encode(const std::string& filename,
                 const unsigned char* in, unsigned w, unsigned h,
-                LodePNGColorType colortype, unsigned bitdepth)
+                LodePNGcolorType colortype, unsigned bitdepth)
 {
   std::vector<unsigned char> buffer;
   unsigned error = encode(buffer, in, w, h, colortype, bitdepth);
@@ -5909,7 +5909,7 @@ unsigned encode(const std::string& filename,
 
 unsigned encode(const std::string& filename,
                 const std::vector<unsigned char>& in, unsigned w, unsigned h,
-                LodePNGColorType colortype, unsigned bitdepth)
+                LodePNGcolorType colortype, unsigned bitdepth)
 {
   if(lodepng_get_raw_size_lct(w, h, colortype, bitdepth) > in.size()) return 84;
   return encode(filename, in.empty() ? 0 : &in[0], w, h, colortype, bitdepth);

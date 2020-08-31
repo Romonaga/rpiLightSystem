@@ -76,10 +76,10 @@ void ShowTwinkle::startShow()
 
                 if(found == false)
                 {
-                    ws2811_led_t getColor = _ledWrapper->getPixelColor(twinkLed);
-                    if(getColor != 0)
+                    ws2811_led_t getcolor = _ledWrapper->getPixelColor(twinkLed);
+                    if(getcolor != 0)
                     {
-                        _twinks.append(QPair<unsigned int, unsigned int>(twinkLed, getColor));
+                        _twinks.append(QPair<unsigned int, unsigned int>(twinkLed, getcolor));
                         _ledWrapper->setPixelColor(twinkLed, genRand(min, max));
                         _ledWrapper->show();
                         

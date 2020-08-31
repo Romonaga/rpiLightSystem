@@ -13,13 +13,13 @@ void ShowTheaterChaseRainBow::startShow()
     while(_endTime > time(nullptr))
     {
         // cycle all 256 colors in the wheel
-        for (int colorWheel = 0; colorWheel < 256; colorWheel++)
+        for (int colorwheel = 0; colorwheel < 256; colorwheel++)
         {
 
             for (int skippLoop = 0; skippLoop < 3; skippLoop++)
             {
                 for (uint16_t onLoop = 0; onLoop < _ledWrapper->getNumberLeds(); onLoop += 3)
-                    _ledWrapper->setPixelColor(onLoop + skippLoop, _ledWrapper->Wheel( (onLoop + colorWheel) % 255));    //turn every third pixel on
+                    _ledWrapper->setPixelColor(onLoop + skippLoop, _ledWrapper->wheel( (onLoop + colorwheel) % 255));    //turn every third pixel on
 
                 _ledWrapper->show();
 

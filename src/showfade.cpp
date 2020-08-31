@@ -21,7 +21,7 @@ void ShowFade::startShow()
            {
 
                ws2811_led_t color =  _ledWrapper->getPixelColor(1, ledCount);
-               _ledWrapper->setPixelColor(1, ledCount,  _ledWrapper->DimColor(color));
+               _ledWrapper->setPixelColor(1, ledCount,  _ledWrapper->dimColor(color));
 
            }
            _ledWrapper->show();
@@ -38,7 +38,7 @@ void ShowFade::startShow()
            {
                 ws2811_led_t color =  _ledWrapper->getPixelColor(1, ledCount);
 
-                _ledWrapper->setPixelColor(ledCount,  _ledWrapper->BrightenColor(color));
+                _ledWrapper->setPixelColor(ledCount,  _ledWrapper->brightenColor(color));
 
            }
            _ledWrapper->show();

@@ -13,7 +13,7 @@ void MatrixVolBars::drawBarRow(int bar, int y, ws2811_led_t color)
 {
   for (int x=bar*_barWidth; x<(bar+1)*_barWidth; ++x)
   {
-    _ledWrapper->setPixelColor(_height-1-y,x, color);
+    _ledWrapper->setPixelColor( (_height - 1) - y, x, color);
   }
 
 }
@@ -83,22 +83,22 @@ void MatrixVolBars::startShow()
           _barHeights[i] = rand() % (_height/8) + 1;
       }
 
-      for (int i=0; i<_width; ++i) {
+      for (int i=0; i<_width; ++i)
+      {
         int y;
-        for (y=0; y<_barHeights[i]; ++y) {
-          if (y<heightGreen) {
+        for (y=0; y<_barHeights[i]; ++y)
+        {
+          if (y<heightGreen)
             drawBarRow(i, y, _color1);
-          }
-          else if (y<heightYellow) {
+          else if (y<heightYellow)
             drawBarRow(i, y, _color2);
-          }
-          else if (y<heightOrange) {
+          else if (y<heightOrange)
             drawBarRow(i, y, _color3);
-          }
-          else {
+          else
             drawBarRow(i, y, _color4);
-          }
+
         }
+
         // Anything above the bar should be black
         for (; y<_height; ++y)
         {

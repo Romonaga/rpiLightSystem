@@ -67,12 +67,12 @@ gd_open_gif(const char *fname)
         fprintf(stderr, "no global color table\n");
         goto fail;
     }
-    /* Color Space's Depth */
+    /* color Space's Depth */
     depth = ((fdsz >> 4) & 7) + 1;
     /* Ignore Sort Flag. */
     /* GCT Size */
     gct_sz = 1 << ((fdsz & 0x07) + 1);
-    /* Background Color Index */
+    /* Background color Index */
     read(fd, &bgidx, 1);
     /* Aspect Ratio */
     read(fd, &aspect, 1);
@@ -398,7 +398,7 @@ read_image(gd_GIF *gif)
     read(gif->fd, &fisrz, 1);
     interlace = fisrz & 0x40;
     /* Ignore Sort Flag. */
-    /* Local Color Table? */
+    /* Local color Table? */
     if (fisrz & 0x80) {
         /* Read LCT */
         gif->lct.size = 1 << ((fisrz & 0x07) + 1);

@@ -20,7 +20,7 @@ void MatrixTrip::startShow()
 
     int rowMid =_settings->getChannels()[_channelId]->stripRows() / 2;
     int colMid = _settings->getChannels()[_channelId]->stripColumns() / 2;
-    ws2811_led_t lastColor = 0;
+    ws2811_led_t lastcolor = 0;
 
     while(_endTime > time(nullptr))
     {
@@ -29,11 +29,11 @@ void MatrixTrip::startShow()
         {
             do
             {
-                _color1 = _ledWrapper->Wheel(( genRand(0, 256) + genRand(1, _ledWrapper->getNumberLeds())) & 255);
+                _color1 = _ledWrapper->wheel(( genRand(0, 256) + genRand(1, _ledWrapper->getNumberLeds())) & 255);
 
-            }while(_color1 == lastColor);
+            }while(_color1 == lastcolor);
 
-            lastColor = _color1;
+            lastcolor = _color1;
             drawCircle(rowMid, colMid, counter);
             _ledWrapper->show();
             Ws2811Wrapper::waitMillSec(_wait);

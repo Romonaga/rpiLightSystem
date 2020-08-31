@@ -27,8 +27,6 @@ void ShowNeoRand::startShow()
    memset(&fade, 0, sizeof(fade));
    memset(&col, 0, sizeof(col));
 
-
-
    _rno = random9();
    while(_endTime > time(nullptr))
    {
@@ -36,7 +34,7 @@ void ShowNeoRand::startShow()
      for (u_int32_t i = 0; i < _ledWrapper->getNumberLeds(); i++)
      {
 
-       if (_ledWrapper->getPixelColor(i) == _ledWrapper->Color(255,255,255))
+       if (_ledWrapper->getPixelColor(i) == _ledWrapper->color(255,255,255))
            _ledWrapper->setPixelColor(i, saved); // return colour after sparkle
 
 
@@ -165,7 +163,7 @@ void ShowNeoRand::startShow()
            _blue = 0;
        }
 
-       _ledWrapper->setPixelColor(i, _ledWrapper->Color(_red, _green, _blue)); // set colour
+       _ledWrapper->setPixelColor(i, _ledWrapper->color(_red, _green, _blue)); // set colour
 
      }  //  for(int i=0;i<NUMPIXELS;i++){
 
@@ -177,7 +175,7 @@ void ShowNeoRand::startShow()
 
      if (tw < (int)_ledWrapper->getNumberLeds() && tw == 0 )
      {
-       _ledWrapper->setPixelColor(tw, _ledWrapper->Color(255,255,255));
+       _ledWrapper->setPixelColor(tw, _ledWrapper->color(255,255,255));
      }
 
 
@@ -270,7 +268,7 @@ uint32_t ShowNeoRand::Bow(int n)
       _blue = 0;
   }
 
-    return _ledWrapper->Color(_red, _green, _blue);
+    return _ledWrapper->color(_red, _green, _blue);
 
 }
 

@@ -27,10 +27,10 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
     _width = 5;
     _colorEvery = 2;
     _channelId = 0;
-    _color1 = _ledWrapper->Color(125, 125, 125);
-    _color2 = _ledWrapper->Color(0, 125, 125);
-    _color3 = _ledWrapper->Color(125, 125, 0);
-    _color4 = _ledWrapper->Color(125, 0, 125);
+    _color1 = _ledWrapper->color(125, 125, 125);
+    _color2 = _ledWrapper->color(0, 125, 125);
+    _color3 = _ledWrapper->color(125, 125, 0);
+    _color4 = _ledWrapper->color(125, 0, 125);
     _rowStart = 0;
     _drawCol = 0;
 
@@ -52,10 +52,10 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
     _width = 5;
     _colorEvery = 2;
     _channelId = 0;
-    _color1 = _ledWrapper->Color(125, 125, 125);
-    _color2 = _ledWrapper->Color(0, 125, 125);
-    _color3 = _ledWrapper->Color(125, 125, 0);
-    _color4 = _ledWrapper->Color(125, 0, 125);
+    _color1 = _ledWrapper->color(125, 125, 125);
+    _color2 = _ledWrapper->color(0, 125, 125);
+    _color3 = _ledWrapper->color(125, 125, 0);
+    _color4 = _ledWrapper->color(125, 0, 125);
     _rowStart = 0;
     _drawCol = 0;
 
@@ -125,9 +125,9 @@ ILightShow::ILightShow(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow
                    jsonColor = jsonColors["c1"].toObject();
                   _color1 = std::stoul(jsonColors["c1"].toString().replace("#","0x").toStdString().c_str(), nullptr, 16);
 
-                  _r  =_ledWrapper->Red(_color1);
-                  _g = _ledWrapper->Green(_color1);
-                  _b = _ledWrapper->Blue(_color1);
+                  _r  =_ledWrapper->red(_color1);
+                  _g = _ledWrapper->green(_color1);
+                  _b = _ledWrapper->blue(_color1);
 
                }
 

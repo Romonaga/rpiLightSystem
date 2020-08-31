@@ -27,7 +27,7 @@ void ShowCyclon::startShow()
         // now that we've shown the leds, reset to black for next loop
         for(int j=0; j < _width; j++)
         {
-            _ledWrapper->setPixelColor(i + j, _ledWrapper->Color(0,0,0));
+            _ledWrapper->setPixelColor(i + j, _ledWrapper->color(0,0,0));
         }
         if(_running == false)
             return;
@@ -47,7 +47,7 @@ void ShowCyclon::startShow()
         _ledWrapper->show();
         for(int j=0; j< _width; j++)
         {
-           _ledWrapper->setPixelColor(i + j, _ledWrapper->Color(0,0,0));
+           _ledWrapper->setPixelColor(i + j, _ledWrapper->color(0,0,0));
         }
         if(_running == false)
             return;

@@ -180,7 +180,7 @@ void MatrixScrollTime::startShow()
 
                         if(clockMatrix[(int)timeStr.toStdString().c_str()[letter] - 32][row * CLOCKMAXCOLS + (col - CLOCKMAXCOLS)] == 1) //should this pixal be on?
                         {
-                            _ledWrapper->setPixelColor(row + _rowStart, drawCol , _color1);
+                            _ledWrapper->setPixelcolor(row + _rowStart, drawCol , _color1);
                         }
                     }
 

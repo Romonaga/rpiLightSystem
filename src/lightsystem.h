@@ -98,19 +98,19 @@ private:
 
 private: //shows
     void chaser(u_int32_t wait);
-    void theaterChase(ws2811_led_t baseColor, u_int32_t wait);
+    void theaterChase(ws2811_led_t basecolor, u_int32_t wait);
 
     void theaterChaseRainbow(u_int32_t wait);
     void flame();
     void neoRand();
-    void colorThirdsReverse(uint32_t startColor, uint32_t middleColor, uint32_t finishColor, int wait);
+    void colorThirdsReverse(uint32_t startcolor, uint32_t middlecolor, uint32_t finishcolor, int wait);
     void blink(int numBlinks, int wait);
     void cyclon(ws2811_led_t c, int width, int speed);
     void colorWipe(ws2811_led_t color, u_int32_t waitms);
     void halfnHalf(ws2811_led_t halfN, ws2811_led_t nHalf, u_int32_t delayMs);
     void rainbow(u_int32_t wait);
     void rainbowCycle(u_int32_t wait);
-    void colorThirds(ws2811_led_t startColor, ws2811_led_t middleColor, ws2811_led_t finishColor, u_int32_t delay);
+    void colorThirds(ws2811_led_t startcolor, ws2811_led_t middlecolor, ws2811_led_t finishcolor, u_int32_t delay);
     void colorForths(ws2811_led_t colorOne, ws2811_led_t colorTwo, ws2811_led_t colorThree,ws2811_led_t colorFour, u_int32_t delay);
     void triChaser(ws2811_led_t c1, ws2811_led_t c2, ws2811_led_t c3, u_int32_t delay);
 
