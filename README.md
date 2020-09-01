@@ -111,24 +111,41 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
     3. make
 10. Congrats, you are one step closer, we still have work to do.
     1. From the rpiLightSystems folder, you will need the file from conf, it needs to be placed in /etc please make sure you edit the file to march your system settings.
-11. //TODO Website instructions.
-12. //TODO mosquitto install instruction. 
-13. //TODO sql instructions.
+
+
+<b> Now that the rpiLightsystem has been built.  It is now time to setup the website.</b>
+
+The website as well as the supporting servers like mysql, Mosquitto, do not have to run on the same machine as rpiLightSystem.  At our lab, we are running these things off of a linux server.  However, the system is designed to run on a Raspberry PI.  It is important to note that if you have multiple rpiLightSystems you wish to control, you only need to set-up one device as the master to host the website as well as mysql and mosquitto.
+
+These directions are assuming you wish to setup the website, mysql, mosquitto on a raspberrypi. 
 
 
 
+1. Install Apache 
+    * sudo apt install apache2
+    
+2. Install PHP Support
+    * sudo apt install php7.3
+    * sudo apt install php7.3-dev
+
+3. Install Mosquitto We need not only the server, but also support libs and files.
+    * sudo apt install mosquitto
+    * sudo apt install mosquitto-client
+    * sudo apt install libmosquitto1
+    * sudo apt install libmosquitto-dev
+    
+4. Install Mosquitto support for PHP.
+    * pecl install Mosquitto-alpha
+    * sudo nano /etc/php7.3/php.ini
+        * add extension=mosquitto.so at the bottom of this file.
+        
+5. Now we will install mysql.  I will do my best to explain how to get this running.
+    * sudo apt install mariadb-server
+    * sudo apt mysql_secure_installation This will secure your SQL server, please respond the the questions presented.
+    * sudo apt install php-mysql
+    * 
+   
 
 
-MySQL Server.
-
-Mosquetto MQTT as well as dev libs.
-
-  https://github.com/Romonaga/paho.mqtt.c
-  https://github.com/Romonaga/paho.mqtt.cpp
-
-PHP
-
-
-Apache
-  Website code forked from Myrana.
+    
 
