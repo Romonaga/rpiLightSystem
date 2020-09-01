@@ -37,23 +37,13 @@ Features.
 
 Everything that is needed to build and run this project is or will be included in this repository. This will save you time finding the repos needed.  Please follow the build instructions and install instructions for all libs that I have used.  While we have attempted to document as best as possible, it is always best to follow the directions provided by package owner.
 
-    1. DB instructions are needed.  However, if you are willing to build the system, I have to assume you can install MySql. Scripts to create and populate static data is included. 
-    2. The etc config file needs some parms.  this should be self explanitory when you look at it.  Yes, it needs to be in etc.
-    3. Apache2 needs to be installed as well. I will get to instructions but you will need the following.
-        a) mqtt-client sudo apt install mosquitto-clients should get you what you need.
-        b) pecl install Mosquitto-alpha for MQTT support https://github.com/mgdm/Mosquitto-PHP
-        c) <Mysql PHP support directions needed>
-    4. <b>The website must be installed in you apache directory.  While I do have a fork of Myrana's work, it is best to take from her directly as it is always current. </b>
-    5. rpiLights must be ran as root, unless you are just going to use SPI ws2811 Lib.
-    6 Configuration is not complex, there is a config screen.  Matrix direction is a trial and erroor, you have to just play with the settings.  However, you should find settings that will work.  If stuck leave an issue for me.  I check often.  I will provide more detail instructions as time permits.
-
-
-<b>These instructions are for Rasperry Pi Buster. It is assumed you are using the latest version of buster.</b>
+<b>These instructions are for Rasperry Pi Buster. It is assumed you are using the latest version of buster on a fresh install.</b>
 
 <b>* First Some machine prep.</b> <BR>
 Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you will need to understand a few things.
     
-   1. rpiLights should not be ran under a GUI, it should be headless with the bare requirements to run. 
+   1. rpiLightSystem should not be ran with a GUI, it should be headless with the bare requirements to run the system.
+   
    2. The Pi running rpiLights, should have the following disabled.
    
         a) Sound card.
@@ -65,7 +55,7 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
             
          b) I would also suggest editing /boot/config.txt look for line dtparam=audio=on and set it to dtparam=audio=off, if the line does not exist, add it.
          
-         c) One Wire GPIO, should be turned off, in raspi-config, under interfaces, it will cause interference with the Pannels.
+         c) One Wire GPIO, should be turned off, in raspi-config, under interfaces, it will cause interference with the Panels.
          
    3. If you want to make use of the LUX, in raspi-config, under interfaces, turn on i2c.
    4. If you want to use the spi to drive the LEDS, in raspi-config, under interfaces, turn on spi.
@@ -117,9 +107,7 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
 
 The website as well as the supporting servers like mysql, Mosquitto, do not have to run on the same machine as rpiLightSystem.  At our lab, we are running these things off of a linux server.  However, the system is designed to run on a Raspberry PI.  It is important to note that if you have multiple rpiLightSystems you wish to control, you only need to set-up one device as the master to host the website as well as mysql and mosquitto.
 
-These directions are assuming you wish to setup the website, mysql, mosquitto on a raspberrypi. 
-
-
+These directions are assuming you wish to setup the website, mysql, mosquitto on a raspberrypi. It also assumes that this machine is configured to access the network. 
 
 1. Install Apache 
     * sudo apt install apache2
@@ -144,7 +132,39 @@ These directions are assuming you wish to setup the website, mysql, mosquitto on
     * sudo apt install mariadb-server
     * sudo apt mysql_secure_installation This will secure your SQL server, please respond to the questions presented. Please remember your password!
     * sudo apt install php-mysql
-    * 
+    
+At this point, we have completed the install of the requiered componants, now lets configure the system for use with rpiLightSystem.
+
+MySQL server is setup, it is setup with the defaults, some of these defaults can get in our way.  It is up to you to decide if you wish to follow directions here or setup the mysql server to your standards.
+
+Default out of the box, Mysql server will only listen in on localhost.  This is fantastic, if the only machine you wish to access the server is the machine it is installed on.  Seeing this is home use, I thnk we can relax the security a bit.  First lets let it listen on any ipaddress. 
+
+sudo nano /etc/mysql/mariadb.conf.d/50-server.cnf look for a line that says. bind-address, it is mostly likly set to bind-address= 127.0.0.1 simply place a # in front so it looks like this #bind-address = 127.0.0.1 save the file.
+
+Restart mysql server. sudo service mysql restart  At this point you should be able to access the mysql server from other machines.
+
+This next part is simplifed if you use mysql workbench, However, that requires a GUI to run, and if you remember, no GUI should be ran.  So....
+
+lets work on getting the database working.
+
+Lets setup the database, as well as an account that can be used by ledLightSystem.  One should not use the root password of the db server.
+* sudo mysql -u root -p (You did remember your root password for mysql?)
+* create database LedLightSystem; (press enter)
+* CREATE USER '<USERID>' IDENTIFIED BY '<PASSWORD>';
+* GRANT ALL PRIVILEGES ON LedLightSystem . * TO '<USERID>';
+    
+Now we will load the database with the sql script.
+* sudo mysql -h matrixpi.local -u root -p LedLightSystem < <PATHTOFILE>/LedLightSystem.sql
+* sudo mysql -h matrixpi.local -u root -p LedLightSystem < <PATHTOFILE>/LedLightSystemData.sql
+
+    
+
+
+
+
+
+
+
    
 
 
