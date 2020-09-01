@@ -128,7 +128,7 @@ These directions are assuming you wish to setup the website, mysql, mosquitto on
     * sudo apt install php7.3
     * sudo apt install php7.3-dev
 
-3. Install Mosquitto We need not only the server, but also support libs and files.
+3. Install Mosquitto We need not only the server, but also support libs.
     * sudo apt install mosquitto
     * sudo apt install mosquitto-client
     * sudo apt install libmosquitto1
@@ -139,9 +139,10 @@ These directions are assuming you wish to setup the website, mysql, mosquitto on
     * sudo nano /etc/php7.3/php.ini
         * add extension=mosquitto.so at the bottom of this file.
         
-5. Now we will install mysql.  I will do my best to explain how to get this running.
+5. Now we will install mysql.  I will do my best to explain how to get this running.  While I will do my best to help you do this from the CLI, truth be told, setting up the server and loading the database is far easier if you use mysql workbench.
+
     * sudo apt install mariadb-server
-    * sudo apt mysql_secure_installation This will secure your SQL server, please respond the the questions presented.
+    * sudo apt mysql_secure_installation This will secure your SQL server, please respond to the questions presented. Please remember your password!
     * sudo apt install php-mysql
     * 
    
