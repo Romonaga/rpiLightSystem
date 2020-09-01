@@ -154,8 +154,8 @@ Lets setup the database, as well as an account that can be used by ledLightSyste
 * GRANT ALL PRIVILEGES ON LedLightSystem . * TO '<USERID>';
     
 Now we will load the database with the sql script.
-* sudo mysql -u root -p LedLightSystem < <PATHTOFILE>/LedLightSystem.sql
-* sudo mysql -u root -p LedLightSystem < <PATHTOFILE>/LedLightSystemData.sql
+* sudo mysql -u root -p LedLightSystem < rpiLightSystem/db/LedLightSystem.sql
+* sudo mysql -u root -p LedLightSystem < rpiLightSystem/db/LedLightSystemData.sql
 
     
 
