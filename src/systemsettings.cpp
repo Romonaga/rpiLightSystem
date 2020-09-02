@@ -8,6 +8,8 @@
 #include <QSqlError>
 #include <sstream>
 
+#include <QDebug>
+
 SystemSettings* SystemSettings::_instance = nullptr;
 
 SystemSettings::SystemSettings()
@@ -108,11 +110,8 @@ bool SystemSettings::loadSystemSettings()
     database.setPassword(_pwd);
     database.setDatabaseName(_dataBase);
 
-
     bool retVal =  false;
     std::stringstream info;
-
-
 
     if(database.open())
     {
@@ -124,6 +123,7 @@ bool SystemSettings::loadSystemSettings()
         QString sql("SELECT * from lightSystems where enabled = 1 and serverHostName = '");
         sql.append(_hostName);
         sql.append("'");
+        qDebug() << sql.toStdString().c_str();
         QSqlQuery qry = database.exec(sql);
 
         if(qry.lastError().type() == QSqlError::NoError && qry.numRowsAffected() > 0)
@@ -136,6 +136,7 @@ bool SystemSettings::loadSystemSettings()
             _mqttRetryDelay = qry.value("mqttRetryDelay").toInt();
             _mqttTwitchQueue = qry.value("twitchMqttQueue").toString();
             _userArtDirectory = qry.value("userArtDirectory").toString();
+            _mqttBroker = qry.value("mqttBroker").toString();
             _logShows = qry.value("logShows").toBool();
 
             sql = "SELECT * FROM LedLightSystem.lightSystemChannels where enabled = 1 and lightSystemId = ";
@@ -198,8 +199,6 @@ bool SystemSettings::loadSettings()
             settings.endGroup();
 
             settings.beginGroup("SETTINGS");
-
-            _mqttBroker = settings.value("MQTTBroker","").toString();
             _dbgLog = settings.value("DBGLOG",false).toBool();
             settings.endGroup();
 

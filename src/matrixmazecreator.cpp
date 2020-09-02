@@ -76,6 +76,8 @@ void MatrixMazeCreator::genMaze(uint32_t row, uint32_t col)
 void MatrixMazeCreator::startShow()
 {
 
+    if(_settings->getChannels()[_channelId]->matrixdirection() == 0) return;
+
     _surface.resize(_ledWrapper->getRows());
     for (uint32_t row = 0; row < _ledWrapper->getRows(); row++)
     {

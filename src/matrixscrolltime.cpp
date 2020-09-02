@@ -9,9 +9,6 @@
 #include "pixalfonts.h"
 
 
-using namespace std;
-
-
 
 MatrixScrollTime::MatrixScrollTime(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
     ILightShow(ledWrapper, lightShow, showParms)
@@ -112,6 +109,8 @@ void MatrixScrollTime::startShow()
         replaySnapShot(_rowStart, CLOCKMAXROWS, _settings->getChannels()[_channelId]->stripColumns(), snapShotBuffer);
         delete [] snapShotBuffer;
     }
+
+
 
 }
 
