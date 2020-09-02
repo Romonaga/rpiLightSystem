@@ -1,10 +1,6 @@
 # rpiLightSystem
 <b>RPI LED Light System, is simply, a way to control multiple LED lights over the internet.
 
-*** I have noticed people have been cloning, my instructions are not complete, and if you have questions please feel free to open an issue.
-
-While we have provided source code, as well as instructions for building system.  What is not provided here is the hardware, nor the electronics schematics required to drive the light strips. It is assumed that you, the user of this software, understand and have the background in working with these strips.  LumaWin, does provide kits, that are prebuilt, and ready to go with all the required hardware for installation, as well as a preconfigured Raspberry Pi.  All you need to do is set it up.
-
 Features.
 * Customizable Lightshows (done)
 * Led Matrix Support (done) (Yes you can do a LED Wall with this!)
@@ -99,9 +95,6 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
     1. clone or download the rpiLightsSystem
     2. qmake .
     3. make
-10. Congrats, you are one step closer, we still have work to do.
-    1. From the rpiLightSystems folder, you will need the file from conf, it needs to be placed in /etc please make sure you edit the file to march your system settings.
-
 
 <b> Now that the rpiLightsystem has been built.  It is now time to setup the website.</b>
 
@@ -150,14 +143,51 @@ lets work on getting the database working.
 Lets setup the database, as well as an account that can be used by ledLightSystem.  One should not use the root password of the db server.
 * sudo mysql -u root -p (You did remember your root password for mysql?)
 * create database LedLightSystem; (press enter)
-* CREATE USER '<USERID>' IDENTIFIED BY '<PASSWORD>';
-* GRANT ALL PRIVILEGES ON LedLightSystem . * TO '<USERID>';
+* CREATE USER 'USERID' IDENTIFIED BY 'PASSWORD';
+* GRANT ALL PRIVILEGES ON LedLightSystem . * TO 'USERID';
     
 Now we will load the database with the sql script.
 * sudo mysql -u root -p LedLightSystem < rpiLightSystem/db/LedLightSystem.sql
 * sudo mysql -u root -p LedLightSystem < rpiLightSystem/db/LedLightSystemData.sql
 
-    
+Let us take stock of where we are, or should be at this point.
+1. We have built rpiLightSystem.
+2. We have installed the Web Server.
+3. We have installed PHP support for Web Server.
+4. We have installed MQTT Server.
+5. We have installed support for PHP MQTT.
+
+If all of the above is true, we are ready to move on.
+
+From the rpiLightSystem source code folder you wil find a file called rpilightsystem.conf in folder /etc.  This file will require a few edits, as well as it will need to be copied to the /etc folder of the raspberrypi that is hosting the website.
+
+<b> The setting should be clear. </b>
+DBServer= Hostname of server running mysql
+DBUserID= UserID to use
+DBPassword= password for user
+DataBase= database name
+MQTTBroker= Hostname of machine running MQTT server.
+
+Please make sure that after ou have made the changes, that you put it into /etc
+
+Now, the actual website.
+
+First off, the default location on the rpi is /var/www/html.  This will have a default website from the install.  First, lets remove the index.html as it will get in our way.  sudo rm /var/www/html/index.*
+
+Now, lets copy the Web Site.
+
+First, you should never cloan from me, while I do have a fork of Myra's code, I do not keep it up to date as often as I should, this is why it is best to pull from her.
+
+now all that is needed is to copy that to your web folder.
+Please cd to the directory where you pulled the repository.
+sudo cp -r * /var/www/html/.
+
+
+At this point you should be able to access the website.....
+
+....................... Not the end ...............................
+
+
 
 
 
