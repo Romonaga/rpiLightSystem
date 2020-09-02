@@ -194,7 +194,7 @@ At this point you should be able to access the website.....
 
 
 
-
+sudo apt install libportaudocpp0
 sudo apt install portaudio19-dev
 
 
