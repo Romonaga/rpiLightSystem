@@ -61,38 +61,39 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
 
 1. sudo apt install git qt5-default libqt5sql5-mysql build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev wiringpi libi2c-dev libcppunit-dev
 2. sudo apt install scons (Needed for Ws2811lib.)
-3. clone or download DNRLogger from this repo.  
+3. clone or download DNRLogger from this repo.  https://github.com/Romonaga/DNRLogger
     1. qmake .
     2. make
     3. sudo make install
 4. Time to build the WS2811 support.
-    1. clone or download the rpi_ws281x lib from  this repo. <b>** You must use the one from this repo, it has changes the wrapper needs. I am hoping my changes make it into the main repo at some point. **</b>
+    1. clone or download the rpi_ws281x lib from  this repo. https://github.com/Romonaga/rpi_ws281x
+    <b>** You must use the one from this repo, it has changes the wrapper needs. I am hoping my changes make it into the main repo at some point. **</b>
     2. run scons, this will build the lib.
         1. sudo  cp *.h /usr/local/include/.
         2. sudo cp libws2811.a /usr/local/lib/.
 5. Lets build my wrapper around that fantastic lib!
-6. clone or download Ws2811Wrapper from this repo
+6. clone or download Ws2811Wrapper from this repo https://github.com/Romonaga/Ws2811Wrapper
     1. run qmake .
     2. make
     3. sudo make install
 7. Ok now for the harder one, support for MQQT (mosquitto)
-    1. clone or download both paho repos.
-    2. We fist need to build and install the c version, before we can do the c++.
+    1. clone or download both paho repos. 
+    2. We fist need to build and install the c version, before we can do the c++. https://github.com/Romonaga/paho.mqtt.c
         1. The read me is clear, you will need some support libs.  While I will outline docs are best.
             1. sudo apt install build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev doxygen graphviz
         2. Now we can run make
         3. sudo make install
-    3. This next one is not so forward, however the README.md does explain very well how to build this.      
+    3. This next one is not so forward, however the README.md does explain very well how to build this. https://github.com/Romonaga/paho.mqtt.cpp     
         1. cmake -Bbuild -H. -DPAHO_BUILD_DOCUMENTATION=TRUE -DPAHO_BUILD_SAMPLES=TRUE
         2. $ sudo cmake --build build/ --target install
         3. $ sudo ldconfig
  8. Time to build the projects MQTT wrapper.
-    1. clone or download the MQTTMessageBus from this repo
+    1. clone or download the MQTTMessageBus from this repo https://github.com/Romonaga/MQTTMessageBus
         1. qmake .
         2. make
         3. sudo make install
  9. If you made it this far, well, it seems you can now build the rpiLightsSystem project.
-    1. clone or download the rpiLightsSystem
+    1. clone or download the rpiLightsSystem https://github.com/Romonaga/rpiLightSystem
     2. qmake .
     3. make
 
@@ -190,6 +191,14 @@ sudo cp -r * /var/www/html/.
 
 
 At this point you should be able to access the website.....
+
+If you have followed the steps correctly, and your rpiightsystem.conf file is correctly configured, we can now move on to setup of the website.
+The system has no default users, as such, there is a setup.php that can be called, it is not accessable from the nav bar, but you can type it into the url.
+
+This will allow you to setup the default user of the system.  this will allow you to create new users as well as configure the rest of the system.
+This file should be removed once the system is setup sudo rm /var/www/html/setup.php will remove the file.
+
+
 
 ....................... Not the end ...............................
 
