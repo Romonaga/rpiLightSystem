@@ -137,6 +137,7 @@ LIBS += -lDNRLogger
 LIBS += -lwiringPi
 LIBS += -li2c
 LIBS += -lrgbmatrix
+#LIBS += -lportaudiocpp
 
 unix {
     target.path = /lumawin

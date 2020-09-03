@@ -73,6 +73,8 @@ void MatrixCreateDisplayFile::startShow()
                 if(imageData != nullptr && width > 0 && height > 0 )
                 {
                     error = 0;
+                    qDebug() << "r: " << _ledWrapper->getRows() << " c: " << _ledWrapper->getColumns() << " ir: " << height << " ic: " << width;
+
                     reSampledImageData =  resampleRGB(_settings->getChannels()[_channelId]->stripColumns(),_settings->getChannels()[_channelId]->stripRows(), width, height, imageData);
                     delete [] imageData;
                 }
