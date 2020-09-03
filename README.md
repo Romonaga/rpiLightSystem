@@ -182,7 +182,7 @@ First off, the default location on the rpi is /var/www/html.  This will have a d
 
 Now, lets copy the Web Site.
 
-First, you should never cloan from me, while I do have a fork of Myra's code, I do not keep it up to date as often as I should, this is why it is best to pull from her.
+First, you should never cloan from me, while I do have a fork of Myra's code, I do not keep it up to date as often as I should, this is why it is best to pull from her. https://github.com/Myrana/LightsWebpage
 
 now all that is needed is to copy that to your web folder.
 Please cd to the directory where you pulled the repository.
