@@ -57,8 +57,9 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
    4. If you want to use the spi to drive the LEDS, in raspi-config, under interfaces, turn on spi.
    5. The ws281X LEDS, will consume far less CPU, then the 2121 will, so if you are using these panels, number 1, is even more important.
    6. Drving the 2121 boards from teh Pi can be done, but expect flickering and colors that are not as true.  To overcome this, you can create the required buffer chips to boost the signal lines from 3.3V to 5V.  Or you can purchase a Matrix Hat that will provide the buffers for you.
+   7. The rpiLightSystem that will be the server for the rest of the rpiLightSystems, should be a P4, simply for the extra horse power.
    
-
+## Build instructions for rpiLightSystem.
 1. sudo apt install git qt5-default libqt5sql5-mysql build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev wiringpi libi2c-dev libcppunit-dev
 2. sudo apt install scons (Needed for Ws2811lib.)
 3. clone or download DNRLogger from this repo.  https://github.com/Romonaga/DNRLogger
@@ -101,7 +102,7 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
 
 The website as well as the supporting servers like mysql, Mosquitto, do not have to run on the same machine as rpiLightSystem.  At our lab, we are running these things off of a linux server.  However, the system is designed to run on a Raspberry PI.  It is important to note that if you have multiple rpiLightSystems you wish to control, you only need to set-up one device as the master to host the website as well as mysql and mosquitto.
 
-These directions are assuming you wish to setup the website, mysql, mosquitto on a raspberrypi. It also assumes that this machine is configured to access the network. 
+These directions are assuming you wish to setup the website, mysql, mosquitto on a raspberrypi. It also assumes that this machine is configured to access the network. I again can not stress enough that you should do this with a fresh Raspberry Pi.
 
 1. Install Apache 
     * sudo apt install apache2
