@@ -213,9 +213,9 @@ Once the default user is created, you should be able to log in and configure you
 
 
 
-
-sudo apt install libportaudocpp0
-sudo apt install portaudio19-dev
+IGNORE THIS SECTION HOLDING AREA
+//sudo apt install libportaudocpp0
+//sudo apt install portaudio19-dev
 
 
    
