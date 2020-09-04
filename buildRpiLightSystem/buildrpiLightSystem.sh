@@ -8,7 +8,6 @@ git clone https://github.com/Romonaga/Ws2811Wrapper.git
 git clone https://github.com/Romonaga/paho.mqtt.c
 git clone https://github.com/Romonaga/paho.mqtt.cpp
 git clone https://github.com/Romonaga/MQTTMessageBus.git
-git clone https://github.com/Romonaga/rpiLightSystem.git
 cd DNRLogger
 qmake .
 make
@@ -36,7 +35,7 @@ cd ../MQTTMessageBus
 qmake .
 make
 sudo make install
-cd ../rpiLightSystem
+cd ../../rpiLightSystem
 qmake .
 make -j2
 
