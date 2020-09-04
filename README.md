@@ -192,12 +192,15 @@ sudo cp -r * /var/www/html/.
 
 At this point you should be able to access the website.....
 
-If you have followed the steps correctly, and your rpiightsystem.conf file is correctly configured, we can now move on to setup of the website.
+The rpilightsystem.conf file is used not only by the rpiLightSystem, but also the website used to control the lights.  As such, the server that is hosting the website needs this file in /etc.
+
+If you have followed the steps correctly, and your rpilightsystem.conf file is correctly configured, we can now move on to setup of the website.
 The system has no default users, as such, there is a setup.php that can be called, it is not accessable from the nav bar, but you can type it into the url.
 
 This will allow you to setup the default user of the system.  this will allow you to create new users as well as configure the rest of the system.
 This file should be removed once the system is setup sudo rm /var/www/html/setup.php will remove the file.
 
+Once the default user is created, you should be able to log in and configure your light strip, or matrix, or however many rpiLightSystems you are running.
 
 
 ....................... Not the end ...............................
