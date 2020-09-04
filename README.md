@@ -98,9 +98,9 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
     2. qmake .
     3. make
 
-<b> Now that the rpiLightsystem has been built.  It is now time to setup the website.</b>
+## Now that the rpiLightsystem has been built.  It is now time to setup the website.
 
-The website as well as the supporting servers like mysql, Mosquitto, do not have to run on the same machine as rpiLightSystem.  At our lab, we are running these things off of a linux server.  However, the system is designed to run on a Raspberry PI.  It is important to note that if you have multiple rpiLightSystems you wish to control, you only need to set-up one device as the master to host the website as well as mysql and mosquitto.
+The website as well as the supporting servers like mysql, Mosquitto, do not have to run on the same machine as rpiLightSystem.  At our lab, we are running these processes off of our linux server.  However, the system is designed to run on a Raspberry PI.  It is important to note that if you have multiple rpiLightSystems you wish to control, you only need to set-up one device as the master to host the website as well as mysql and mosquitto.
 
 These directions are assuming you wish to setup the website, mysql, mosquitto on a raspberrypi. It also assumes that this machine is configured to access the network. I again can not stress enough that you should do this with a fresh Raspberry Pi.
 
@@ -158,7 +158,7 @@ Now we will load the database with the sql script.
 * sudo mysql -u root -p LedLightSystem < rpiLightSystem/db/LedLightSystem.sql
 * sudo mysql -u root -p LedLightSystem < rpiLightSystem/db/LedLightSystemData.sql
 
-Let us take stock of where we are, or should be at this point.
+<B>Let us take stock of where we are, or should be at this point.</B>
 1. We have built rpiLightSystem.
 2. We have installed the Web Server.
 3. We have installed PHP support for Web Server.
@@ -170,11 +170,11 @@ If all of the above is true, we are ready to move on.
 From the rpiLightSystem source code folder you wil find a file called rpilightsystem.conf in folder /etc.  This file will require a few edits, as well as it will need to be copied to the /etc folder of the raspberrypi that is hosting the website.
 
 <b> The setting should be clear. </b>
-DBServer= Hostname of server running mysql
+`DBServer= Hostname of server running mysql
 DBUserID= UserID to use
 DBPassword= password for user
 DataBase= database name
-MQTTBroker= Hostname of machine running MQTT server.
+MQTTBroker= Hostname of machine running MQTT server.`
 
 Please make sure that after ou have made the changes, that you put it into /etc
 
