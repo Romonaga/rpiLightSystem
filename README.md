@@ -70,12 +70,16 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
     2. run scons, this will build the lib.
         1. sudo  cp *.h /usr/local/include/.
         2. sudo cp libws2811.a /usr/local/lib/.
-4 Lets build my wrapper around that fantastic lib!
-5 clone or download Ws2811Wrapper from this repo https://github.com/Romonaga/Ws2811Wrapper
+4. Time to build the rpi-rgb-led-matrix 
+    1. make 
+    2. sudo cp lib/*.h /usr/local/include 
+    3. sudo cp lib/*.a /usr/local/lib 
+5. Lets build my wrapper around that fantastic lib!
+6. clone or download Ws2811Wrapper from this repo https://github.com/Romonaga/Ws2811Wrapper
     1. run qmake .
     2. make
     3. sudo make install
-6 Ok now for the harder one, support for MQQT (mosquitto)
+7. Ok now for the harder one, support for MQQT (mosquitto)
     1. clone or download both paho repos. 
     2. We fist need to build and install the c version, before we can do the c++. https://github.com/Romonaga/paho.mqtt.c
         1. The read me is clear, you will need some support libs.  While I will outline docs are best.
@@ -86,7 +90,7 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
         1. cmake -Bbuild -H. -DPAHO_BUILD_DOCUMENTATION=TRUE -DPAHO_BUILD_SAMPLES=TRUE
         2. $ sudo cmake --build build/ --target install
         3. $ sudo ldconfig
- 7 Time to build the projects MQTT wrapper.
+ 8. Time to build the projects MQTT wrapper.
     1. clone or download the MQTTMessageBus from this repo https://github.com/Romonaga/MQTTMessageBus
         1. qmake .
         2. make
