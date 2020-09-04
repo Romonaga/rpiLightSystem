@@ -38,8 +38,7 @@ Everything that is needed to build and run this project is or will be included i
 <b>* First Some machine prep.</b> <BR>
 Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you will need to understand a few things.
     
-   1. rpiLightSystem should not be ran with a GUI, it should be headless with the bare requirements to run the system.
-   
+   1. rpiLightSystem should not be ran with a GUI, it should be headless with the bare requirements to run the system.  
    2. The Pi running rpiLights, should have the following disabled.
    
         a) Sound card.
@@ -57,50 +56,55 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
    4. If you want to use the spi to drive the LEDS, in raspi-config, under interfaces, turn on spi.
    5. The ws281X LEDS, will consume far less CPU, then the 2121 will, so if you are using these panels, number 1, is even more important.
    6. Drving the 2121 boards from teh Pi can be done, but expect flickering and colors that are not as true.  To overcome this, you can create the required buffer chips to boost the signal lines from 3.3V to 5V.  Or you can purchase a Matrix Hat that will provide the buffers for you.
+   7. The rpiLightSystem that will be the server for the rest of the rpiLightSystems, should be a P4, simply for the extra horse power.
    
-
-1. sudo apt install git qt5-default libqt5sql5-mysql build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev wiringpi libi2c-dev libcppunit-dev
-2. sudo apt install scons (Needed for Ws2811lib.)
-3. clone or download DNRLogger from this repo.  
+## Build instructions for rpiLightSystem.
+1. sudo apt install git qt5-default libqt5sql5-mysql build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev wiringpi libi2c-dev libcppunit-dev scons doxygen  
+2 Clone or download DNRLogger from this repo.  https://github.com/Romonaga/DNRLogger
     1. qmake .
     2. make
     3. sudo make install
-4. Time to build the WS2811 support.
-    1. clone or download the rpi_ws281x lib from  this repo. <b>** You must use the one from this repo, it has changes the wrapper needs. I am hoping my changes make it into the main repo at some point. **</b>
+3 Time to build the WS2811 support.
+    1. clone or download the rpi_ws281x lib from  this repo. https://github.com/Romonaga/rpi_ws281x
+    <b>** You must use the one from this repo, it has changes the wrapper needs. I am hoping my changes make it into the main repo at some point. **</b>
     2. run scons, this will build the lib.
         1. sudo  cp *.h /usr/local/include/.
         2. sudo cp libws2811.a /usr/local/lib/.
+4. Time to build the rpi-rgb-led-matrix 
+    1. make 
+    2. sudo cp lib/*.h /usr/local/include 
+    3. sudo cp lib/*.a /usr/local/lib 
 5. Lets build my wrapper around that fantastic lib!
-6. clone or download Ws2811Wrapper from this repo
+6. clone or download Ws2811Wrapper from this repo https://github.com/Romonaga/Ws2811Wrapper
     1. run qmake .
     2. make
     3. sudo make install
 7. Ok now for the harder one, support for MQQT (mosquitto)
-    1. clone or download both paho repos.
-    2. We fist need to build and install the c version, before we can do the c++.
+    1. clone or download both paho repos. 
+    2. We fist need to build and install the c version, before we can do the c++. https://github.com/Romonaga/paho.mqtt.c
         1. The read me is clear, you will need some support libs.  While I will outline docs are best.
             1. sudo apt install build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev doxygen graphviz
         2. Now we can run make
         3. sudo make install
-    3. This next one is not so forward, however the README.md does explain very well how to build this.      
+    3. This next one is not so forward, however the README.md does explain very well how to build this. https://github.com/Romonaga/paho.mqtt.cpp     
         1. cmake -Bbuild -H. -DPAHO_BUILD_DOCUMENTATION=TRUE -DPAHO_BUILD_SAMPLES=TRUE
         2. $ sudo cmake --build build/ --target install
         3. $ sudo ldconfig
  8. Time to build the projects MQTT wrapper.
-    1. clone or download the MQTTMessageBus from this repo
+    1. clone or download the MQTTMessageBus from this repo https://github.com/Romonaga/MQTTMessageBus
         1. qmake .
         2. make
         3. sudo make install
- 9. If you made it this far, well, it seems you can now build the rpiLightsSystem project.
-    1. clone or download the rpiLightsSystem
+ 8 If you made it this far, well, it seems you can now build the rpiLightsSystem project.
+    1. clone or download the rpiLightsSystem https://github.com/Romonaga/rpiLightSystem
     2. qmake .
     3. make
 
-<b> Now that the rpiLightsystem has been built.  It is now time to setup the website.</b>
+## Now that the rpiLightsystem has been built.  It is now time to setup the website.
 
-The website as well as the supporting servers like mysql, Mosquitto, do not have to run on the same machine as rpiLightSystem.  At our lab, we are running these things off of a linux server.  However, the system is designed to run on a Raspberry PI.  It is important to note that if you have multiple rpiLightSystems you wish to control, you only need to set-up one device as the master to host the website as well as mysql and mosquitto.
+The website as well as the supporting servers like mysql, Mosquitto, do not have to run on the same machine as rpiLightSystem.  At our lab, we are running these processes off of our linux server.  However, the system is designed to run on a Raspberry PI.  It is important to note that if you have multiple rpiLightSystems you wish to control, you only need to set-up one device as the master to host the website as well as mysql and mosquitto.
 
-These directions are assuming you wish to setup the website, mysql, mosquitto on a raspberrypi. It also assumes that this machine is configured to access the network. 
+These directions are assuming you wish to setup the website, mysql, mosquitto on a raspberrypi. It also assumes that this machine is configured to access the network. I again can not stress enough that you should do this with a fresh Raspberry Pi.
 
 1. Install Apache 
     * sudo apt install apache2
@@ -156,7 +160,7 @@ Now we will load the database with the sql script.
 * sudo mysql -u root -p LedLightSystem < rpiLightSystem/db/LedLightSystem.sql
 * sudo mysql -u root -p LedLightSystem < rpiLightSystem/db/LedLightSystemData.sql
 
-Let us take stock of where we are, or should be at this point.
+<B>Let us take stock of where we are, or should be at this point.</B>
 1. We have built rpiLightSystem.
 2. We have installed the Web Server.
 3. We have installed PHP support for Web Server.
@@ -168,13 +172,14 @@ If all of the above is true, we are ready to move on.
 From the rpiLightSystem source code folder you wil find a file called rpilightsystem.conf in folder /etc.  This file will require a few edits, as well as it will need to be copied to the /etc folder of the raspberrypi that is hosting the website.
 
 <b> The setting should be clear. </b>
-DBServer= Hostname of server running mysql
-DBUserID= UserID to use
-DBPassword= password for user
-DataBase= database name
-MQTTBroker= Hostname of machine running MQTT server.
 
-Please make sure that after ou have made the changes, that you put it into /etc
+DBServer= Hostname of server running mysql  
+DBUserID= UserID to use  
+DBPassword= password for user  
+DataBase= database name  
+MQTTBroker= Hostname of machine running MQTT server.  
+
+Please make sure that after uou have made the changes, that you put it into /etc
 
 Now, the actual website.
 
@@ -182,7 +187,7 @@ First off, the default location on the rpi is /var/www/html.  This will have a d
 
 Now, lets copy the Web Site.
 
-First, you should never cloan from me, while I do have a fork of Myra's code, I do not keep it up to date as often as I should, this is why it is best to pull from her.
+First, you should never cloan from me, while I do have a fork of Myra's code, I do not keep it up to date as often as I should, this is why it is best to pull from her. https://github.com/Myrana/LightsWebpage
 
 now all that is needed is to copy that to your web folder.
 Please cd to the directory where you pulled the repository.
@@ -190,6 +195,17 @@ sudo cp -r * /var/www/html/.
 
 
 At this point you should be able to access the website.....
+
+The rpilightsystem.conf file is used not only by the rpiLightSystem, but also the website used to control the lights.  As such, the server that is hosting the website needs this file in /etc.
+
+If you have followed the steps correctly, and your rpilightsystem.conf file is correctly configured, we can now move on to setup of the website.
+The system has no default users, as such, there is a setup.php that can be called, it is not accessable from the nav bar, but you can type it into the url.
+
+This will allow you to setup the default user of the system.  this will allow you to create new users as well as configure the rest of the system.
+This file should be removed once the system is setup sudo rm /var/www/html/setup.php will remove the file.
+
+Once the default user is created, you should be able to log in and configure your light strip, or matrix, or however many rpiLightSystems you are running.
+
 
 ....................... Not the end ...............................
 
@@ -199,9 +215,9 @@ At this point you should be able to access the website.....
 
 
 
-
-sudo apt install libportaudocpp0
-sudo apt install portaudio19-dev
+IGNORE THIS SECTION HOLDING AREA
+//sudo apt install libportaudocpp0
+//sudo apt install portaudio19-dev
 
 
    
