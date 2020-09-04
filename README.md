@@ -60,24 +60,23 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
    7. The rpiLightSystem that will be the server for the rest of the rpiLightSystems, should be a P4, simply for the extra horse power.
    
 ## Build instructions for rpiLightSystem.
-1. sudo apt install git qt5-default libqt5sql5-mysql build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev wiringpi libi2c-dev libcppunit-dev
-2. sudo apt install scons (Needed for Ws2811lib.)
-3. clone or download DNRLogger from this repo.  https://github.com/Romonaga/DNRLogger
+1. sudo apt install git qt5-default libqt5sql5-mysql build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev wiringpi libi2c-dev libcppunit-dev scons
+2 clone or download DNRLogger from this repo.  https://github.com/Romonaga/DNRLogger
     1. qmake .
     2. make
     3. sudo make install
-4. Time to build the WS2811 support.
+3 Time to build the WS2811 support.
     1. clone or download the rpi_ws281x lib from  this repo. https://github.com/Romonaga/rpi_ws281x
     <b>** You must use the one from this repo, it has changes the wrapper needs. I am hoping my changes make it into the main repo at some point. **</b>
     2. run scons, this will build the lib.
         1. sudo  cp *.h /usr/local/include/.
         2. sudo cp libws2811.a /usr/local/lib/.
-5. Lets build my wrapper around that fantastic lib!
-6. clone or download Ws2811Wrapper from this repo https://github.com/Romonaga/Ws2811Wrapper
+4 Lets build my wrapper around that fantastic lib!
+5 clone or download Ws2811Wrapper from this repo https://github.com/Romonaga/Ws2811Wrapper
     1. run qmake .
     2. make
     3. sudo make install
-7. Ok now for the harder one, support for MQQT (mosquitto)
+6 Ok now for the harder one, support for MQQT (mosquitto)
     1. clone or download both paho repos. 
     2. We fist need to build and install the c version, before we can do the c++. https://github.com/Romonaga/paho.mqtt.c
         1. The read me is clear, you will need some support libs.  While I will outline docs are best.
@@ -88,12 +87,12 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
         1. cmake -Bbuild -H. -DPAHO_BUILD_DOCUMENTATION=TRUE -DPAHO_BUILD_SAMPLES=TRUE
         2. $ sudo cmake --build build/ --target install
         3. $ sudo ldconfig
- 8. Time to build the projects MQTT wrapper.
+ 7 Time to build the projects MQTT wrapper.
     1. clone or download the MQTTMessageBus from this repo https://github.com/Romonaga/MQTTMessageBus
         1. qmake .
         2. make
         3. sudo make install
- 9. If you made it this far, well, it seems you can now build the rpiLightsSystem project.
+ 8 If you made it this far, well, it seems you can now build the rpiLightsSystem project.
     1. clone or download the rpiLightsSystem https://github.com/Romonaga/rpiLightSystem
     2. qmake .
     3. make
