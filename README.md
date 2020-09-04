@@ -170,10 +170,14 @@ If all of the above is true, we are ready to move on.
 From the rpiLightSystem source code folder you wil find a file called rpilightsystem.conf in folder /etc.  This file will require a few edits, as well as it will need to be copied to the /etc folder of the raspberrypi that is hosting the website.
 
 <b> The setting should be clear. </b>
-`DBServer= Hostname of server running mysql
+`
+DBServer= Hostname of server running mysql
 DBUserID= UserID to use
+
 DBPassword= password for user
+
 DataBase= database name
+
 MQTTBroker= Hostname of machine running MQTT server.`
 
 Please make sure that after ou have made the changes, that you put it into /etc
