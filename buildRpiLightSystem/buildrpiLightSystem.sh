@@ -35,7 +35,7 @@ cd ../MQTTMessageBus
 qmake .
 make
 sudo make install
-cd ../rpiLightSystem
+cd ../../
 qmake .
 make -j2
 
