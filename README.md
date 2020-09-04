@@ -59,7 +59,7 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
    7. The rpiLightSystem that will be the server for the rest of the rpiLightSystems, should be a P4, simply for the extra horse power.
    
 ## Build instructions for rpiLightSystem.
-1. sudo apt install git qt5-default libqt5sql5-mysql build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev wiringpi libi2c-dev libcppunit-dev scons  
+1. sudo apt install git qt5-default libqt5sql5-mysql build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev wiringpi libi2c-dev libcppunit-dev scons doxygen  
 2 Clone or download DNRLogger from this repo.  https://github.com/Romonaga/DNRLogger
     1. qmake .
     2. make
