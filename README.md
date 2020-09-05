@@ -118,18 +118,14 @@ These directions are assuming you wish to setup the website, mysql, mosquitto on
     * sudo apt install apache2
     
 2. Install PHP Support
-    * sudo apt install php7.3
-    * sudo apt install php7.3-dev
+    * sudo apt install php7.3 php7.3-dev    
     * Next we want to extend the session life.  
         * sudo nano /etc/php/7.3/apache2/php.ini
             * session.gc_maxlifetime = 43200
             * session.cache_expire = 720
 
 3. Install Mosquitto We need not only the server, but also support libs.
-    * sudo apt install mosquitto
-    * sudo apt install mosquitto-client
-    * sudo apt install libmosquitto1
-    * sudo apt install libmosquitto-dev
+    * sudo apt install mosquitto mosquitto-client libmosquitto1 libmosquitto-dev
     
 4. Install Mosquitto support for PHP.
     * pecl install Mosquitto-alpha
@@ -143,7 +139,6 @@ These directions are assuming you wish to setup the website, mysql, mosquitto on
     * sudo apt mysql_secure_installation This will secure your SQL server, please respond to the questions presented. Please remember your password!
     * sudo apt install php-mysql
    
-
 At this point, we have completed the install of the requiered componants, now lets configure the system for use with rpiLightSystem.
 
 MySQL server is setup, it is setup with the defaults, some of these defaults can get in our way.  It is up to you to decide if you wish to follow directions here or setup the mysql server to your standards.
