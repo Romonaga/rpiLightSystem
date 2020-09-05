@@ -71,7 +71,7 @@ Or you can follow the below steps that achive the same thing.
 2 Clone or download DNRLogger from this repo.  https://github.com/Romonaga/DNRLogger
     1. qmake .
     2. make
-    3. sudo make install
+    3. sudo make install  
 3 Time to build the WS2811 support.
     1. clone or download the rpi_ws281x lib from  this repo. https://github.com/Romonaga/rpi_ws281x
     <b>** You must use the one from this repo, it has changes the wrapper needs. I am hoping my changes make it into the main repo at some point. **</b>
