@@ -179,7 +179,7 @@ From the rpiLightSystem source code folder you wil find a file called rpilightsy
 DBServer= Hostname of server running mysql  
 DBUserID= UserID to use  
 DBPassword= password for user  
-DataBase= database name  
+DataBase= LedLightSystem  
 MQTTBroker= Hostname of machine running MQTT server.  
 
 Please make sure that after uou have made the changes, that you put it into /etc
