@@ -1,5 +1,5 @@
 # rpiLightSystem
-<b>RPI LED Light System, is simply, a way to control multiple LED lights over the internet.
+<b>RPI LED Light System, is simply, a way to control multiple LED light strips, Matrix's over the internet.
 
 Features.
 * Customizable Lightshows (done)
