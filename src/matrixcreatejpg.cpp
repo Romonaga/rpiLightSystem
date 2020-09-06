@@ -46,13 +46,13 @@ void MatrixCreateJpg::startShow()
     {
         color = snapShotBuffer[counter];
 
-        red =  _ledWrapper->Red(color);
+        red =  _ledWrapper->red(color);
         imageData[bufferIndex++] = red;
 
-        green =  _ledWrapper->Green(color);
+        green =  _ledWrapper->green(color);
         imageData[bufferIndex++] = green;
 
-        blue =  _ledWrapper->Blue(color);
+        blue =  _ledWrapper->blue(color);
         imageData[bufferIndex++] = blue;
     }
 

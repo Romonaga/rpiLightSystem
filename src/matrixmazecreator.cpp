@@ -76,6 +76,8 @@ void MatrixMazeCreator::genMaze(uint32_t row, uint32_t col)
 void MatrixMazeCreator::startShow()
 {
 
+    if(_settings->getChannels()[_channelId]->matrixdirection() == 0) return;
+
     _surface.resize(_ledWrapper->getRows());
     for (uint32_t row = 0; row < _ledWrapper->getRows(); row++)
     {
@@ -87,8 +89,10 @@ void MatrixMazeCreator::startShow()
       }
     }
 
+    _surface[0][1] = Passage;
+    _surface[_ledWrapper->getRows()][_ledWrapper->getColumns()] = Passage;
 
-    genMaze( genRand(2,_ledWrapper->getRows() - 2) /2u*2u+1u, genRand(2, _ledWrapper->getColumns() - 2 /2u*2u+1u));
+    genMaze(genRand(1,_ledWrapper->getRows()) /2u*2u+1u, genRand(1, _ledWrapper->getColumns() - 2)  /2u*2u+1u);
 
     for(uint32_t row = 0; row < _surface.size(); row++)
     {

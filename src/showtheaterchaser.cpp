@@ -22,7 +22,7 @@ void ShowTheaterChaser::startShow()
         {
             for (u_int32_t i=0; i < _ledWrapper->getNumberLeds(); i=i+3)
             {
-               _ledWrapper->setPixelColor(i+q, _ledWrapper->Wheel( (i+j) % 255));    //turn every third pixel on
+               _ledWrapper->setPixelColor(i+q, _ledWrapper->wheel( (i+j) % 255));    //turn every third pixel on
             }
             _ledWrapper->show();
 

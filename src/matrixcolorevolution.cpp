@@ -118,7 +118,7 @@ void MatricColorEvolution::startShow()
             int c = children_[i].dna;
             int x = i % _ledWrapper->getColumns();
             int y = (int)(i / _ledWrapper->getColumns());
-            _ledWrapper->setPixelColor(y, x, _ledWrapper->Red(c), _ledWrapper->Green(c), _ledWrapper->Blue(c));
+            _ledWrapper->setPixelColor(y, x, _ledWrapper->red(c), _ledWrapper->green(c), _ledWrapper->blue(c));
 
         }
         _ledWrapper->show();

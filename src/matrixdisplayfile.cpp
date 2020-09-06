@@ -73,6 +73,8 @@ void MatrixCreateDisplayFile::startShow()
                 if(imageData != nullptr && width > 0 && height > 0 )
                 {
                     error = 0;
+                    qDebug() << "r: " << _ledWrapper->getRows() << " c: " << _ledWrapper->getColumns() << " ir: " << height << " ic: " << width;
+
                     reSampledImageData =  resampleRGB(_settings->getChannels()[_channelId]->stripColumns(),_settings->getChannels()[_channelId]->stripRows(), width, height, imageData);
                     delete [] imageData;
                 }
@@ -103,7 +105,7 @@ void MatrixCreateDisplayFile::startShow()
 
                             for(int col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col++)
                             {
-                                ws2811_led_t ledColor = _ledWrapper->Color(reSampledImageData[index], reSampledImageData[index + 1], reSampledImageData[index + 2]);
+                                ws2811_led_t ledColor = _ledWrapper->color(reSampledImageData[index], reSampledImageData[index + 1], reSampledImageData[index + 2]);
                                 _ledWrapper->setPixelColor(row, col,  ledColor);
                                 index += 3;
                             }
@@ -142,7 +144,7 @@ void MatrixCreateDisplayFile::startShow()
 
                     for(int col = 0; col < _settings->getChannels()[_channelId]->stripColumns(); col++)
                     {
-                        ws2811_led_t ledColor = _ledWrapper->Color(reSampledImageData[index], reSampledImageData[index + 1], reSampledImageData[index + 2]);
+                        ws2811_led_t ledColor = _ledWrapper->color(reSampledImageData[index], reSampledImageData[index + 1], reSampledImageData[index + 2]);
                         if(saveAsArt == 1)
                         {
                             pixalCount++;

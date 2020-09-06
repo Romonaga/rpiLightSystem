@@ -9,9 +9,6 @@
 #include "pixalfonts.h"
 
 
-using namespace std;
-
-
 
 MatrixScrollTime::MatrixScrollTime(Ws2811Wrapper* ledWrapper, const LedLightShows &lightShow, const QString &showParms) :
     ILightShow(ledWrapper, lightShow, showParms)
@@ -113,6 +110,8 @@ void MatrixScrollTime::startShow()
         delete [] snapShotBuffer;
     }
 
+
+
 }
 
 
@@ -180,7 +179,7 @@ void MatrixScrollTime::startShow()
 
                         if(clockMatrix[(int)timeStr.toStdString().c_str()[letter] - 32][row * CLOCKMAXCOLS + (col - CLOCKMAXCOLS)] == 1) //should this pixal be on?
                         {
-                            _ledWrapper->setPixelColor(row + _rowStart, drawCol , _color1);
+                            _ledWrapper->setPixelcolor(row + _rowStart, drawCol , _color1);
                         }
                     }
 

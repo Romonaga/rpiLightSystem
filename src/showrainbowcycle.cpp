@@ -17,7 +17,7 @@ void ShowRainbowCycle::startShow()
                 return ;
 
             for(uint16_t led =0; led < _ledWrapper->getNumberLeds() ; led++)
-              _ledWrapper->setPixelColor(led, _ledWrapper->Wheel(((led * 256 / _ledWrapper->getNumberLeds()) + cycle) & 255));
+              _ledWrapper->setPixelColor(led, _ledWrapper->wheel(((led * 256 / _ledWrapper->getNumberLeds()) + cycle) & 255));
 
             _ledWrapper->show();
 
