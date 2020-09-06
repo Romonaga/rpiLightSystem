@@ -10,6 +10,47 @@ LIGHTBLUE='\033[1;34m'
 echo -e "${LIGHTBLUE}Installing Required Libs${NC}"
 sudo apt install git qt5-default libqt5sql5-mysql build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev wiringpi libi2c-dev libcppunit-dev scons doxygen
 
+echo -e "${RED}Checking to see if we need to Clean Up From Prior Runs${NC}"
+
+if [ -d DNRLogger ]; then
+	sudo rm -r DNRLogger
+fi
+
+if [ -d rpi_ws281x ]; then
+	sudo rm -r rpi_ws281x
+fi
+
+if [ -d rpi-rgb-led-matrix ]; then
+	sudo rm -r rpi-rgb-led-matrix
+fi
+
+if [ -d Ws2811Wrapper ]; then
+
+	sudo rm -r Ws2811Wrapper
+fi
+
+if [ -d paho.mqtt.c ]; then
+
+	sudo rm -r paho.mqtt.c
+fi
+
+if [ -d paho.mqtt.cpp ]; then
+
+	sudo rm -r paho.mqtt.cpp
+fi
+
+if [ -d MQTTMessageBus ]; then
+
+	sudo rm -r MQTTMessageBus
+fi
+
+
+if [ -f /usr/local/lib/libpaho-mqtt3a.so.1 ]; then
+ sudo rm -r /usr/local/lib/libpaho-mqtt3*.*
+fi
+
+echo -e "${LIGHTBLUE}Cloning Repos${NC}"
+
 echo -e "${RED}Cloning DNRLogger${NC}"
 git clone https://github.com/Romonaga/DNRLogger.git
 echo -e "${RED}Cloning rpi_ws2811x${NC}"
@@ -59,6 +100,7 @@ echo -e "${YELLOW}Building rpiLighsystem${NC}"
 
 cd ../../
 qmake .
+make clean
 make -j2
 
 
