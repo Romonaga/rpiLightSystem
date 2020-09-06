@@ -62,17 +62,18 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
 
 There are 2 ways you can build the rpiLightSystem.  
 
-You will find a script in the buildRpiLightSystem, if you run this script, it will attempt to install the required packages, clone the required repositories, then build the project.
+1. sudo apt install git  
+2. You will find a script in the buildRpiLightSystem, if you run this script, it will attempt to install the required packages, clone the required repositories, then build the project.  
 
 Or you can follow the below steps that achive the same thing.
 
 
 1. sudo apt install git qt5-default libqt5sql5-mysql build-essential gcc make cmake cmake-gui cmake-curses-gui libssl-dev wiringpi libi2c-dev libcppunit-dev scons doxygen  
-2 Clone or download DNRLogger from this repo.  https://github.com/Romonaga/DNRLogger
+2. Clone or download DNRLogger from this repo.  https://github.com/Romonaga/DNRLogger
     1. qmake .
     2. make
     3. sudo make install  
-3 Time to build the WS2811 support.
+3. Time to build the WS2811 support.
     1. clone or download the rpi_ws281x lib from  this repo. https://github.com/Romonaga/rpi_ws281x
     <b>** You must use the one from this repo, it has changes the wrapper needs. I am hoping my changes make it into the main repo at some point. **</b>
     2. run scons, this will build the lib.
