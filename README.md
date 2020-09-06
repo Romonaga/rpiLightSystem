@@ -62,8 +62,10 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
 
 There are 2 ways you can build the rpiLightSystem.  
 
-1. sudo apt install git  
-2. You will find a script in the buildRpiLightSystem, if you run this script, it will attempt to install the required packages, clone the required repositories, then build the project.  
+1. sudo apt install git 
+2. git clone https://github.com/Romonaga/rpiLightSystem
+3. cd rpiLightSystem/buildRpiLightSystem
+4. ./buildrpiLightSystem.sh
 
 Or you can follow the below steps that achive the same thing.
 
