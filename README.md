@@ -41,12 +41,12 @@ Lets be clear, regardless if you are driving ws2811, or the 2121 boards, you wil
    1. rpiLightSystem should not be ran with a GUI, it should be headless with the bare requirements to run the system.  
    2. The Pi running rpiLights, should have the following disabled.
    
-        a) Sound card. 
-            cd /etc/modprobe.d 
-            sudo nano alsa-blacklist.conf 
-            Enter the following line 
-            blacklist snd_bcm2835 
-            Save the file. 
+        a) Sound card.  
+            cd /etc/modprobe.d   
+            sudo nano alsa-blacklist.conf   
+            Enter the following line   
+            blacklist snd_bcm2835   
+            Save the file.   
             
          b) I would also suggest editing /boot/config.txt look for line dtparam=audio=on and set it to dtparam=audio=off, if the line does not exist, add it.
          
