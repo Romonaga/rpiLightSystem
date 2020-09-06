@@ -140,7 +140,7 @@ These directions are assuming you wish to setup the website, mysql, mosquitto on
 5. Now we will install mysql.  I will do my best to explain how to get this running.  While I will do my best to help you do this from the CLI, truth be told, setting up the server and loading the database is far easier if you use mysql workbench.
 
     * sudo apt install mariadb-server
-    * sudo apt mysql_secure_installation This will secure your SQL server, please respond to the questions presented. Please remember your password!
+    * sudo mysql_secure_installation This will secure your SQL server, please respond to the questions presented. Please remember your password!
     * sudo apt install php-mysql
    
 At this point, we have completed the install of the requiered componants, now lets configure the system for use with rpiLightSystem.
@@ -198,6 +198,7 @@ First, you should never cloan from me, while I do have a fork of Myra's code, I 
 
 now all that is needed is to copy that to your web folder.
 Please cd to the directory where you pulled the repository.
+cd lumaWinSystem
 sudo cp -r * /var/www/html/.
 
 
