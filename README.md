@@ -128,7 +128,7 @@ These directions are assuming you wish to setup the website, mysql, mosquitto on
             * session.cache_expire = 720
 
 3. Install Mosquitto We need not only the server, but also support libs.
-    * sudo apt install mosquitto mosquitto-client libmosquitto1 libmosquitto-dev
+    * sudo apt install mosquitto mosquitto-clients libmosquitto1 libmosquitto-dev
     
 4. Install Mosquitto support for PHP.
     * pecl install Mosquitto-alpha
