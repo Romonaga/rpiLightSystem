@@ -131,7 +131,8 @@ These directions are assuming you wish to setup the website, mysql, mosquitto on
     * sudo apt install mosquitto mosquitto-clients libmosquitto1 libmosquitto-dev
     
 4. Install Mosquitto support for PHP.
-    * pecl install Mosquitto-alpha
+    * sudo pecl install Mosquitto-alpha
+        * press enter on question.
     * sudo nano /etc/php/7.3/apache2/php.ini
         * add extension=mosquitto.so at the bottom of this file.
     * sudo service apache2 restart
