@@ -202,6 +202,7 @@ CREATE TABLE `lightSystems` (
   `twitchMqttQueue` varchar(45) DEFAULT '',
   `userArtDirectory` varchar(255) DEFAULT NULL,
   `logShows` tinyint DEFAULT '1',
+  `mqttBroker` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
