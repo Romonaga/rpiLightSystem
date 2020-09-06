@@ -135,13 +135,14 @@ These directions are assuming you wish to setup the website, mysql, mosquitto on
         * press enter on question.
     * sudo nano /etc/php/7.3/apache2/php.ini
         * add extension=mosquitto.so at the bottom of this file.
-    * sudo service apache2 restart
+   
         
 5. Now we will install mysql.  I will do my best to explain how to get this running.  While I will do my best to help you do this from the CLI, truth be told, setting up the server and loading the database is far easier if you use mysql workbench.
 
     * sudo apt install mariadb-server
     * sudo mysql_secure_installation This will secure your SQL server, please respond to the questions presented. Please remember your password!
     * sudo apt install php-mysql
+    * sudo service apache2 restart
    
 At this point, we have completed the install of the requiered componants, now lets configure the system for use with rpiLightSystem.
 
