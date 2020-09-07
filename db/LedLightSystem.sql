@@ -217,12 +217,9 @@ DROP TABLE IF EXISTS `lumaUsers`;
 CREATE TABLE `lumaUsers` (
   `username` varchar(50) NOT NULL,
   `ID` int NOT NULL AUTO_INCREMENT,
-  `password` varchar(50) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `phonenumber` varchar(25) DEFAULT NULL,
-  `twitter` varchar(50) DEFAULT NULL,
   `authorized` tinyint DEFAULT '0',
   `isAdmin` tinyint DEFAULT '0',
+  `defaultLightSystem` int DEFAULT '0',
   PRIMARY KEY (`ID`,`username`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   UNIQUE KEY `ID_UNIQUE` (`ID`)
