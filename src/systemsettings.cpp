@@ -139,7 +139,7 @@ bool SystemSettings::loadSystemSettings()
             _mqttBroker = qry.value("mqttBroker").toString();
             _logShows = qry.value("logShows").toBool();
 
-            sql = "SELECT * FROM LedLightSystem.lightSystemChannels where enabled = 1 and lightSystemId = ";
+            sql = "SELECT * FROM lightSystemChannels where enabled = 1 and lightSystemId = ";
             sql.append(QString().number(_systemId));
 
             QSqlQuery chanQry = database.exec(sql);
@@ -264,3 +264,11 @@ SystemSettings* SystemSettings::getInstance()
 
     return _instance;
 }
+
+
+ID for rocket 3462927339
+
+
+old 15 year conven 11 years left 2.99 ir 1271.31 507.60     2760.01
+
+new 10 year 1.99 fixed 1598 1057 2800.10 7.800 no apprasle. 

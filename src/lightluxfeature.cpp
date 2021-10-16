@@ -78,7 +78,7 @@ void LightLuxFeature::run()
      retCode = i2c_smbus_write_byte(i2cfd, _cmd);
      if (retCode < 0)
      {
-         _logger->logCritical("LightLuxFeature ContinuHigh error\n");
+         _logger->logCritical("LightLuxFeature ContinueHigh error\n");
          close(i2cfd);
          return;
      }
