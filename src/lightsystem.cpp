@@ -783,13 +783,18 @@ bool LightSystem::startSystem()
 {
     std::stringstream info;
     std::stringstream queue;
+    unsigned int numLoops = 0;
 
     if(_started ) return true;
 
 
-    while(_started == false)
+    while(_started == false && numLoops++ < 100)
     {
-	Ws2811Wrapper::waitMillSec(1000);
+        info.str("");
+	info << "Attempting To Load Settings: " << numLoops << " out of 100";
+	
+	_logger->logInfo(info.str());
+	Ws2811Wrapper::waitMillSec(5000);
 	_started = _settings->loadSettings();
     
     }
