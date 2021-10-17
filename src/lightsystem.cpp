@@ -786,7 +786,13 @@ bool LightSystem::startSystem()
 
     if(_started ) return true;
 
-    _started = _settings->loadSettings();
+
+    while(_started == false)
+    {
+	Ws2811Wrapper::waitMillSec(1000));
+	_started = _settings->loadSettings();
+    
+    }
     if(_started)
     {
         _logger->logInfo("LightSystem::startSystem Initilizing Led channels");

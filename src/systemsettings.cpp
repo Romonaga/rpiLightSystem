@@ -139,7 +139,7 @@ bool SystemSettings::loadSystemSettings()
             _mqttBroker = qry.value("mqttBroker").toString();
             _logShows = qry.value("logShows").toBool();
 
-            sql = "SELECT * FROM LedLightSystem.lightSystemChannels where enabled = 1 and lightSystemId = ";
+            sql = "SELECT * FROM lightSystemChannels where enabled = 1 and lightSystemId = ";
             sql.append(QString().number(_systemId));
 
             QSqlQuery chanQry = database.exec(sql);
@@ -264,3 +264,5 @@ SystemSettings* SystemSettings::getInstance()
 
     return _instance;
 }
+
+
