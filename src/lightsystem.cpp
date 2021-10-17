@@ -789,7 +789,7 @@ bool LightSystem::startSystem()
 
     while(_started == false)
     {
-	Ws2811Wrapper::waitMillSec(1000));
+	Ws2811Wrapper::waitMillSec(1000);
 	_started = _settings->loadSettings();
     
     }
