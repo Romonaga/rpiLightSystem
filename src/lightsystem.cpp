@@ -794,7 +794,7 @@ bool LightSystem::startSystem()
 	info << "Attempting To Load Settings: " << numLoops << " out of 100";
 	
 	_logger->logInfo(info.str());
-	if(numLoops != 0)
+	if(numLoops != 1)
 		Ws2811Wrapper::waitMillSec(5000);
 	_started = _settings->loadSettings();
     
