@@ -143,3 +143,5 @@ unix {
     target.path = /lumawin
     INSTALLS += target
 }
+
+unix:!macx: LIBS += -lpaho-mqtt3a

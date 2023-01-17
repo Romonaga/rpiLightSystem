@@ -52,6 +52,7 @@ public:
     bool getTwitchSupport() const;
     int getMqttRetries() const;
     int getMqttRetryDelay() const;
+    int getBindCore() const;
     QString getMqttTwitchQueue() const;
 
 
@@ -83,7 +84,7 @@ private:
     bool _dbgLog;
     QString _userArtDirectory;
     int _matrix2121Wiring;
-
+    int _bindCore;
     DNRLogger* _logger;
 
     QMap<int, ChannelSettings*> _channels;

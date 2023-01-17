@@ -120,6 +120,7 @@ private: //shows
     void getVoltageInfo(QJsonObject *statusObject);
 
     void sendSystemInfo();
+    void bindCore();
 
     //TWITCH
     LedLightShows getShowId(const QString& twitchId);

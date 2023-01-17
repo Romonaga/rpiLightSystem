@@ -91,6 +91,7 @@ void TimeFeature::stop()
     {
         _running = false;
         _conditionVar.notify_all();
+        this->wait(1000);
         _logger->logInfo("TimeFeature Stopped.");
     }
 }

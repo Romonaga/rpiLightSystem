@@ -19,13 +19,18 @@ SystemSettings::SystemSettings()
 
     _logger = DNRLogger::instance();
     _logger->setDebugOut(true);
-
+    _bindCore = -1;
 
 }
 
 int SystemSettings::getMatrix2121Wiring() const
 {
     return _matrix2121Wiring;
+}
+
+int SystemSettings::getBindCore() const
+{
+    return _bindCore;
 }
 
 QString SystemSettings::getUserArtDirectory() const
@@ -123,7 +128,6 @@ bool SystemSettings::loadSystemSettings()
         QString sql("SELECT * from lightSystems where enabled = 1 and serverHostName = '");
         sql.append(_hostName);
         sql.append("'");
-        qDebug() << sql.toStdString().c_str();
         QSqlQuery qry = database.exec(sql);
 
         if(qry.lastError().type() == QSqlError::NoError && qry.numRowsAffected() > 0)
@@ -200,6 +204,7 @@ bool SystemSettings::loadSettings()
 
             settings.beginGroup("SETTINGS");
             _dbgLog = settings.value("DBGLOG",false).toBool();
+            _bindCore = settings.value("BINDCORE", 44).toInt();
             settings.endGroup();
 
             retVal = loadSystemSettings();

@@ -78,39 +78,8 @@ LightSystem::LightSystem(QObject *parent) : QObject(parent)
     _luxFeature = nullptr;
     _statusPipe = nullptr;
 
-    const int core_id = 3;
-    const pid_t pid = getpid();
-    cpu_set_t cpuset;
-    CPU_ZERO(&cpuset);
-    CPU_SET(core_id, &cpuset);
+     _logger->logInfo("*** LightSystem Starting Up ***");
 
-    _logger->logInfo("*** LightSystem Starting Up ***");
-
-    const int set_result = sched_setaffinity(pid, sizeof(cpu_set_t), &cpuset);
-    if (set_result != 0)
-    {
-        _logger->logInfo("*LightSystem Could Not Schedual Processor Affinity CPU 3");
-
-    }
-
-    const int get_affinity = sched_getaffinity(pid, sizeof(cpu_set_t), &cpuset);
-    if (get_affinity != 0)
-    {
-      _logger->logInfo("*LightSystem Could Not Set Processor Affinity CPU 3");
-      return;
-    }
-
-    if (CPU_ISSET(core_id, &cpuset))
-    {
-      _logger->logInfo("*LightSystem Successfully set thread to affinity to CPU 3");
-
-    }
-    else
-    {
-        _logger->logInfo("*LightSystem Failed to set thread to affinity to CPU 3");
-        return;
-
-    }
 
 }
 
@@ -180,14 +149,15 @@ void LightSystem::stopShows()
 {
     if(false == _running) return;
 
-     _logger->logInfo("LightSystem::stopShows Stopping shows");
-   _running = false;
+    _logger->logInfo("LightSystem::stopShows Stopping shows");
+    _running = false;
 
-   if(_runningShows.count() > 0 && _runningShows[0] != nullptr)
+    if(_runningShows.count() > 0 && _runningShows[0] != nullptr)
+    {
         _runningShows[0]->stopShow();
-
-   _ledWrapper.clearLeds();
-   _logger->logInfo("LightSystem::stopShows Stopped shows");
+    }
+    _ledWrapper.clearLeds();
+    _logger->logInfo("LightSystem::stopShows Stopped shows");
 
 }
 
@@ -779,6 +749,52 @@ void LightSystem::loadFeatures()
 
 }
 
+void LightSystem::bindCore()
+{
+    _logger->logInfo("LightSystem::bindCore Checking...");
+    if(_settings->getBindCore() != -1)
+    {
+        std::stringstream info;
+
+        const pid_t pid = getpid();
+        cpu_set_t cpuset;
+        CPU_ZERO(&cpuset);
+        CPU_SET(_settings->getBindCore(), &cpuset);
+
+        info << "*LightSystem Setting Core Affinity core: " << _settings->getBindCore();
+        _logger->logInfo(info.str());
+
+        const int set_result = sched_setaffinity(pid, sizeof(cpu_set_t), &cpuset);
+        if (set_result != 0)
+        {
+            _logger->logInfo("*LightSystem Could Not Schedual Processor Affinity");
+
+        }
+
+        const int get_affinity = sched_getaffinity(pid, sizeof(cpu_set_t), &cpuset);
+        if (get_affinity != 0)
+        {
+          _logger->logInfo("*LightSystem Could Not Get Processor Affinity");
+          return;
+        }
+
+        if (CPU_ISSET(_settings->getBindCore(), &cpuset))
+        {
+          _logger->logInfo("*LightSystem Successfully set thread to affinity");
+
+        }
+        else
+        {
+            _logger->logInfo("*LightSystem Failed to set thread to affinity");
+            return;
+
+        }
+    }
+    else
+    {
+        _logger->logInfo("*LightSystem BINDCORE Not Set affinity Not Set");
+    }
+}
 bool LightSystem::startSystem()
 {
     std::stringstream info;
@@ -791,7 +807,7 @@ bool LightSystem::startSystem()
     while(_started == false && numLoops++ < 100)
     {
         info.str("");
-	info << "Attempting To Load Settings: " << numLoops << " out of 100";
+        info << "Attempting To Load Settings: " << numLoops << " out of 100";
 	
 	_logger->logInfo(info.str());
 	if(numLoops != 1)
@@ -801,6 +817,8 @@ bool LightSystem::startSystem()
     }
     if(_started)
     {
+        bindCore();
+
         _logger->logInfo("LightSystem::startSystem Initilizing Led channels");
         foreach(ChannelSettings* channel,  _settings->getChannels())
         {
@@ -978,8 +996,9 @@ void LightSystem::timeStateChange(TimeFeature *feature, int state)
        info.str("");
        info << "timeStateChange Stop Lights";
        _logger->logInfo(info.str());
-       stopShows();
+        stopShows();
        _ledWrapper.clearLeds();
+       startShows();
     }
 }
 
